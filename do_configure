@@ -9,7 +9,7 @@ FLAGS="-g3 -O3 -Wall"
 ./configure \
     CXX=mpicxx \
     CXXFLAGS="$FLAGS -DMPICH_IGNORE_CXX_SEEK" \
-    --prefix=${HOME}/opt/wavelet \
+    --prefix=${HOME}/opt/libra \
     --with-pmpi \
     --with-vtk=${HOME}/opt/vtk \
     --with-vtk-version=5.3 \

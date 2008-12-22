@@ -18,13 +18,3 @@ EXTRA_DIST = LICENSE README
 
 SUBDIRS=libwavelet callpath effort $(VIEWER_DIRS) tests
 
-DISTCHECK_CONFIGURE_FLAGS = \
-		CXX=mpiicpc \
-    CXXFLAGS='-g -O3 -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK -DVTK_EXCLUDE_STRSTREAM_HEADERS' \
-    --with-paradyn=/usr/local/tools/stackwalker-0.6.1 \
-    --with-dwarf=/usr/local/tools/libdwarf-2008.10.13 \
-    --with-papi=/usr/local/tools/papi \
-    --with-python=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
-    --with-python-version=2.5 \
-    --with-vtk=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
-    --disable-static
