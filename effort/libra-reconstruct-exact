@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# -*- ruby -*-
+
+def rank(str) 
+  str.sub(/^exact_([0-9]+)_([0-9]+)_/, '').to_i
+end
+
+files = `ls`
+tocat = {}
+
+files.each do |filename|
+  filename.chomp!
+  
+  if matches = /^exact_([0-9]+)_([0-9]+)_([0-9]+)/.match(filename)
+    key = "exact_#{matches[1]}_#{matches[2]}"
+    unless tocat[key]
+      tocat[key] = []
+    end
+    tocat[key].push(filename)
+  end
+end
+
+tocat.each do |key, list|
+  list.sort! {|a,b| rank(a) <=> rank(b)}
+  cat_cmd = "cat #{list.join(" ")} > #{key}"
+  rm_cmd = "rm  #{list.join(" ")}"
+  system cat_cmd
+  system rm_cmd
+end
+

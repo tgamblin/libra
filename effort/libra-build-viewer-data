@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+# -*- ruby -*-
+#
+require 'set'
+require 'optparse'
+require 'fileutils'
+require 'pathname'
+
+# Allow user to specify dirs to search for source.
+path = []
+exefile = nil
+OptionParser.new do |opts|
+  opts.banner="Usage: libra-build-viewer-data [-I src_dir]"
+  opts.on("-I", "--include DIR", "Add a directory to search for source files.") do |v|
+    path.push(v)
+  end
+  opts.on("-e", "--include FILE", "Use FILE for symbtab information (use when Stackwalker can't determine modules)") do |exe|
+    exefile = Pathname(exe).realpath
+  end
+end.parse!
+
+# Directory where viewer-related files should be put.
+data_dir="viewer-data"
+FileUtils::mkdir_p(data_dir)
+
+# Directory where we'll put dirs in the source search path
+src_dir="#{data_dir}/src"
+FileUtils::mkdir_p(src_dir)
+
+# Path map maps directories in path to sequential dir names
+i=0
+path_map = Hash.new {|hash, dir| i+=1; hash[dir] = "#{src_dir}/%03d" % i}
+path.each do |dir| 
+  FileUtils::mkdir_p(path_map[dir])
+end
+
+
+# Run ef on all the effort files (at once, for speed)
+# and get symtab data for making sense of callpaths
+# into a single file.
+in_path=false    # whether we're currently inside a callpath while parsing the output from ef.
+lines = Set.new
+opt = exefile ? "-e #{exefile}" : "-f"
+`ef #{opt} effort-*`.each do |line|
+  line.chomp!
+  startend = line.sub!(/^(Start|End)/, "")
+  line.lstrip!
+
+  if line.empty? then
+    in_path = false
+  elsif startend
+    in_path = true
+  end
+
+  if in_path then
+    if parts = line.match(/^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)/)
+      # parse this part of the callpath and dump a |-separated version into the lines set
+      file, lnum, fun, lib, offset = parts[1..-1]
+      lines.add(parts[1..-1].join("|"))
+      
+      # Copy all the relevant source files into the src dir so we can look at them.
+      path.each do |dir|
+        source_file = "#{dir}/#{file}"
+        if File::exists?(source_file) then
+          dest_file = "#{path_map[dir]}/#{file}"
+          FileUtils::cp(source_file, dest_file)
+        end
+      end
+
+    elsif parts = line.match(/^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)/)
+      lib, offset = parts[1..-1]
+      lines.add("?|?|?|#{lib}|#{offset}")
+    end
+  end
+end
+
+# Output all the unique addresses found in the callpaths to a file.
+output = File.open("#{data_dir}/symtab", "w")
+lines.each do |l|
+  output.puts l
+end
+

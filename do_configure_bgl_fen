@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# This is a sample configure script for the BGL front-end nodes.
+# 
+
+./configure \
+    CXX=g++ \
+    CXXFLAGS="-g3 -O3" \
+    --prefix=${HOME}/opt/wavelet/sles_9_ppc64 \
+    --enable-shared=no \
+    --with-xml2=${HOME}/opt/libxml2 \
+    --with-dwarf=${HOME}/opt/dwarf-20080615 \
+    --with-paradyn=${HOME}/src/sw/ppc64_linux \
+    --with-boost=${HOME}/opt/boost \
+    --with-pmpi
+
+

@@ -1,0 +1,94 @@
+#include <cstdlib>
+#include <cstdio>
+#include <fstream>
+using namespace std;
+
+#include "wavelet.h"
+#include "wt_lift.h"
+#include "wt_direct.h"
+#include "matrix_utils.h"
+#include "ezw_encoder.h"
+#include "ezw_decoder.h"
+using wavelet::wt_matrix;
+using namespace wavelet;
+
+static const char *PROGNAME = "vary_passes";
+static const char *EZW_FILE = "vary_passes.out";
+
+int main(int argc, char **argv) {
+  char *filename;
+  long long scale = 1;
+  char *err;
+  switch (argc) {
+  case 3:
+    scale = strtoll(argv[2], &err, 10);
+    if (err && *err) {
+      cerr << "Error: invalid scale: " << argv[2] << endl;
+      exit(1);
+    }
+
+  case 2:
+    filename = argv[1];
+    break;
+
+  default:
+    cerr << "Usage: " << PROGNAME << " file [scale]" << endl;
+    exit(1);
+  }
+
+  wt_lift wt;
+
+  printf("%8s    %8s    %8s    %8s    %8s    %10s    %8s\n", 
+         "PASS", "%TOTAL", "%EZW", "NRMSE", "PSNR", "RATE", "BYTES");
+
+  for (int limit=1; limit <= 60; limit++) {
+    ezw_encoder encoder;
+    encoder.set_pass_limit(limit);
+
+    encoder.set_scale(scale);
+    ezw_decoder decoder;
+  
+    wt_matrix mat;
+    read_matrix(filename, mat);
+
+    // transform values
+    wt_matrix trans = mat;
+    int level = wt.fwt_2d(trans);
+
+    // ezw-encode the transformed matrix
+    ofstream encoded_out(EZW_FILE);
+    long bytes = encoder.encode(trans, encoded_out, level);
+    encoded_out.close();
+
+    ifstream file(EZW_FILE);
+    ezw_header header;
+    ezw_header::read_in(file, header);
+    quantized_t threshold = header.threshold;
+  
+    int passes = 0;
+    while (threshold) {
+      threshold >>= 1;
+      passes++;
+    }
+
+    const long size = mat.size1() * mat.size2() * sizeof(double);
+
+    // decode the ezw-coded file.
+    ifstream encoded_in(EZW_FILE);
+    wt_matrix unezw;
+    decoder.decode(encoded_in, unezw, -1, &header);
+    size_t read = decoder.get_bytes_read();
+
+    // inverse-transform the decoded data and get error
+    wt.iwt_2d(unezw, level);
+    double err = nrmse(mat, unezw);
+    double psnr_val = psnr(mat, unezw);
+
+    double compression = read/(double)size;
+    double ezw_fraction = read/bytes;
+    double rate = size / read;
+    
+    printf("%8d    %8.4f    %8.4f    %8.4f    %8.4f    %8.2f:1    %8zd\n", 
+           limit, compression, ezw_fraction, err, psnr_val, rate, read);
+  }
+}

@@ -1,0 +1,4 @@
+vtkEffortSource              GetBounds                  307    6
+vtkEffortSource              GetNormalizedBounds        307    6
+vtkEffortSource              GetRowRange                304    2
+vtkEffortSource              GetColRange                304    2

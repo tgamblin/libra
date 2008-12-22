@@ -1,0 +1,5 @@
+%_wrap.C: %.i
+		$(SWIG) -c++ -python -I../callpath -I../effort -I../libwavelet -o $@ $<
+
+clean-swigwrap:
+	rm -f *_wrap.C

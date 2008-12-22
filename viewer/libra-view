@@ -1,0 +1,43 @@
+#!/usr/bin/env vtkpython
+# -*- python -*-
+#
+import sys, vtkutils, re
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from pyeffort import *
+from effort import *
+import icons
+from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+
+def main():
+    if len(sys.argv) < 2:
+        print "Usage: %s <load_file>" % sys.argv[0]
+        sys.exit(1)
+
+    filename = sys.argv[1]
+        
+    # Initialize icons.
+    mydir = re.sub("/[^/]*$", "", os.path.abspath(__file__))
+    icons.addSearchPath(mydir + "/icons")
+    icons.addSearchPath(mydir + "/../share/wavelet/icons")
+    
+    app = QApplication(sys.argv)
+    main = QMainWindow()
+    main.setWindowTitle("Load Viewer")
+
+    viewer = vtkutils.MetricViewer()
+    main.setCentralWidget(viewer)
+    
+    region = EffortRegion()
+    data = EffortData(sys.argv[1])
+    region.addData(data)
+
+    viewer.setEffortRegions([region])
+    
+    main.show()                       # show the widget
+    sys.exit(app.exec_())             # start event processing
+
+
+if __name__ == "__main__":
+    main()

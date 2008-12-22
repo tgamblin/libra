@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# This is a sample configure script for LLNL's Atlas machine.
+# Atlas is an AMD Opteron cluster running CHAOS.
+# 
+
+FLAGS="-g -O3 -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK -DVTK_EXCLUDE_STRSTREAM_HEADERS"
+
+./configure \
+    CXX=mpiicpc \
+    CXXFLAGS="$FLAGS" \
+    --prefix=${HOME}/opt/wavelet/${SYS_TYPE} \
+    --with-paradyn=/usr/local/tools/stackwalker-0.6.1 \
+    --with-dwarf=/usr/local/tools/libdwarf-2008.10.13 \
+    --with-papi=/usr/local/tools/papi \
+    --with-python=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
+    --with-python-version=2.5 \
+    --with-vtk=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
+    --disable-static
+
+#    --with-pnmpi=/usr/global/tools/pnmpi/${SYS_TYPE} \

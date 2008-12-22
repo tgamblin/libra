@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+#
+# This script pre-relinks libtool wrapper files.  This is useful if you
+# will run the development version of your application in an environment
+# (e.g. on compute nodes) where the compilers you built it with are not 
+# present.
+#
+# The script examines the file, checks if it is a libtool wrapper, then
+# generates a new wrapper that will relink the program without running it.
+# This will eliminate the need for the script to relink at runtime.
+#
+use Getopt::Std;
+
+my %options = ();
+getopts("a");
+
+$executable = $ARGV[0];
+
+if (system("head $executable | grep -q ltmain.sh") == 0) {
+    # Create a version of the libtool script that doesn't actually run
+    # but that does do the relinking step
+    my $newScript = ".$executable.prelink";
+    
+    open EXEC, "<$executable";
+    open TEMP, ">$newScript";
+    my $found = 0;
+    while (<EXEC>) {
+        $found = 1 if s/^(\s+)exec.*$/$1exit 0/;
+        print TEMP;
+    }
+    close EXEC;
+    close TEMP;
+    
+    if ($found) {
+        chmod 0755, $newScript;
+        `$newScript`;
+        unlink $newScript;
+        exit 0;
+
+    } else {
+        print STDERR "WARNING: found libtool executable, but couldn't parse.";
+        unlink $newScript;
+        exit 1;
+    }
+
+} else {
+    #not a libtool wrapper.
+    exit 1;
+}
+

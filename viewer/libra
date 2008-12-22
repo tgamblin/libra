@@ -1,0 +1,36 @@
+#!/usr/bin/env vtkpython
+# -*- python -*-
+#
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+import sys, os, re
+import icons
+
+def main():
+    app = QApplication(sys.argv)
+
+    # Initialize icons.
+    mydir = re.sub("/[^/]*$", "", os.path.abspath(__file__))
+    icons.addSearchPath(mydir + "/icons")
+    icons.addSearchPath(mydir + "/../share/wavelet/icons")
+
+    icon = icons.get("libra_logo256")
+    pixmap = icon.pixmap(icon.actualSize(QSize(512,512)))
+    splash = QSplashScreen(pixmap)
+    splash.show()
+
+    from viewer import Viewer
+
+    viewer = Viewer()
+    viewer.show()
+    splash.finish(viewer)
+
+    def finalize():
+        app.quit()
+
+    app.connect(app, SIGNAL( 'lastWindowClosed()' ), finalize);
+    sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()

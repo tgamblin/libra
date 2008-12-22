@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# This is a sample configure script for libwavelet.
+# Modify as per your system.
+# 
+
+./configure \
+    CXX=mpicxx \
+    CPPFLAGS="-g3 -O3 -Wall -DVTK_EXCLUDE_STRSTREAM_HEADERS" \
+    --with-boost="/opt/local" \
+    --prefix=/Users/tgamblin/opt/wavelet \
+    --with-pmpi \
+    --with-python=/opt/local/Library/Frameworks/Python.framework \
+    --with-python-version=2.4 \
+    --with-vtk=/Users/tgamblin/opt/vtk \
+    --with-vtk-version=5.3
+
+
+# --enable-shared=no \
+# -I/home/tgamblin/opt/boost/include/boost_1_34_1
+

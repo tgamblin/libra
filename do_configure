@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# This is a sample configure script for libwavelet.
+# Modify as per your system.
+# 
+
+FLAGS="-g3 -O3 -Wall"
+
+./configure \
+    CXX=mpicxx \
+    CXXFLAGS="$FLAGS -DMPICH_IGNORE_CXX_SEEK" \
+    --prefix=${HOME}/opt/wavelet \
+    --with-pmpi \
+    --with-vtk=${HOME}/opt/vtk \
+    --with-vtk-version=5.3 \
+    --with-python=/usr/apps/python/2.5.2
