@@ -1,8 +1,12 @@
 #include "FrameId.h"
 
-#ifdef WAVELET_HAVE_MPI
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifdef LIBRA_HAVE_MPI
 #include "mpi_utils.h"
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
 
 #include "io_utils.h"
 #include <iomanip>
@@ -53,7 +57,7 @@ FrameId FrameId::create(const string& name, uintptr_t offset) {
   return FrameId(module_for(name), offset);
 }
 
-#ifdef WAVELET_HAVE_MPI
+#ifdef LIBRA_HAVE_MPI
 
 size_t FrameId::packed_size(MPI_Comm comm) const {
   size_t pack_size = 0;
@@ -74,5 +78,5 @@ FrameId FrameId::unpack(void *buf, int bufsize, int *position, MPI_Comm comm) {
   return result;
 }
 
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
 

@@ -6,13 +6,9 @@
 ./configure \
     CXX=mpicxx \
     CXXFLAGS="-g3 -O3 -Wall -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK" \
-    --prefix=${HOME}/opt/wavelet/bgl_cnk \
-    --enable-shared=no \
+    --prefix=${HOME}/opt/libra/bgl_cnk \
     --with-paradyn=${HOME}/src/sw/ppc32_bgcompute \
     --with-boost=${HOME}/opt/boost \
     --with-pnmpi=${HOME}/src/pnmpi-1.2/${SYS_TYPE} \
-    --with-pmpi \
-    --with-pmpi-effort
-
-
+    --disble-shared
 

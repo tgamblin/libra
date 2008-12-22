@@ -1,10 +1,10 @@
 #ifndef CALLPATH_H
 #define CALLPATH_H
 
-#include "wavelet-config.h"
-#ifdef WAVELET_HAVE_MPI
+#include "libra-config.h"
+#ifdef LIBRA_HAVE_MPI
 #include <mpi.h>
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
 
 #include <stdint.h>
 #include <vector>
@@ -64,7 +64,7 @@ public:
   /// Reads a callpath in from a stream.
   static Callpath read_in(std::istream& in);
 
-#ifdef WAVELET_HAVE_MPI
+#ifdef LIBRA_HAVE_MPI
   /// Gets upper bound on size of this callpath, if it were packed into an MPI buffer.
   size_t packed_size(MPI_Comm comm) const;
 
@@ -85,7 +85,7 @@ public:
   /// Receies module information from another process.  Builds a translation table
   /// to be used for unpacking Callpaths.
   static void unpack_modules(void *buf, int bufsize, int *position, module_map& dest, MPI_Comm comm);
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
   
 private:
   /// Unique, null-terminated array of symbol_ids for this callpath

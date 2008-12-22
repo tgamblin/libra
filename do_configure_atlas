@@ -4,12 +4,12 @@
 # Atlas is an AMD Opteron cluster running CHAOS.
 # 
 
-FLAGS="-g -O3 -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK -DVTK_EXCLUDE_STRSTREAM_HEADERS"
+FLAGS="-g -O2 -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK -DVTK_EXCLUDE_STRSTREAM_HEADERS"
 
 ./configure \
-    CXX=mpiicpc \
+    CXX=mpicc \
     CXXFLAGS="$FLAGS" \
-    --prefix=${HOME}/opt/wavelet/${SYS_TYPE} \
+    --prefix=${HOME}/opt/libra/${SYS_TYPE} \
     --with-paradyn=/usr/local/tools/stackwalker-0.6.1 \
     --with-dwarf=/usr/local/tools/libdwarf-2008.10.13 \
     --with-papi=/usr/local/tools/papi \

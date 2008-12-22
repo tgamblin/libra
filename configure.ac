@@ -4,9 +4,9 @@
 AC_INIT(libwavelet/wt_direct.C)
 AC_CONFIG_AUX_DIR(config)
 
-AM_INIT_AUTOMAKE(wavelet,0.9)
+AM_INIT_AUTOMAKE(libra,0.9)
 AM_CONFIG_HEADER(config.h)
-AX_PREFIX_CONFIG_H([wavelet-config.h])
+AX_PREFIX_CONFIG_H([libra-config.h])
 
 # Programs we need
 AC_PROG_CXX
@@ -127,7 +127,7 @@ fi
 
 echo
 echo "========================================================"
-echo "==           Final build configuration                =="
+echo "==         Libra: final build configuration           =="
 echo "========================================================"
 echo "External Library Support:"
 echo "  MPI ............................................ $have_mpi"

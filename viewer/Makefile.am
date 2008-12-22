@@ -4,7 +4,9 @@
 python_LTLIBRARIES=libvtkeffort.la _pyeffort.la
 
 dist_noinst_SCRIPTS = wrap_vtk.sh
-EXTRA_DIST = pyeffort.i
+
+# SWIG-generated files
+EXTRA_DIST = pyeffort.i pyeffort.py
 
 ###########################################################################
 # vtkeffort module is wrapped using VTK's wrapper generators.

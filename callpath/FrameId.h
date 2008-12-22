@@ -1,10 +1,10 @@
 #ifndef FRAME_ID_H
 #define FRAME_ID_H
 
-#include "wavelet-config.h"
-#ifdef WAVELET_HAVE_MPI
+#include "libra-config.h"
+#ifdef LIBRA_HAVE_MPI
 #include <mpi.h>
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
 
 #include <stdint.h>
 #include <string>
@@ -46,7 +46,7 @@ public:
   /// Creates a FrameId with a unique module pointer.
   static FrameId create(const std::string& name, uintptr_t offset);
 
-#ifdef WAVELET_HAVE_MPI
+#ifdef LIBRA_HAVE_MPI
   /// Gets size of a packed frame id for sending via MPI.
   size_t packed_size(MPI_Comm comm) const;
 
@@ -60,7 +60,7 @@ public:
   /// pointer, not a module string.  module will require translation
   /// before it is usable.
   static FrameId unpack(void *buf, int bufsize, int *position, MPI_Comm comm);
-#endif // WAVELET_HAVE_MPI
+#endif // LIBRA_HAVE_MPI
   
   
 private:

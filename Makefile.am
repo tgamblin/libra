@@ -6,8 +6,8 @@ VIEWER_DIRS=hcluster viewer
 endif
 
 # Build-time configuration of libraries.
-include_HEADERS=wavelet-config.h
-DISTCLEANFILES = wavelet-config.h _configs.sed
+include_HEADERS=libra-config.h
+DISTCLEANFILES = libra-config.h _configs.sed
 
 dist_noinst_SCRIPTS = \
 	do_configure_atlas \

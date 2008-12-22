@@ -2465,7 +2465,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE=wavelet
+ PACKAGE=libra
  VERSION=0.9
 
 
@@ -2614,7 +2614,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_commands="$ac_config_commands wavelet-config.h"
+ac_config_commands="$ac_config_commands libra-config.h"
 
 
 # Programs we need
@@ -24437,7 +24437,7 @@ fi
 
 echo
 echo "========================================================"
-echo "==           Final build configuration                =="
+echo "==         Libra: final build configuration           =="
 echo "========================================================"
 echo "External Library Support:"
 echo "  MPI ............................................ $have_mpi"
@@ -25131,7 +25131,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
-    "wavelet-config.h") CONFIG_COMMANDS="$CONFIG_COMMANDS wavelet-config.h" ;;
+    "libra-config.h") CONFIG_COMMANDS="$CONFIG_COMMANDS libra-config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "libwavelet/Makefile") CONFIG_FILES="$CONFIG_FILES libwavelet/Makefile" ;;
@@ -25793,7 +25793,7 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
 
 
   case $ac_file$ac_mode in
-    "wavelet-config.h":C) ac_prefix_conf_OUT=`echo wavelet-config.h`
+    "libra-config.h":C) ac_prefix_conf_OUT=`echo libra-config.h`
 ac_prefix_conf_DEF=`echo _$ac_prefix_conf_OUT | sed -e "y:abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:" -e "s/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]/_/g"`
 ac_prefix_conf_PKG=`echo $PACKAGE`
 ac_prefix_conf_LOW=`echo _$ac_prefix_conf_PKG | sed -e "y:ABCDEFGHIJKLMNOPQRSTUVWXYZ-:abcdefghijklmnopqrstuvwxyz_:"`
