@@ -92,9 +92,6 @@ namespace wavelet {
     /// gets level of transform based on size of matrix.
     int get_level(int level, size_t rows, size_t cols);
 
-    /// Gets the appropriate initial threshold for the ezw coder, given the max data value.
-    quantized_t get_threshold(quantized_t max);
-    
     /// Multiplies each value in the matrix by a scale factor then casts it to quantized_t.
     /// Stored results in an internal matrix of quantized values.
     void quantize(wt_matrix& mat, quantized_t scale);
@@ -141,7 +138,7 @@ namespace wavelet {
       encode_visitor(ezw_encoder *p, obitstream& o): parent(p), out(o) { }
       ~encode_visitor() { }
       ezw_code visit(dom_elt e) { 
-	return parent->encode_value(e, out);
+        return parent->encode_value(e, out);
       }
     };
 

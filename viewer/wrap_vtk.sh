@@ -1,11 +1,14 @@
 #!/bin/sh
 #
-# Usage: wrap_vtk.sh <vtkWrapPython> <vtkWrapPythonInit> <initfile> <pyfiles ...>
+# Usage: wrap_vtk.sh <vtkWrapPython> <vtkWrapPythonInit> <srcdir> <initfile> <pyfiles ...>
 # 
 # This script takes at least 4 parameters:
 #   vtkWrapPython:         path to vtkWrapPython in vtk installation
 # 
 #   vtkWrapPythonInit:     path to vtkWrapPythonInit in vtk installation
+#
+#   srcdir                 Source directory where headers to be wrapped are located (for when
+#                          there's a separate build directory).
 #
 #   initfile:              Name of C file that should contain the library initialization routine.
 #                          This will be created using vtkWrapPythonInit and it will be passed
@@ -16,14 +19,10 @@
 #                          exists.  If not this will throw an error.
 #
 
-VTK_WRAP_PYTHON=$1
-shift 1
-
-VTK_WRAP_PYTHON_INIT=$1
-shift 1
-
-INIT_FILE=$1
-shift 1
+VTK_WRAP_PYTHON=$1;      shift 1
+VTK_WRAP_PYTHON_INIT=$1; shift 1
+SRC_DIR=$1;              shift 1
+INIT_FILE=$1;            shift 1
 
 #
 # Figure out what the name of the library is and create an init file for it.
@@ -42,7 +41,7 @@ touch hints
 #
 for file in $@; do
     classname=`echo $file | sed 's/Python.C//'`
-    hfile="${classname}.h"
+    hfile="${SRC_DIR}/${classname}.h"
     if [ ! -e "$hfile" ] ; then
         echo "Error wrapping $hfile.  '$hfile' does not exist."
         exit 1

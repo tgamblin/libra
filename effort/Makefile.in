@@ -432,9 +432,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  effort/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  effort/Makefile
+	  $(AUTOMAKE) --foreign  effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -841,7 +841,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 @PNMPI_EFFORT_TRUE@	chmod u+x .libs/effort-patched.so
 @PNMPI_EFFORT_TRUE@	mv -f .libs/effort-patched.so .libs/effort.so
 effort_wrapper.C: effort_wrapper.w
-	$(PYTHON) wrap.py $< -o $@
+	$(PYTHON) $(srcdir)/wrap.py $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

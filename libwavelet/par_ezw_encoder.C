@@ -10,6 +10,7 @@ using boost::numeric::ublas::matrix;
 
 #include "mpi_profile.h"
 #include "mpi_utils.h"
+#include "io_utils.h"
 #define MPI_QUANTIZED_T (mpi_typeof(quantized_t()))
 #include "wt_utils.h"
 #include "vector_obitstream.h"
@@ -322,7 +323,7 @@ namespace wavelet {
     MPI_Allreduce(&abs_max, &all_abs_max, 1, MPI_QUANTIZED_T, MPI_MAX, comm);
 
     // Compute threshold and level in standard way.
-    threshold = get_threshold(all_abs_max);
+    threshold = lePowerOf2((uint64_t)all_abs_max);
 
     vector_obitstream local_bits(mat.size1() * mat.size2() * sizeof(double));
 

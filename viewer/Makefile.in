@@ -409,9 +409,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  viewer/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  viewer/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  viewer/Makefile
+	  $(AUTOMAKE) --foreign  viewer/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -787,7 +787,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_iconDATA \
 
 
 $(VTKEFFORT_PYTHON_SOURCES): $(VTKEFFORT_H_FILES)
-	$(SHELL) wrap_vtk.sh $(VTK_WRAP_PYTHON) $(VTK_WRAP_PYTHON_INIT) $(VTKEFFORT_PYTHON_SOURCES)
+	$(SHELL) $(srcdir)/wrap_vtk.sh $(VTK_WRAP_PYTHON) $(VTK_WRAP_PYTHON_INIT) $(srcdir) $(VTKEFFORT_PYTHON_SOURCES)
 pyeffort_wrap.C: pyeffort.i
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
 pyeffort.py: _pyeffort.la

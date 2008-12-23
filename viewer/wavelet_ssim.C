@@ -4,6 +4,7 @@ using namespace wavelet;
 #include <vector>
 using namespace std;
 
+#include "io_utils.h"
 
 static const double K = .01;
 
@@ -83,7 +84,7 @@ static double sliding_window(wt_matrix& m1, wt_matrix& m2,
 double wssim(wt_matrix& m1, wt_matrix& m2, int input_level, size_t sim_level_mask, size_t box_size) {
   // automatically guess level if input_level is < 0 -- assume maximal transform
   if (input_level < 0) {
-    input_level = (int)log2(std::max(m1.size1(), m1.size2()));
+    input_level = (int)log2pow2(std::max(m1.size1(), m1.size2()));
     cerr << "input level set to " << input_level << endl;
   }
   

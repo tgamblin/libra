@@ -10,6 +10,7 @@ using namespace std;
 
 #include "matrix_utils.h"
 #include "wt_utils.h"
+#include "io_utils.h"
 #include "buffered_obitstream.h"
 #include "vector_obitstream.h"
 #include "rle.h"
@@ -41,8 +42,7 @@ namespace wavelet {
     // two less than the magnitude
     for (size_t i=0; i < quantized.size1(); i++) {
       for (size_t j=0; j < quantized.size2(); j++) {
-        int log = (int)log2(::llabs(quantized(i,j)));
-        zerotree_map(i,j) = (1ll << log);
+        zerotree_map(i,j) = lePowerOf2((uint64_t)abs_val(quantized(i,j)));
       }
     }
 
@@ -162,6 +162,7 @@ namespace wavelet {
     sub_sizes.clear();
 
     encode_visitor visitor(this, out);
+
     while (threshold && (!pass_limit || (dom_sizes.size() < pass_limit))) {
       size_t start_bits = out.get_in_bits();
 
@@ -195,22 +196,16 @@ namespace wavelet {
   int ezw_encoder::get_level(int level, size_t rows, size_t cols) {
     // for negative level, assume maximally transformed data as the transforms do.
     if (level < 1) {
-      level = (int)log2(max(rows, cols));
+      level = (int)log2pow2(max(rows, cols));
     }
 
     // for irregular sizes, ignore extra transforms in the longer direction.  Use
     // the level of the lowest frequency subband in the shorter direction to bound.
-    if (level > (int)log2(min(rows, cols))) {
-      level = (int)log2(min(rows, cols));
+    if (level > (int)log2pow2(min(rows, cols))) {
+      level = (int)log2pow2(min(rows, cols));
     }
 
     return level;
-  }
-
-
-  // computes initial threshold (to be halved each time through the encoder's main loop)
-  quantized_t ezw_encoder::get_threshold(quantized_t max) {
-    return static_cast<quantized_t>(1) << static_cast<unsigned>(floor(log2(max)));
   }
 
 
@@ -225,7 +220,7 @@ namespace wavelet {
     subtract_scalar(mean);
 
     quantized_t abs_max = abs_max_val(quantized);
-    threshold = get_threshold(abs_max);
+    threshold = lePowerOf2((uint64_t)abs_max);
 
     // construct and write out the header with relevant info
     ezw_header header(mat.size1(), mat.size2(), level, mean, scale, threshold, enc_type);

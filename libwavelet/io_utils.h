@@ -43,9 +43,8 @@ namespace wavelet {
   template <class T>
   bool isPowerOf2(T num) { return !(num & (num-1)); }
 
-
-  /// Returns next highest power of two for an integral type (up to 64 bits)
-  inline int nextPowerOf2(uint32_t num) {
+  /// Returns least power of two greater than or equal to num
+  inline uint32_t gePowerOf2(uint32_t num) {
     num--;
     num |= (num >> 1);  // these fill with ones.
     num |= (num >> 2);
@@ -56,7 +55,8 @@ namespace wavelet {
     return num;
   }
 
-  inline int nextPowerOf2(uint64_t num) {
+  /// Returns least power of two greater than or equal to num
+  inline uint64_t gePowerOf2(uint64_t num) {
     num--;
     num |= (num >> 1);  // these fill with ones.
     num |= (num >> 2);
@@ -67,6 +67,30 @@ namespace wavelet {
     num++;
     return num;
   }
+
+
+  /// Returns greatest power of two less than or equal to num
+  inline uint32_t lePowerOf2(uint32_t num) {
+    num |= (num >> 1);  // these fill with ones.
+    num |= (num >> 2);
+    num |= (num >> 4);
+    num |= (num >> 8);
+    num |= (num >> 16);
+    return num - (num >> 1);
+  }
+
+
+  /// Returns greatest power of two less than or equal to num
+  inline uint64_t lePowerOf2(uint64_t num) {
+    num |= (num >> 1);  // these fill with ones.
+    num |= (num >> 2);
+    num |= (num >> 4);
+    num |= (num >> 8);
+    num |= (num >> 16);
+    num |= (num >> 32);
+    return num - (num >> 1);
+  }
+
 
   /// Takes the log base 2 of a power of 2, returns a char.
   /// Returns -1 if 0 is passed in.

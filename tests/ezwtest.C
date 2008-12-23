@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   double err_sum = 0;
   double ratio_sum = 0;
 
-  //int r=9, c=9;
+  //int r=3, c=3;
   for (int r=start; r < end; r++) {
     for (int c=start; c < end; c++) {
       int rows = 1 << r;
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
           trans(i,j) = (long long)(trans(i,j) * 1000);
         }
       }
-
+      
       // write out ezw code to a file
       ofstream out(FILENAME);
       int size = encoder.encode(trans, out, level);

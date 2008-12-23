@@ -102,7 +102,7 @@ namespace effort {
     // TODO: decoder, iwt, etc. to take out padding on expansion.
     if (!isPowerOf2(effort_log.progress_count)) {
       // step to the next power of 2 timestep and fill with zeros.
-      effort_log.progress_step(nextPowerOf2(effort_log.progress_count));
+      effort_log.progress_step(gePowerOf2(effort_log.progress_count));
     }
 
     // first need to synchronize effort keys across all processors so that everyone
