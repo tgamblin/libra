@@ -72,7 +72,7 @@ CONFIG_CLEAN_FILES =
 @HAVE_SW_TRUE@@HAVE_SYMTAB_TRUE@am__EXEEXT_3 = swcheck$(EXEEXT)
 @HAVE_PAPI_TRUE@am__EXEEXT_4 = papicheck$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am_bunny_OBJECTS = bunny.$(OBJEXT)
+am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
 bunny_DEPENDENCIES = ../effort/libmanual-effort.la
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
@@ -319,6 +319,7 @@ partest_SOURCES = partest.C
 parezwtest_SOURCES = parezwtest.C
 parspeedbench_SOURCES = parspeedbench.C
 bunny_SOURCES = bunny.C
+bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
 bunny_LDADD = ../effort/libmanual-effort.la
 LDADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
@@ -405,7 +406,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bunny.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bunny-bunny.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compress_matfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ezwtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/insert_bits_test.Po@am__quote@
@@ -438,6 +439,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+bunny-bunny.o: bunny.C
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bunny_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bunny-bunny.o -MD -MP -MF $(DEPDIR)/bunny-bunny.Tpo -c -o bunny-bunny.o `test -f 'bunny.C' || echo '$(srcdir)/'`bunny.C
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/bunny-bunny.Tpo $(DEPDIR)/bunny-bunny.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bunny.C' object='bunny-bunny.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bunny_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bunny-bunny.o `test -f 'bunny.C' || echo '$(srcdir)/'`bunny.C
+
+bunny-bunny.obj: bunny.C
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bunny_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bunny-bunny.obj -MD -MP -MF $(DEPDIR)/bunny-bunny.Tpo -c -o bunny-bunny.obj `if test -f 'bunny.C'; then $(CYGPATH_W) 'bunny.C'; else $(CYGPATH_W) '$(srcdir)/bunny.C'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/bunny-bunny.Tpo $(DEPDIR)/bunny-bunny.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bunny.C' object='bunny-bunny.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bunny_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bunny-bunny.obj `if test -f 'bunny.C'; then $(CYGPATH_W) 'bunny.C'; else $(CYGPATH_W) '$(srcdir)/bunny.C'; fi`
 
 papicheck-papicheck.o: papicheck.C
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(papicheck_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT papicheck-papicheck.o -MD -MP -MF $(DEPDIR)/papicheck-papicheck.Tpo -c -o papicheck-papicheck.o `test -f 'papicheck.C' || echo '$(srcdir)/'`papicheck.C

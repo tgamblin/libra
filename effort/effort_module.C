@@ -91,10 +91,11 @@ static double start_time = -1;       /// Start time for system clock.
 static size_t sample_count;          /// Sample count for progress steps
 static regions_t regions;            /// region collection mode (effort, comm, or both)
 
-#ifdef HAVE_LIBPAPI
-static vector<string> metric_names;  /// PAPI metric names only
-static int event_set = PAPI_NULL;    /// PAPI event set.
+static vector<string> metric_names;  /// Mapping from id to metric name (PAPI or otherwise)
 static vector<long long> counters;   /// HW counter value storage for PAPI
+
+#ifdef HAVE_LIBPAPI
+static int event_set = PAPI_NULL;    /// PAPI event set.
 #endif //HAVE_LIBPAPI
 
 
@@ -112,17 +113,15 @@ static string get_wd() {
 
 
 string id_to_metric_name(int id) {
-#ifdef HAVE_LIBPAPI
   if (id < 0) {
     return METRIC_TIME;
-  } else {
+  } else if (id < metric_names.size()) {
     return metric_names[id];
+  } else {
+    ostringstream idstr;
+    idstr << id;
+    return idstr.str();
   }
-#else
-  ostringstream idstr;
-  idstr << id;
-  return idstr.str();
-#endif // HAVE_LIBPAPI
 }
 
 
@@ -298,7 +297,7 @@ void progress_step() {
 
 void record_effort(size_t count, double *counter_values) {
   for (size_t i=0; i < count; i++) {
-    record_metric(Callpath(), Callpath(), METRIC_TIME_ID, counter_values[i]);
+    record_metric(Callpath(), Callpath(), i, counter_values[i]);
   }
 }
 

@@ -12,7 +12,7 @@ def main():
     # Initialize icons.
     mydir = re.sub("/[^/]*$", "", os.path.abspath(__file__))
     icons.addSearchPath(mydir + "/icons")
-    icons.addSearchPath(mydir + "/../share/wavelet/icons")
+    icons.addSearchPath(mydir + "/../share/libra/icons")
 
     icon = icons.get("libra_logo256")
     pixmap = icon.pixmap(icon.actualSize(QSize(512,512)))

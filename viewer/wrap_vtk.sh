@@ -34,7 +34,8 @@ echo $libname > ${init_file}
 #
 # Touch the hints file in case it doesn't exist already.
 #
-touch hints
+HINT_FILE="${SRC_DIR}/hints"
+touch ${HINT_FILE}
 
 #
 # Wrap each of the python files with vtkWrapPython and append its name to the init file
@@ -49,7 +50,7 @@ for file in $@; do
 
     # Wrap only if the h file is newer than the python wrapper file
     if [ ! -e "$file" -o "$hfile" -nt "$file" ]; then
-        cmd="${VTK_WRAP_PYTHON} $hfile hints 1 $file"
+        cmd="${VTK_WRAP_PYTHON} $hfile ${HINT_FILE} 1 $file"
         echo $cmd
         $cmd || (echo "Error wrapping $hfile."; exit 1)
     fi

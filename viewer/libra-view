@@ -20,7 +20,7 @@ def main():
     # Initialize icons.
     mydir = re.sub("/[^/]*$", "", os.path.abspath(__file__))
     icons.addSearchPath(mydir + "/icons")
-    icons.addSearchPath(mydir + "/../share/wavelet/icons")
+    icons.addSearchPath(mydir + "/../share/libra/icons")
     
     app = QApplication(sys.argv)
     main = QMainWindow()

@@ -43,6 +43,7 @@ parezwtest_SOURCES = parezwtest.C
 parspeedbench_SOURCES = parspeedbench.C
 
 bunny_SOURCES = bunny.C
+bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
 bunny_LDADD = ../effort/libmanual-effort.la
 
 #
