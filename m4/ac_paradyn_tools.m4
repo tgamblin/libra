@@ -73,6 +73,10 @@ AC_DEFUN([AC_PARADYN_TOOLS],
    if test "x$have_symtabAPI" != xno; then have_symtabAPI=yes; fi
    if test "x$have_stackwalk" != xno; then have_stackwalk=yes; fi
   ],
-  [echo "path to ParaDyn tools not provided."])
+  [echo "path to ParaDyn tools not provided."
+   have_common=no
+   have_symtabAPI=no
+   have_stackwalk=no
+  ])
 ])
 

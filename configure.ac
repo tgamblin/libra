@@ -62,7 +62,8 @@ else
    AC_MSG_NOTICE([Couldn't find SWIG.  Will not be able to regenerate pyeffort wrappings.])
 fi
 
-if [[ "x$have_python" = xyes -a "x$HAVE_PYMOD_PYQT4" = xyes -a "x$HAVE_PYMOD_NUMPY" = xyes -a "x$have_vtk" = xyes ]]; then
+if [[ "x$have_python" = xyes -a "x$HAVE_PYMOD_PYQT4" = xyes -a \
+      "x$HAVE_PYMOD_NUMPY" = xyes -a "x$have_vtk" = xyes ]]; then
    build_viewer=yes
 else
    AC_MSG_NOTICE([Building without viewer.])
@@ -101,10 +102,12 @@ if [[ "x$have_mpi" = xyes -a "x$have_stackwalk" = xyes ]]; then
     else
         pmpi_effort=no
     fi
-
-    AM_CONDITIONAL([PMPI_EFFORT],  [test "x$pmpi_effort" = xyes])
-    AM_CONDITIONAL([PNMPI_EFFORT], [test "x$have_pnmpi" = xyes])
+else
+    pmpi_effort=no
+    have_pnmpi=no
 fi
+AM_CONDITIONAL([PMPI_EFFORT],  [test "x$pmpi_effort" = xyes])
+AM_CONDITIONAL([PNMPI_EFFORT], [test "x$have_pnmpi" = xyes])
 
 
 # If this is provided, use PMPI bindings instead of MPI bindings.  
@@ -135,7 +138,7 @@ echo "  VTK ............................................ $have_vtk"
 echo "  PAPI ........................................... $have_papi"
 echo "  ParaDyn - Common ............................... $have_common"
 echo "  ParaDyn - SymtabAPI ............................ $have_symtabAPI"
-echo "  ParaDyn - Stacwalker ........................... $have_stackwalk"
+echo "  ParaDyn - Stakcwalker .......................... $have_stackwalk"
 echo
 echo "Python Support:"
 echo "  Python Interpreter ............................. $have_python"
