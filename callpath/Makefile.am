@@ -19,7 +19,7 @@ include_HEADERS = \
 	Callpath.h \
 	CallpathRuntime.h
 
-INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)
+INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 
 #
 # Below section builds a PnMPI module to trace callpaths using
