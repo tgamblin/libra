@@ -3,7 +3,7 @@
 # This is a sample configure script for BGL compute nodes.
 # 
 
-./configure \
+../configure \
     CXX=mpicxx \
     CXXFLAGS="-g3 -O3 -Wall -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK" \
     --prefix=${HOME}/opt/libra/bgl_cnk \

@@ -4,7 +4,7 @@
 # For a PowerBook G4.
 # 
 
-./configure \
+../configure \
     CXX=mpicxx \
     CPPFLAGS="-g3 -O3 -Wall -DVTK_EXCLUDE_STRSTREAM_HEADERS" \
     --with-boost="/opt/local" \

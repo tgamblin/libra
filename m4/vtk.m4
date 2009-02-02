@@ -36,6 +36,7 @@ AC_DEFUN([AC_PATH_VTK],
             # in case user wrote --with-vtk=yes
             with_vtk="/usr/local"
         fi
+
         if [[ $with_vtk != "no" ]]; then
             VTK_PREFIX="$with_vtk"
             AC_CHECK_FILE([$VTK_PREFIX/include/vtk$vtk_suffix/vtkCommonInstantiator.h], [vtkFound="OK"])
@@ -122,6 +123,8 @@ AC_DEFUN([AC_PATH_VTK],
                AC_SUBST(VTK_WRAP_PYTHON)
                AC_SUBST(VTK_WRAP_PYTHON_INIT)
            fi
+       else
+           $3
        fi
 ])
 

@@ -3,7 +3,7 @@
 # This is a sample configure script for the BGL front-end nodes.
 # 
 
-./configure \
+../configure \
     CXX=g++ \
     CXXFLAGS="-g3 -O3" \
     --prefix=${HOME}/opt/libra/sles_9_ppc64 \
