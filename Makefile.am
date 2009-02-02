@@ -10,9 +10,10 @@ include_HEADERS=libra-config.h
 DISTCLEANFILES = libra-config.h _configs.sed
 
 dist_noinst_SCRIPTS = \
-	do_configure_atlas \
-	do_configure_bgl \
-	do_configure_bgl_fen
+	build/do_configure_atlas \
+	build/do_configure_bgl \
+	build/do_configure_bgl_fen \
+	build/do_configure_bgp
 
 EXTRA_DIST = LICENSE README
 
