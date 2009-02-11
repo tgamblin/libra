@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# This is a sample configure script for BGL compute nodes.
+# 
+
+../configure \
+    CXX=mpicxx.gnu \
+    CPPFLAGS="-DMPICH_IGNORE_CXX_SEEK" \
+    CXXFLAGS="-g -O3 -Wall -fno-omit-frame-pointer" \
+    LDFLAGS="-shared" \
+    --host=powerpc-bgp-linux-gnu \
+    --prefix=${HOME}/opt/libra/bgp_cnk \
+    --with-paradyn=${HOME}/src/sw/ppc32_bgcompute \
+    --with-boost=${HOME}/opt/boost \
+    --without-vtk \
+    --disable-static
