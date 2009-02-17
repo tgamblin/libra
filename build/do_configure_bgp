@@ -4,13 +4,13 @@
 # 
 
 ../configure \
-    CXX=mpicxx.gnu \
+    CXX=mpicxx \
     CPPFLAGS="-DMPICH_IGNORE_CXX_SEEK" \
-    CXXFLAGS="-g -O3 -Wall -fno-omit-frame-pointer" \
-    LDFLAGS="-shared" \
+    CXXFLAGS="-g -O2 -Wall -fno-omit-frame-pointer" \
+    LDFLAGS="-dynamic" \
     --host=powerpc-bgp-linux-gnu \
     --prefix=${HOME}/opt/libra/bgp_cnk \
     --with-paradyn=${HOME}/src/sw/ppc32_bgcompute \
     --with-boost=${HOME}/opt/boost \
     --without-vtk \
-    --disable-static
+    --disable-shared

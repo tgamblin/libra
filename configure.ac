@@ -16,6 +16,11 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
+# Test whether we're on BlueGene/L and define things in config.h accordingly
+AC_LANG_PUSH([C++])
+AC_DETECT_BLUEGENE
+AC_LANG_POP
+
 # We need the boost matrix class to build this library.
 AX_BOOST_BASE
 

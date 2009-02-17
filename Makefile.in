@@ -41,7 +41,8 @@ DIST_COMMON = README $(am__configure_deps) $(dist_noinst_SCRIPTS) \
 	config/install-sh config/ltmain.sh config/missing \
 	config/py-compile
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_inc_subst.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
+	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
 	$(top_srcdir)/m4/ac_lib_subst.m4 \

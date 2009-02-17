@@ -1,12 +1,12 @@
-dnl
-dnl AC_PARADYN_TOOLS
-dnl  ------------------------------------------------------------------------
-dnl Tests for everything needed for paradyn tools API: dwarf, xml2, symtabAPI,
-dnl and DynStackwalkerAPI.  Sets have_symtab, have_stackwalk if either is found.
-dnl Will also set the following variables for different pieces of the SW API 
-dnl infrastucture:
-dnl have_stackwalk, have_symtabAPI, have_common
-dnl
+#
+# AC_PARADYN_TOOLS
+#  ------------------------------------------------------------------------
+# Tests for everything needed for paradyn tools API: dwarf, xml2, symtabAPI,
+# and DynStackwalkerAPI.  Sets have_symtab, have_stackwalk if either is found.
+# Will also set the following variables for different pieces of the SW API 
+# infrastucture:
+# have_stackwalk, have_symtabAPI, have_common
+#
 AC_DEFUN([AC_PARADYN_TOOLS],
 [
   AC_ARG_WITH(
@@ -32,7 +32,9 @@ AC_DEFUN([AC_PARADYN_TOOLS],
          AC_LIB_XML2([$paradyn_lib])
        fi
 
-       paradyn_headers="-I$paradyn_include"
+       # Adding boost headers here, just in case we need them (current version of
+       # Stackwalker wants them, but Matt tells me it's not a permanent dependence)
+       paradyn_headers="-I$paradyn_include ${BOOST_CPPFLAGS}"
        AC_HEADER_SUBST(stackwalk, [walker.h],   SW,     [$paradyn_headers])
        AC_HEADER_SUBST(symtabAPI, [Symtab.h],   SYMTAB, [$paradyn_headers])
        AC_HEADER_SUBST(common,    [dyntypes.h], COMMON, [$paradyn_headers])
@@ -53,7 +55,14 @@ AC_DEFUN([AC_PARADYN_TOOLS],
        symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
        AC_LIB_SUBST(symtabAPI, _init, SYMTAB, [$paradyn_lib], [$symtab_libs])
 
-       stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
+       # By the third lib in the chain of dependencies here, this is kind of nasty.
+       # Need this if statement for the case where we have common but not symtab.
+       # Consider restructuring this if we get more stackwalk libs.
+       if [[ "x$have_symtabAPI" = xyes ]]; then
+           stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
+       else 
+           stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
+       fi
        AC_LIB_SUBST(stackwalk, _init, SW, [$paradyn_lib], [$stackwalk_libs])         
 
      else

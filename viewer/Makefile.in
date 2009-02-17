@@ -42,7 +42,8 @@ DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_icon_DATA) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) $(python_PYTHON) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_inc_subst.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
+	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
 	$(top_srcdir)/m4/ac_lib_subst.m4 \
@@ -409,9 +410,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  viewer/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  viewer/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  viewer/Makefile
+	  $(AUTOMAKE) --foreign  viewer/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

@@ -20064,6 +20064,128 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
+# Test whether we're on BlueGene/L and define things in config.h accordingly
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifndef __blrts__
+#error "not BlueGene/L"
+#endif /* __blrts__ */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BLUEGENE_L 1
+_ACEOF
+
+
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __linux__
+#include <linux/config.h>
+#endif /* __linux__ */
+#if !(defined(__bgp__) || defined(CONFIG_BGP))
+#error "not BlueGene/P"
+#endif /* !(defined(__bgp__) || defined(CONFIG_BGP)) */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BLUEGENE_P 1
+_ACEOF
+
+
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
 # We need the boost matrix class to build this library.
 
 
@@ -22541,7 +22663,9 @@ fi
 
        fi
 
-       paradyn_headers="-I$paradyn_include"
+       # Adding boost headers here, just in case we need them (current version of
+       # Stackwalker wants them, but Matt tells me it's not a permanent dependence)
+       paradyn_headers="-I$paradyn_include ${BOOST_CPPFLAGS}"
 
   SW_CPPFLAGS="$paradyn_headers"
   OLD_CPPFLAGS="$CPPFLAGS"
@@ -23379,7 +23503,14 @@ fi
   LDFLAGS="$OLD_LDFLAGS"
 
 
-       stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
+       # By the third lib in the chain of dependencies here, this is kind of nasty.
+       # Need this if statement for the case where we have common but not symtab.
+       # Consider restructuring this if we get more stackwalk libs.
+       if [ "x$have_symtabAPI" = xyes ]; then
+           stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
+       else
+           stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
+       fi
 
   if test "x$paradyn_lib" != x; then
     SW_LDFLAGS="-L$paradyn_lib"

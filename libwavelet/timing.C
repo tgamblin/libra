@@ -5,7 +5,7 @@
 #endif //HAVE_CONFIG_H
 
 
-#ifdef __blrts__
+#if defined(BLUEGENE_L)
 // -------------------------------------------------------- //
 // Timing code for BlueGene/L
 // -------------------------------------------------------- //
@@ -25,6 +25,46 @@ static double get_ns_per_cycle() {
 timing_t get_time_ns () {
   static double ns_per_cycle = get_ns_per_cycle();
   return (timing_t)(ns_per_cycle * rts_get_timebase());
+}
+
+
+#elif defined(BLUEGENE_P)
+// -------------------------------------------------------- //
+// Timing code for BlueGene/P
+// -------------------------------------------------------- //
+#define SPRN_TBRL         0x10C        // Time Base Read Lower Register (user & sup R/O)
+#define SPRN_TBRU         0x10D        // Time Base Read Upper Register (user & sup R/O)
+#define BGP_NS_PER_CYCLE  (1.0/0.85)   // Nanoseconds per cycle on BGP (850Mhz clock)
+
+#define _bgp_mfspr(SPRN) ({ \
+   unsigned int tmp; \
+   do { \
+      asm volatile ("mfspr %0,%1" : "=&r" (tmp) : "i" (SPRN) : "memory" ); \
+   } while(0); \
+   tmp; \
+})
+
+union bgp_time_reg {
+  unsigned int ul[2];
+  unsigned long long ull;
+};
+
+static inline unsigned long long timebase() {
+  bgp_time_reg reg;
+  unsigned int utmp;
+  
+  do {
+    utmp      = _bgp_mfspr(SPRN_TBRU);
+    reg.ul[1] = _bgp_mfspr(SPRN_TBRL);
+    reg.ul[0] = _bgp_mfspr(SPRN_TBRU);
+  }
+  while( utmp != reg.ul[0] );
+  
+  return reg.ull;
+}
+
+timing_t get_time_ns() {
+  return BGP_NS_PER_CYCLE * timebase();
 }
 
 

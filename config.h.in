@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if we're compiling for a BlueGene/L system */
+#undef BLUEGENE_L
+
+/* Define if we're compiling for a BlueGene/P system */
+#undef BLUEGENE_P
+
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 

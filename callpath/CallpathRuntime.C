@@ -8,10 +8,10 @@ using namespace std;
 using namespace Dyninst;
 using namespace Dyninst::Stackwalker;
 
-#ifndef __blrts__
+#ifdef HAVE_SYMTAB
 #include "AddrLookup.h"
 using namespace Dyninst::SymtabAPI;
-#endif // __blrts__
+#endif // HAVE_SYMTAB
 
 CallpathRuntime::CallpathRuntime()
   : walker(Walker::newWalker()), 
@@ -57,10 +57,10 @@ Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
 
     Dyninst::Offset offset;
 
-#ifndef __blrts__
+#ifdef HAVE_SYMTAB
     void *symtab;
     if (!swalk[i].getLibOffset(temp_modules[i], offset, symtab)) 
-#endif // __blrts__
+#endif // HAVE_SYMTAB
     {
       temp_modules[i] = "[unknown module]";
       offset = swalk[i].getRA();

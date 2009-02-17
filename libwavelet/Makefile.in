@@ -47,7 +47,8 @@ subdir = libwavelet
 DIST_COMMON = $(am__include_HEADERS_DIST) $(dist_noinst_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_inc_subst.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
+	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
 	$(top_srcdir)/m4/ac_lib_subst.m4 \
@@ -330,9 +331,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  libwavelet/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  libwavelet/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  libwavelet/Makefile
+	  $(AUTOMAKE) --foreign  libwavelet/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
