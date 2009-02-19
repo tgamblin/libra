@@ -39,6 +39,9 @@ formal_re = re.compile(
     "(\[.*\])?\s*$"                # Array type (works for multidimensions b/c it's greedy)
     )
 
+# Fortran wrapper suffix
+f_wrap_suffix = "_fortran_wrapper"
+
 # Map from function name to declaration created from mpi.h.
 mpi_functions = {}
 
@@ -55,7 +58,10 @@ class Formal:
         self.name = name
         self.array_type = array_type
 
-    def __str__(self):
+    def forFortran(self):
+        return "MPI_Fint *%s" % self.name
+
+    def forC(self):
         if not self.type:
             return self.name  # special case for '...'
         else:
@@ -64,6 +70,9 @@ class Formal:
             if not type.endswith("*"): 
                 type += ' '
             return "%s%s%s" % (type, self.name, arr)
+
+    def __str__(self):
+        return self.forC()
 
 
 class Declaration:
@@ -85,13 +94,24 @@ class Declaration:
         return self.type
 
     def argTypeList(self):
-        return "(" + ", ".join(map(str, self.arg_list)) + ")"
+        return "(" + ", ".join(map(Formal.forC, self.arg_list)) + ")"
+
+    def fortranArgTypeList(self):
+        return "(" + ", ".join(map(Formal.forFortran, self.arg_list)) + ", MPI_Fint *ierr)"
 
     def argList(self):
         return "(" + ", ".join([arg.name for arg in self]) + ")"
 
+    def fortranArgList(self):
+        return "(" + ", ".join([arg.name for arg in self]) + ", ierr)"
+
     def prototype(self):
         return "%s %s%s" % (self.retType(), self.name, self.argTypeList())
+    
+    def fortranPrototype(self, name=None):
+        if not name: name = self.name
+        return "void %s%s" % (name, self.fortranArgTypeList())
+    
 
 def enumerate_mpi_declarations(mpicc = "mpicc"):
     """ Invokes mpicc's C preprocessor on a C file that includes mpi.h.
@@ -286,9 +306,47 @@ def foreachfn(out, scope, args, children):
         for child in children:
             child.execute(out, scope)
 
+
+def write_c_wrapper(out, decl, write_body):
+    out.write(decl.prototype())
+    out.write("\n { \n")
+    out.write("    int return_val = 1;\n")
+
+    write_body(out)
+
+    out.write("  return return_val;\n")
+    out.write(" }\n\n")
+
+
+def write_fortran_delegation(out, decl, binding):
+    """Outputs a wrapper for a particular fortran binding that delegates to the
+       primary Fortran wrapper.
+    """
+    out.write(decl.fortranPrototype(binding))
+    out.write("\n { \n")
+    out.write("    %s%s;\n" % (decl.name + f_wrap_suffix, decl.fortranArgList()))
+    out.write(" }\n\n")
+    
+
+def write_fortran_wrappers(out, decl):
+    """Writes primary fortran wrapper that handles arg translation.
+       Also outputs bindings for this wrapper for different types of fortran compilers.
+    """
+    
+    out.write(decl.fortranPrototype(decl.name + f_wrap_suffix))
+    out.write("\n { \n")
+    out.write("    // body\n")
+    out.write(" }\n\n")
+    
+    write_fortran_delegation(out, decl, decl.name.upper())
+    write_fortran_delegation(out, decl, decl.name.lower())
+    write_fortran_delegation(out, decl, decl.name.lower() + "_")
+    write_fortran_delegation(out, decl, decl.name.lower() + "__")
+
+
 @macro
 def fn(out, scope, args, children):
-    """"Iterate over listed functions and generate skeleton too."""
+    """Iterate over listed functions and generate skeleton too."""
     fn_var = args[0]
     for fn_name in args[1:]:
         if not fn_name in mpi_functions:
@@ -300,17 +358,15 @@ def fn(out, scope, args, children):
         scope[fn_var] = fn_name
         scope.include_decl(fn)
         scope["return_val"] = return_val
-        scope["callfn"] = "%s = P%s%s;" % (return_val, decl.name, decl.argList())
+        scope["callfn"] = "%s = P%s%s;" % (return_val, fn.name, fn.argList())
         
-        out.write(fn.prototype())
-        out.write("\n { \n")
-        out.write("    int return_val = 1;\n")
+        def write_body(out):
+            for child in children:
+                child.execute(out, scope)
 
-        for child in children:
-            child.execute(out, scope)
-
-        out.write("  return return_val;\n")
-        out.write(" }\n\n")
+        write_c_wrapper(out, fn, write_body)
+        write_fortran_wrappers(out, fn)
+        
 
 @macro
 def forallfn(out, scope, args, children):
@@ -319,7 +375,7 @@ def forallfn(out, scope, args, children):
 
 @macro
 def fnall(out, scope, args, children):
-    """"Iterate over all but listed functions and generate skeleton too."""
+    """Iterate over all but listed functions and generate skeleton too."""
     fn(out, scope, [args[0]] + all_but(args[1:]), children)
 
 
