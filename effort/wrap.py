@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 #
-# Usage: wrap.py [-c mpicc_name] [-o file] wrapper.w [...]
-#
-# Python script for creating PMPI wrappers. Roughly follows the syntax of 
-# the Argonne PMPI wrapper generator, with some enhancements.
+# Usage: wrap.py [-fg] [-c mpicc_name] [-o file] wrapper.w [...]"
+#   Python script for creating PMPI wrappers. Roughly follows the syntax of "
+#   the Argonne PMPI wrapper generator, with some enhancements."
+# Options:"
+#   -f        Generate fortran wrappers in addition to C wrappers."
+#   -g        Generate reentry guards around wrapper functions."
+#   -c exe    Provide name of MPI compiler (for parsing mpi.h).  Default is mpicc."
+#   -o file   Send output to a file instead of stdout."
 #
 # by Todd Gamblin
 #
@@ -339,7 +343,7 @@ def write_c_wrapper(out, decl, return_val, write_body):
     out.write(" { \n")
     if output_guards:
         out.write("    if (in_wrapper) return P%s%s;\n" % (decl.name, decl.argList()))
-        out.write("    in_wrapper = 1;")
+        out.write("    in_wrapper = 1;\n")
     out.write("    int %s = 0;\n" % return_val)
 
     write_body(out)
@@ -405,6 +409,7 @@ class FortranDelegation:
         out.write("%s(%s);\n" % (call, ", ".join(self.mpich_actuals)))
         out.write("#else /* MPI-2 safe call */\n")
         out.write("\n".join(self.temps))
+        out.write("\n")
         out.write("\n".join(self.copies))
         out.write("\n")
         out.write("%s(%s);\n" % (call, ", ".join(self.actuals)))
@@ -448,8 +453,8 @@ def write_fortran_wrappers(out, decl, return_val):
             else:
                 # Non-ptr, non-arr handles need to be converted with MPI_Blah_f2c
                 # No special case for MPI_Status here because MPI_Statuses are never passed by value.
-                call.addActualMPI2("%s_f2c(*(%s))" % (conversion_prefix(arg.type), arg.name))
-                call.addActualMPICH("(%s)(*(%s))" % (arg.type, arg.name))
+                call.addActualMPI2("%s_f2c(*%s)" % (conversion_prefix(arg.type), arg.name))
+                call.addActualMPICH("(%s)(*%s)" % (arg.type, arg.name))
 
         else:
             if not arg.isHandle():
@@ -470,8 +475,8 @@ def write_fortran_wrappers(out, decl, return_val):
                         call.addCopy("%s_f2c(%s, &%s);"  % (conv, arg.name, temp))
                         call.addWriteback("%s_c2f(&%s, %s);" % (conv, temp, arg.name))
                     else:
-                        call.addCopy("%s = %s_f2c(*(%s));"  % (temp, conv, arg.name))
-                        call.addWriteback("*(%s) = %s_c2f(%s);" % (arg.name, conv, temp))
+                        call.addCopy("%s = %s_f2c(*%s);"  % (temp, conv, arg.name))
+                        call.addWriteback("*%s = %s_c2f(%s);" % (arg.name, conv, temp))
                 else:
                     # Make a temporary variable for the array
                     temp_arr_type = "%s*" % arg.type
@@ -488,10 +493,12 @@ def write_fortran_wrappers(out, decl, return_val):
                     # Generate the call surrounded by temp array allocation, copies, writebacks, and temp free
                     count = "*(%s)" % arg.countParam().name
                     call.addCopy("%s = (%s)malloc(sizeof(%s) * %s);" %
-                                         (temp, temp_arr_type, arg.type, count))
-                    call.addCopy("for (int i=0; i < %s; i++) %s;" % (count, copy))
+                                 (temp, temp_arr_type, arg.type, count))
+                    call.addCopy("for (int i=0; i < %s; i++)" % count)
+                    call.addCopy("%s;" % copy)
                     call.addActualMPI2(temp)
-                    call.addWriteback("for (int i=0; i < %s; i++) %s;" % (count, writeback))
+                    call.addWriteback("for (int i=0; i < %s; i++)" % count)
+                    call.addWriteback("%s;" % writeback)
                     call.addWriteback("free(%s);" % temp)
             
     call.write(out)
@@ -746,28 +753,35 @@ fileno = 0
 lexer = Lexer("{{","}}")
 
 # Start with some headers and weak symbol definitions.
-output.write("""
+output.write('''
 #include <mpi.h>
 #include <stdio.h>
 
 #ifdef __cplusplus
-extern \"C\" {
+extern "C" {
 #endif /* __cplusplus */
+
+#pragma weak pmpi_init_
+#pragma weak pmpi_init   = pmpi_init_
+#pragma weak PMPI_INIT   = pmpi_init_
+#pragma weak pmpi_init__ = pmpi_init_
+
+    /* This is the default implementation of pmpi_init_, but this will only be executed
+     * if none of the weak bindings declared above are found.
+     */
     void pmpi_init_(MPI_Fint *ierr) {
-        fprintf(stderr, \"Proper fortran binding for MPI_Init() not present!\\n\");
+        fprintf(stderr, "Proper fortran binding for MPI_Init() not present!\\n");
     }
     void pmpi_init(MPI_Fint *ierr);
     void PMPI_INIT(MPI_Fint *ierr);
     void pmpi_init__(MPI_Fint *ierr);
+    
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 static int init_was_fortran = 0;
-#pragma weak pmpi_init   = pmpi_init_
-#pragma weak PMPI_INIT   = pmpi_init_
-#pragma weak pmpi_init__ = pmpi_init_
-""")
+''')
 
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
