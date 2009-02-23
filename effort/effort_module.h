@@ -35,7 +35,7 @@ extern "C" {
   void effort_preinit();
 
   /// To be called after MPI is inited but before other MPI calls
-  void effort_init();
+  void effort_postinit();
 
   /// To be called from MPI_Pcontrol.
   void effort_pcontrol(int level);

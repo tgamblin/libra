@@ -60,6 +60,9 @@ public:
   /// pointer, not a module string.  module will require translation
   /// before it is usable.
   static FrameId unpack(void *buf, int bufsize, int *position, MPI_Comm comm);
+
+  /// Get full set of modules seen in frames so far.
+  static module_set& modules();
 #endif // LIBRA_HAVE_MPI
   
   
@@ -68,7 +71,6 @@ private:
   friend class CallpathRuntime;
   friend class MPICallpath;
 
-  static module_set modules;
   static const std::string *module_for(const std::string& name);
 
   FrameId() : module(NULL), offset(0) { }  

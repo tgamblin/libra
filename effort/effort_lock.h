@@ -12,22 +12,25 @@ namespace effort {
   public:
     /// On construct, mark that we are effort code.
     effort_lock() {
-      lock = true;
+      lock() = true;
     }
     
     /// On destory, mark that we've left the effort library.
     ~effort_lock() {
-      lock = false;
+      lock() = false;
     }
     
     /// Use to test whether we're in an effort region or not.
     static bool in_effort() {
-      return lock;
+      return lock();
     }
     
   private:
     ///
-    static bool lock;
+    static bool& lock() {
+      static bool l = false;
+      return l;
+    }
   };
   
 } // namespace

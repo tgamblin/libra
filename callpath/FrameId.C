@@ -13,10 +13,24 @@
 using namespace wavelet;
 using namespace std;
 
-//----------------------------------------------------//
-// Set of unique module names (string pointers)
-//----------------------------------------------------//
-module_set FrameId::modules;
+//---------------------------------------------------------------//
+// Lookup in static set of unique module names (string pointers)
+//---------------------------------------------------------------//
+module_set& FrameId::modules() {
+  static module_set mods;
+  return mods;
+}
+
+const string *FrameId::module_for(const string& name) {
+  module_set& mods = modules();
+  module_set::iterator m = mods.find(&name);
+  if (m == mods.end()) {
+    m = mods.insert(new string(name)).first;
+  }
+  return *m;
+}
+
+
 
 FrameId::FrameId(const FrameId& other) 
   : module(other.module), offset(other.offset) { }
@@ -45,13 +59,6 @@ ostream& operator<<(ostream& out, const FrameId& fid) {
   return out;
 }
 
-const string *FrameId::module_for(const string& name) {
-  module_set::iterator m = modules.find(&name);
-  if (m == modules.end()) {
-    m = modules.insert(new string(name)).first;
-  }
-  return *m;
-}
 
 FrameId FrameId::create(const string& name, uintptr_t offset) {
   return FrameId(module_for(name), offset);

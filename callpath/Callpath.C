@@ -21,8 +21,11 @@ using namespace wavelet;
 
 
 typedef set<const pathvector*, pathvector_lt<less<FrameId> > > callpath_set;
-static callpath_set paths;
 
+static callpath_set& paths() {
+  static callpath_set pathset;
+  return pathset;
+}
 
 Callpath::Callpath(const pathvector *p) : path(p) { }
 
@@ -31,8 +34,8 @@ Callpath::Callpath(const Callpath& other) : path(other.path) { }
 
 
 Callpath Callpath::create(const pathvector *path) {
-  callpath_set::iterator u = paths.find(path);
-  if (u == paths.end()) {
+  callpath_set::iterator u = paths().find(path);
+  if (u == paths().end()) {
     // if the vector isn't in there already then create a copy to add
     pathvector *temp = new pathvector(*path);
 
@@ -40,7 +43,7 @@ Callpath Callpath::create(const pathvector *path) {
     for (pathvector::iterator i=temp->begin(); i != temp->end(); i++) {
       i->module = FrameId::module_for(*i->module);
     }
-    u = paths.insert(temp).first;
+    u = paths().insert(temp).first;
   }
   return Callpath(*u);
 }
@@ -57,7 +60,7 @@ Callpath& Callpath::operator=(const Callpath& other) {
 size_t Callpath::packed_size_modules(MPI_Comm comm) {
   size_t pack_size = 0;
   pack_size += mpi_packed_size(1, MPI_INT, comm);  // number of modules
-  for (module_set::iterator i=FrameId::modules.begin(); i != FrameId::modules.end(); i++) {
+  for (module_set::iterator i=FrameId::modules().begin(); i != FrameId::modules().end(); i++) {
     pack_size += mpi_packed_size(1, MPI_UINTPTR_T, comm);         // local addr of module string
     pack_size += mpi_packed_size(1, MPI_INT, comm);              // length
     pack_size += mpi_packed_size((*i)->size(), MPI_CHAR, comm);  // characters in modulename.
@@ -67,9 +70,9 @@ size_t Callpath::packed_size_modules(MPI_Comm comm) {
 
 
 void Callpath::pack_modules(void *buf, int bufsize, int *position, MPI_Comm comm) {
-  int len = FrameId::modules.size();
+  int len = FrameId::modules().size();
   PMPI_Pack(&len, 1, MPI_INT, buf, bufsize, position, comm);
-  for (module_set::iterator i=FrameId::modules.begin(); i != FrameId::modules.end(); i++) {
+  for (module_set::iterator i=FrameId::modules().begin(); i != FrameId::modules().end(); i++) {
     // local addr of module string
     PMPI_Pack(const_cast<string**>(&(*i)), 1, MPI_UINTPTR_T, buf, bufsize, position, comm);
 
@@ -230,9 +233,9 @@ Callpath Callpath::read_in(istream& in) {
 }
 
 void Callpath::dump(ostream& out) {
-  out << paths.size() << " total paths" << endl;
+  out << paths().size() << " total paths" << endl;
 
-  for (callpath_set::iterator i=paths.begin(); i != paths.end(); i++) {
+  for (callpath_set::iterator i=paths().begin(); i != paths().end(); i++) {
     out << Callpath(*i) << endl;
   }
 }

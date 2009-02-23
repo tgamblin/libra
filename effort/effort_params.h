@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include "effort_key.h"
+#include "env_config.h"
 
 namespace effort {
 
@@ -35,6 +36,10 @@ namespace effort {
         regions("effort"),
         sampling(1)
     { /* constructor just inits things. */ }
+
+
+    /// Returns a config_desc array suitable for passing to env_get_configuration()
+    config_desc *get_config_arguments();
   };
 
   std::ostream& operator<<(std::ostream& out, const effort_params& params);

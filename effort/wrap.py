@@ -176,18 +176,22 @@ class Declaration:
     def argTypeList(self):
         return "(" + ", ".join(map(Param.cFormal, self.args)) + ")"
 
+    def argsNoEllipsis(self):
+        return filter(lambda arg: arg.name != "...", self.args)
+
     def fortranArgTypeList(self):
-        if self.name == "MPI_Pcontrol":
-            argTypeList = self.args[0].fortranFormal()
-        else:
-            argTypeList = ", ".join(map(Param.fortranFormal, self.args))
-        return "(" + argTypeList + ", MPI_Fint *ierr)"
+        formals = map(Param.fortranFormal, self.argsNoEllipsis())
+        if self.name == "MPI_Init": formals = []
+        return "(%s)" % ", ".join(formals + ["MPI_Fint *ierr"])
 
     def argList(self):
-        return "(" + ", ".join([arg.name for arg in self]) + ")"
+        names = [arg.name for arg in self.argsNoEllipsis()]
+        return "(%s)" % ", ".join(names)
 
     def fortranArgList(self):
-        return "(" + ", ".join([arg.name for arg in self]) + ", ierr)"
+        names = [arg.name for arg in self.argsNoEllipsis()]
+        if self.name == "MPI_Init": names = []
+        return "(%s)" % ", ".join(names + ["ierr"])
 
     def prototype(self):
         return "%s %s%s" % (self.retType(), self.name, self.argTypeList())
@@ -330,29 +334,29 @@ class Lexer:
             yield Token(TEXT, last)
 
 
-def write_c_wrapper(out, decl, write_body):
+def write_c_wrapper(out, decl, return_val, write_body):
     out.write(decl.prototype())
     out.write(" { \n")
     if output_guards:
         out.write("    if (in_wrapper) return P%s%s;\n" % (decl.name, decl.argList()))
         out.write("    in_wrapper = 1;")
-    out.write("    int return_val = 0;\n")
+    out.write("    int %s = 0;\n" % return_val)
 
     write_body(out)
 
     if output_guards:
         out.write("    in_wrapper = 0;\n")
-    out.write("    return return_val;\n")
+    out.write("    return %s;\n" % return_val)
     out.write("}\n\n")
 
 
-def write_fortran_binding(out, decl, binding):
+def write_fortran_binding(out, decl, delegate_name, binding):
     """Outputs a wrapper for a particular fortran binding that delegates to the
        primary Fortran wrapper.
     """
     out.write(decl.fortranPrototype(binding))
     out.write(" { \n")
-    out.write("    %s%s;\n" % (decl.name + f_wrap_suffix, decl.fortranArgList()))
+    out.write("    %s%s;\n" % (delegate_name, decl.fortranArgList()))
     out.write("}\n\n")
     
 
@@ -361,74 +365,96 @@ class FortranDelegation:
        storage for local temporary variables, copies of parameters, callsites for MPI-1 and
        MPI-2, and writebacks to local pointer types.
     """
-    def __init__(self, fn_name):
+    def __init__(self, fn_name, return_val):
         self.fn_name = fn_name
+        self.return_val = return_val
         self.locals = []
         self.pre = []
         self.post = []
+
+        self.temps = []
+        self.copies = []
+        self.writebacks = []
         self.actuals = []
         self.mpich_actuals = []
 
-    def addLocal(self, type, name):
-        self.locals.append("    %s %s;" % (type, name))
-
-    def addArrayLocal(self, type, name, sizeName):
-        pass
+    def addTemp(self, type, name):
+        self.temps.append("    %s %s;" % (type, name))
 
     def addActual(self, actual):
         self.actuals.append(actual)
+        self.mpich_actuals.append(actual)
         
     def addActualMPICH(self, actual):
         self.mpich_actuals.append(actual)
-    
-    def addPreStatement(self, stmt):
-        self.pre.append("    %s" % stmt)
 
-    def addPostStatement(self, stmt):
-        self.post.append("    %s" % stmt)
+    def addActualMPI2(self, actual):
+        self.actuals.append(actual)
+
+    def addWriteback(self, stmt):
+        self.writebacks.append("    %s" % stmt)
+
+    def addCopy(self, stmt):
+        self.copies.append("    %s" % stmt)
 
     def write(self, out):
-        call = "    int return_val = %s" % self.fn_name
+        call = "    int %s = %s" % (self.return_val, self.fn_name)
         assert len(self.actuals) == len(self.mpich_actuals)
 
         out.write("#if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */\n")
         out.write("%s(%s);\n" % (call, ", ".join(self.mpich_actuals)))
         out.write("#else /* MPI-2 safe call */\n")
-        out.write("\n".join(self.locals))
-        out.write("\n".join(self.pre))
+        out.write("\n".join(self.temps))
+        out.write("\n".join(self.copies))
         out.write("\n")
         out.write("%s(%s);\n" % (call, ", ".join(self.actuals)))
-        out.write("\n".join(self.post))
+        out.write("\n".join(self.writebacks))
         out.write("\n")
         out.write("#endif /* MPICH test */\n")
 
 
-def write_fortran_wrappers(out, decl):
+def write_fortran_wrappers(out, decl, return_val):
     """Writes primary fortran wrapper that handles arg translation.
        Also outputs bindings for this wrapper for different types of fortran compilers.
     """
-    out.write(decl.fortranPrototype(decl.name + f_wrap_suffix))
+    delegate_name = decl.name + f_wrap_suffix
+    out.write(decl.fortranPrototype(delegate_name))
     out.write(" { \n")
 
-    call = FortranDelegation(decl.name)
+    call = FortranDelegation(decl.name, return_val)
+    
+    if decl.name == "MPI_Init":
+        out.write("    int argc = 0;\n");
+        out.write("    char ** argv = NULL;\n");
+        out.write("    init_was_fortran = 1;\n");
+        
+        call.addActual("&argc");
+        call.addActual("&argv");
+        
+        call.write(out)
+        out.write("    *ierr = %s;\n" % return_val)
+        out.write("}\n\n")
+        return
+
     for arg in decl.args:
+        if arg.name == "...":   # skip ellipsis
+            continue
+    
         if not (arg.pointers or arg.array):
             if not arg.isHandle():
                 # These are pass-by-value arguments, so just deref and pass thru
                 dereferenced = "*(%s)" % arg.name
                 call.addActual(dereferenced)
-                call.addActualMPICH(dereferenced)
             else:
                 # Non-ptr, non-arr handles need to be converted with MPI_Blah_f2c
                 # No special case for MPI_Status here because MPI_Statuses are never passed by value.
-                call.addActual("%s_f2c(*(%s))" % (conversion_prefix(arg.type), arg.name))
+                call.addActualMPI2("%s_f2c(*(%s))" % (conversion_prefix(arg.type), arg.name))
                 call.addActualMPICH("(%s)(*(%s))" % (arg.type, arg.name))
 
         else:
             if not arg.isHandle():
                 # Non-MPI handle pointer types can be passed w/o dereferencing
                 call.addActual(arg.name)
-                call.addActualMPICH(arg.name)
             else:
                 # For MPI-1, assume ints, cross fingers, and pass things straight through.
                 call.addActualMPICH("(%s*)%s" % (arg.type, arg.name))
@@ -437,20 +463,20 @@ def write_fortran_wrappers(out, decl):
 
                 # For MPI-2, other pointer and array types need temporaries and special conversions.
                 if not arg.isHandleArray():
-                    call.addLocal(arg.type, temp)
-                    call.addActual("&%s" % temp)
+                    call.addTemp(arg.type, temp)
+                    call.addActualMPI2("&%s" % temp)
 
                     if arg.isStatus():
-                        call.addPreStatement("%s_f2c(%s, &%s);"  % (conv, arg.name, temp))
-                        call.addPostStatement("%s_c2f(&%s, %s);" % (conv, temp, arg.name))
+                        call.addCopy("%s_f2c(%s, &%s);"  % (conv, arg.name, temp))
+                        call.addWriteback("%s_c2f(&%s, %s);" % (conv, temp, arg.name))
                     else:
-                        call.addPreStatement("%s = %s_f2c(*(%s));"  % (temp, conv, arg.name))
-                        call.addPostStatement("*(%s) = %s_c2f(%s);" % (arg.name, conv, temp))
+                        call.addCopy("%s = %s_f2c(*(%s));"  % (temp, conv, arg.name))
+                        call.addWriteback("*(%s) = %s_c2f(%s);" % (arg.name, conv, temp))
                 else:
                     # Make a temporary variable for the array
                     temp_arr_type = "%s*" % arg.type
-                    call.addLocal(temp_arr_type, temp)
-                    
+                    call.addTemp(temp_arr_type, temp)
+                
                     # generate a copy and a writeback statement for this type of handle
                     if arg.isStatus():
                         copy = "    %s_f2c(&%s[i], &%s[i])"  % (conv, arg.name, temp)
@@ -458,26 +484,26 @@ def write_fortran_wrappers(out, decl):
                     else:
                         copy = "    temp_%s[i] = %s_f2c(%s[i])"  % (arg.name, conv, arg.name)
                         writeback = "    %s[i] = %s_c2f(temp_%s[i])" % (arg.name, conv, arg.name)
-                    
+                
                     # Generate the call surrounded by temp array allocation, copies, writebacks, and temp free
                     count = "*(%s)" % arg.countParam().name
-                    call.addPreStatement("%s = (%s)malloc(sizeof(%s) * %s);" %
+                    call.addCopy("%s = (%s)malloc(sizeof(%s) * %s);" %
                                          (temp, temp_arr_type, arg.type, count))
-                    call.addPreStatement("for (int i=0; i < %s; i++) %s;" % (count, copy))
-                    call.addActual(temp)
-                    call.addPostStatement("for (int i=0; i < %s; i++) %s;" % (count, writeback))
-                    call.addPostStatement("free(%s);" % temp)
-                
+                    call.addCopy("for (int i=0; i < %s; i++) %s;" % (count, copy))
+                    call.addActualMPI2(temp)
+                    call.addWriteback("for (int i=0; i < %s; i++) %s;" % (count, writeback))
+                    call.addWriteback("free(%s);" % temp)
+            
     call.write(out)
                     
-    out.write("    *ierr = return_val;\n")
+    out.write("    *ierr = %s;\n" % return_val)
     out.write("}\n\n")
 
     # Write out various bindings that delegate to the main fortran wrapper
-    write_fortran_binding(out, decl, decl.name.upper())
-    write_fortran_binding(out, decl, decl.name.lower())
-    write_fortran_binding(out, decl, decl.name.lower() + "_")
-    write_fortran_binding(out, decl, decl.name.lower() + "__")
+    write_fortran_binding(out, decl, delegate_name, decl.name.upper())
+    write_fortran_binding(out, decl, delegate_name, decl.name.lower())
+    write_fortran_binding(out, decl, delegate_name, decl.name.lower() + "_")
+    write_fortran_binding(out, decl, delegate_name, decl.name.lower() + "__")
 
 
 class Scope:
@@ -558,15 +584,26 @@ def fn(out, scope, args, children):
         scope[fn_var] = fn_name
         scope.include_decl(fn)
         scope["return_val"] = return_val
-        scope["callfn"] = "%s = P%s%s;" % (return_val, fn.name, fn.argList())
+
+        c_call = "%s = P%s%s;" % (return_val, fn.name, fn.argList())
+        scope["callfn"] = c_call
+
+        if fn_name == "MPI_Init":
+            def callfn(out, scope, args, children):
+                out.write("    if (init_was_fortran) {\n")
+                out.write("        pmpi_init_(&return_val);\n")
+                out.write("    } else {\n")
+                out.write("        %s\n" % c_call)
+                out.write("    }\n")
+            scope["callfn"] = callfn
         
         def write_body(out):
             for child in children:
                 child.execute(out, scope)
 
-        write_c_wrapper(out, fn, write_body)
+        write_c_wrapper(out, fn, return_val, write_body)
         if output_fortran_wrappers:
-            write_fortran_wrappers(out, fn)
+            write_fortran_wrappers(out, fn, return_val)
 
 @macro
 def forallfn(out, scope, args, children):
@@ -713,6 +750,22 @@ output.write("#include <mpi.h>\n")
 
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
+
+output.write("static int init_was_fortran = 0;\n")
+output.write("#pragma weak pmpi_init=pmpi_init_\n")
+output.write("#pragma weak PMPI_INIT=pmpi_init_\n")
+output.write("#pragma weak pmpi_init__=pmpi_init_\n\n")
+
+output.write("#ifdef __cplusplus\n")
+output.write("extern \"C\" {\n")
+output.write("#endif /* __cplusplus */\n")
+output.write("    void pmpi_init(MPI_Fint *ierr);\n")
+output.write("    void PMPI_INIT(MPI_Fint *ierr);\n")
+output.write("    void pmpi_init_(MPI_Fint *ierr);\n")
+output.write("    void pmpi_init__(MPI_Fint *ierr);\n")
+output.write("#ifdef __cplusplus\n")
+output.write("}\n")
+output.write("#endif /* __cplusplus */\n")
 
 for filename in args:
     file = open(filename)
