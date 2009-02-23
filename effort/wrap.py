@@ -761,21 +761,32 @@ output.write('''
 extern "C" {
 #endif /* __cplusplus */
 
+#pragma weak pmpi_init
+#pragma weak PMPI_INIT
+#pragma weak pmpi_init__
 #pragma weak pmpi_init_
-#pragma weak pmpi_init   = pmpi_init_
-#pragma weak PMPI_INIT   = pmpi_init_
-#pragma weak pmpi_init__ = pmpi_init_
 
-    /* This is the default implementation of pmpi_init_, but this will only be executed
-     * if none of the weak bindings declared above are found.
+    /* Chained calls to various fortran bindings of pmpi_init, all declared weak.
+     * Linker should fall through these until it finds a suitable fortran binding 
+     * to override one.  If there's no fortran library available, last resort
+     * implementation prints an error.
      */
-    void pmpi_init_(MPI_Fint *ierr) {
+    void pmpi_init(MPI_Fint *ierr) {
         fprintf(stderr, "Proper fortran binding for MPI_Init() not present!\\n");
     }
-    void pmpi_init(MPI_Fint *ierr);
-    void PMPI_INIT(MPI_Fint *ierr);
-    void pmpi_init__(MPI_Fint *ierr);
-    
+
+    void PMPI_INIT(MPI_Fint *ierr) {
+      pmpi_init(ierr);
+    }
+
+    void pmpi_init__(MPI_Fint *ierr) {
+      PMPI_INIT(ierr);
+    }
+
+    void pmpi_init_(MPI_Fint *ierr) {
+      pmpi_init__(ierr);
+    }
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
