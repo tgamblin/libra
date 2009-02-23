@@ -85,11 +85,11 @@ am__DEPENDENCIES_1 =
 @PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PNMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__effort_la_SOURCES_DIST = effort_module.C effort_params.C \
-	effort_key.C effort_data.C effort_lock.C parallel_compressor.C \
+	effort_key.C effort_data.C parallel_compressor.C \
 	synchronize_keys.C env_config.C effort_wrapper.C
 am__objects_1 = effort_module.lo effort_params.lo effort_key.lo \
-	effort_data.lo effort_lock.lo parallel_compressor.lo \
-	synchronize_keys.lo env_config.lo
+	effort_data.lo parallel_compressor.lo synchronize_keys.lo \
+	env_config.lo
 @PNMPI_EFFORT_TRUE@am_effort_la_OBJECTS = $(am__objects_1) \
 @PNMPI_EFFORT_TRUE@	effort_wrapper.lo
 effort_la_OBJECTS = $(am_effort_la_OBJECTS)
@@ -109,7 +109,7 @@ libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libmanual_effort_la_SOURCES_DIST = effort_module.C effort_params.C \
-	effort_key.C effort_data.C effort_lock.C parallel_compressor.C \
+	effort_key.C effort_data.C parallel_compressor.C \
 	synchronize_keys.C env_config.C
 @PMPI_EFFORT_TRUE@am_libmanual_effort_la_OBJECTS = $(am__objects_1)
 libmanual_effort_la_OBJECTS = $(am_libmanual_effort_la_OBJECTS)
@@ -128,7 +128,7 @@ libpcontrol_counter_la_OBJECTS = $(am_libpcontrol_counter_la_OBJECTS)
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libpmpi_effort_la_SOURCES_DIST = effort_module.C effort_params.C \
-	effort_key.C effort_data.C effort_lock.C parallel_compressor.C \
+	effort_key.C effort_data.C parallel_compressor.C \
 	synchronize_keys.C env_config.C effort_wrapper.C
 @PMPI_EFFORT_TRUE@am_libpmpi_effort_la_OBJECTS = $(am__objects_1) \
 @PMPI_EFFORT_TRUE@	effort_wrapper.lo
@@ -350,7 +350,6 @@ include_HEADERS = effort_api.h
 dist_noinst_HEADERS = \
 	effort_data.h \
 	effort_key.h \
-	effort_lock.h \
 	effort_metadata.h \
 	effort_module.h \
 	effort_params.h \
@@ -378,7 +377,6 @@ PMPI_EFFORT_SRCS = effort_module.C \
                  effort_params.C \
 								 effort_key.C \
                  effort_data.C \
-                 effort_lock.C \
 								 parallel_compressor.C \
 						 		 synchronize_keys.C \
 								 env_config.C
@@ -584,7 +582,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_key.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_lock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_metadata.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_params.Plo@am__quote@

@@ -32,7 +32,6 @@ using namespace wavelet;
 #include "callpath_module.h"
 
 #include "effort_data.h"
-#include "effort_lock.h"
 #include "effort_params.h"
 #include "parallel_compressor.h"
 using namespace effort;

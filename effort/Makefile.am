@@ -3,7 +3,6 @@ include_HEADERS = effort_api.h
 dist_noinst_HEADERS = \
 	effort_data.h \
 	effort_key.h \
-	effort_lock.h \
 	effort_metadata.h \
 	effort_module.h \
 	effort_params.h \
@@ -30,7 +29,6 @@ PMPI_EFFORT_SRCS=effort_module.C \
                  effort_params.C \
 								 effort_key.C \
                  effort_data.C \
-                 effort_lock.C \
 								 parallel_compressor.C \
 						 		 synchronize_keys.C \
 								 env_config.C

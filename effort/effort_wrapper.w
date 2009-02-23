@@ -1,12 +1,5 @@
 /* -*- C++ -*- */
-
-#include <iostream>
-using namespace std;
-
 #include "effort_module.h"
-#include "effort_lock.h"
-using namespace effort;
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
