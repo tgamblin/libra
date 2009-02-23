@@ -104,10 +104,13 @@ struct effort_module {
 
   // global initializers
   effort_module() 
-    : cur_effort_type(0), keep_time(true), start_time(-1), working_dir(get_wd()), 
-      init_time(get_time_ns())
+    : cur_effort_type(0)
+    , working_dir(get_wd())
+    , init_time(get_time_ns())
+    , keep_time(true)
+    , start_time(-1)
 #ifdef HAVE_LIBPAPI
-      , event_set(PAPI_NULL) 
+    , event_set(PAPI_NULL) 
 #endif // HAVE_LIBPAPI
   { 
 #ifdef PMPI_EFFORT
@@ -156,7 +159,7 @@ struct effort_module {
   string id_to_metric_name(int id) {
     if (id < 0) {
       return METRIC_TIME;
-    } else if (id < metric_names.size()) {
+    } else if (id < (int)metric_names.size()) {
       return metric_names[id];
     } else {
       ostringstream idstr;

@@ -745,27 +745,32 @@ for decl in enumerate_mpi_declarations(mpicc):
 fileno = 0
 lexer = Lexer("{{","}}")
 
-# Start by including mpi.h
-output.write("#include <mpi.h>\n")
+# Start with some headers and weak symbol definitions.
+output.write("""
+#include <mpi.h>
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern \"C\" {
+#endif /* __cplusplus */
+    void pmpi_init_(MPI_Fint *ierr) {
+        fprintf(stderr, \"Proper fortran binding for MPI_Init() not present!\\n\");
+    }
+    void pmpi_init(MPI_Fint *ierr);
+    void PMPI_INIT(MPI_Fint *ierr);
+    void pmpi_init__(MPI_Fint *ierr);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+static int init_was_fortran = 0;
+#pragma weak pmpi_init   = pmpi_init_
+#pragma weak PMPI_INIT   = pmpi_init_
+#pragma weak pmpi_init__ = pmpi_init_
+""")
 
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
-
-output.write("static int init_was_fortran = 0;\n")
-output.write("#pragma weak pmpi_init=pmpi_init_\n")
-output.write("#pragma weak PMPI_INIT=pmpi_init_\n")
-output.write("#pragma weak pmpi_init__=pmpi_init_\n\n")
-
-output.write("#ifdef __cplusplus\n")
-output.write("extern \"C\" {\n")
-output.write("#endif /* __cplusplus */\n")
-output.write("    void pmpi_init(MPI_Fint *ierr);\n")
-output.write("    void PMPI_INIT(MPI_Fint *ierr);\n")
-output.write("    void pmpi_init_(MPI_Fint *ierr);\n")
-output.write("    void pmpi_init__(MPI_Fint *ierr);\n")
-output.write("#ifdef __cplusplus\n")
-output.write("}\n")
-output.write("#endif /* __cplusplus */\n")
 
 for filename in args:
     file = open(filename)
