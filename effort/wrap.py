@@ -429,80 +429,74 @@ def write_fortran_wrappers(out, decl, return_val):
     call = FortranDelegation(decl.name, return_val)
     
     if decl.name == "MPI_Init":
+        # Use out.write() here so it comes at very beginning of wrapper function
         out.write("    int argc = 0;\n");
         out.write("    char ** argv = NULL;\n");
         out.write("    init_was_fortran = 1;\n");
-        
         call.addActual("&argc");
         call.addActual("&argv");
+    else:
+        for arg in decl.args:
+            if arg.name == "...":   # skip ellipsis
+                continue
         
-        call.write(out)
-        out.write("    *ierr = %s;\n" % return_val)
-        out.write("}\n\n")
-        return
-
-    for arg in decl.args:
-        if arg.name == "...":   # skip ellipsis
-            continue
-    
-        if not (arg.pointers or arg.array):
-            if not arg.isHandle():
-                # These are pass-by-value arguments, so just deref and pass thru
-                dereferenced = "*(%s)" % arg.name
-                call.addActual(dereferenced)
-            else:
-                # Non-ptr, non-arr handles need to be converted with MPI_Blah_f2c
-                # No special case for MPI_Status here because MPI_Statuses are never passed by value.
-                call.addActualMPI2("%s_f2c(*%s)" % (conversion_prefix(arg.type), arg.name))
-                call.addActualMPICH("(%s)(*%s)" % (arg.type, arg.name))
-
-        else:
-            if not arg.isHandle():
-                # Non-MPI handle pointer types can be passed w/o dereferencing
-                call.addActual(arg.name)
-            else:
-                # For MPI-1, assume ints, cross fingers, and pass things straight through.
-                call.addActualMPICH("(%s*)%s" % (arg.type, arg.name))
-                conv = conversion_prefix(arg.type)
-                temp = "temp_%s" % arg.name
-
-                # For MPI-2, other pointer and array types need temporaries and special conversions.
-                if not arg.isHandleArray():
-                    call.addTemp(arg.type, temp)
-                    call.addActualMPI2("&%s" % temp)
-
-                    if arg.isStatus():
-                        call.addCopy("%s_f2c(%s, &%s);"  % (conv, arg.name, temp))
-                        call.addWriteback("%s_c2f(&%s, %s);" % (conv, temp, arg.name))
-                    else:
-                        call.addCopy("%s = %s_f2c(*%s);"  % (temp, conv, arg.name))
-                        call.addWriteback("*%s = %s_c2f(%s);" % (arg.name, conv, temp))
+            if not (arg.pointers or arg.array):
+                if not arg.isHandle():
+                    # These are pass-by-value arguments, so just deref and pass thru
+                    dereferenced = "*(%s)" % arg.name
+                    call.addActual(dereferenced)
                 else:
-                    # Make a temporary variable for the array
-                    temp_arr_type = "%s*" % arg.type
-                    call.addTemp(temp_arr_type, temp)
-                
-                    # generate a copy and a writeback statement for this type of handle
-                    if arg.isStatus():
-                        copy = "    %s_f2c(&%s[i], &%s[i])"  % (conv, arg.name, temp)
-                        writeback = "    %s_c2f(&%s[i], &%s[i])" % (conv, temp, arg.name)
+                    # Non-ptr, non-arr handles need to be converted with MPI_Blah_f2c
+                    # No special case for MPI_Status here because MPI_Statuses are never passed by value.
+                    call.addActualMPI2("%s_f2c(*%s)" % (conversion_prefix(arg.type), arg.name))
+                    call.addActualMPICH("(%s)(*%s)" % (arg.type, arg.name))
+    
+            else:
+                if not arg.isHandle():
+                    # Non-MPI handle pointer types can be passed w/o dereferencing
+                    call.addActual(arg.name)
+                else:
+                    # For MPI-1, assume ints, cross fingers, and pass things straight through.
+                    call.addActualMPICH("(%s*)%s" % (arg.type, arg.name))
+                    conv = conversion_prefix(arg.type)
+                    temp = "temp_%s" % arg.name
+    
+                    # For MPI-2, other pointer and array types need temporaries and special conversions.
+                    if not arg.isHandleArray():
+                        call.addTemp(arg.type, temp)
+                        call.addActualMPI2("&%s" % temp)
+    
+                        if arg.isStatus():
+                            call.addCopy("%s_f2c(%s, &%s);"  % (conv, arg.name, temp))
+                            call.addWriteback("%s_c2f(&%s, %s);" % (conv, temp, arg.name))
+                        else:
+                            call.addCopy("%s = %s_f2c(*%s);"  % (temp, conv, arg.name))
+                            call.addWriteback("*%s = %s_c2f(%s);" % (arg.name, conv, temp))
                     else:
-                        copy = "    temp_%s[i] = %s_f2c(%s[i])"  % (arg.name, conv, arg.name)
-                        writeback = "    %s[i] = %s_c2f(temp_%s[i])" % (arg.name, conv, arg.name)
-                
-                    # Generate the call surrounded by temp array allocation, copies, writebacks, and temp free
-                    count = "*(%s)" % arg.countParam().name
-                    call.addCopy("%s = (%s)malloc(sizeof(%s) * %s);" %
-                                 (temp, temp_arr_type, arg.type, count))
-                    call.addCopy("for (int i=0; i < %s; i++)" % count)
-                    call.addCopy("%s;" % copy)
-                    call.addActualMPI2(temp)
-                    call.addWriteback("for (int i=0; i < %s; i++)" % count)
-                    call.addWriteback("%s;" % writeback)
-                    call.addWriteback("free(%s);" % temp)
-            
-    call.write(out)
+                        # Make a temporary variable for the array
+                        temp_arr_type = "%s*" % arg.type
+                        call.addTemp(temp_arr_type, temp)
                     
+                        # generate a copy and a writeback statement for this type of handle
+                        if arg.isStatus():
+                            copy = "    %s_f2c(&%s[i], &%s[i])"  % (conv, arg.name, temp)
+                            writeback = "    %s_c2f(&%s[i], &%s[i])" % (conv, temp, arg.name)
+                        else:
+                            copy = "    temp_%s[i] = %s_f2c(%s[i])"  % (arg.name, conv, arg.name)
+                            writeback = "    %s[i] = %s_c2f(temp_%s[i])" % (arg.name, conv, arg.name)
+                    
+                        # Generate the call surrounded by temp array allocation, copies, writebacks, and temp free
+                        count = "*(%s)" % arg.countParam().name
+                        call.addCopy("%s = (%s)malloc(sizeof(%s) * %s);" %
+                                     (temp, temp_arr_type, arg.type, count))
+                        call.addCopy("for (int i=0; i < %s; i++)" % count)
+                        call.addCopy("%s;" % copy)
+                        call.addActualMPI2(temp)
+                        call.addWriteback("for (int i=0; i < %s; i++)" % count)
+                        call.addWriteback("%s;" % writeback)
+                        call.addWriteback("free(%s);" % temp)
+                
+    call.write(out)
     out.write("    *ierr = %s;\n" % return_val)
     out.write("}\n\n")
 
