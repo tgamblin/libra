@@ -371,18 +371,29 @@ def enumerate_mpi_declarations(mpicc = "mpicc"):
     tmpfile.close()
 
 
-def write_c_wrapper(out, decl, return_val, write_body):
-    out.write(decl.prototype())
-    out.write(" { \n")
+def write_enter_guard(out, decl):
+    """Prevent us from entering wrapper functions if we're already in a wrapper function.
+       Just call the PMPI function w/o the wrapper instead."""
     if output_guards:
         out.write("    if (in_wrapper) return P%s%s;\n" % (decl.name, decl.argList()))
         out.write("    in_wrapper = 1;\n")
-    out.write("    int %s = 0;\n" % return_val)
 
-    write_body(out)
-
+def write_exit_guard(out):
+    """After a call, set in_wrapper back to 0 so we can enter the next call."""
     if output_guards:
         out.write("    in_wrapper = 0;\n")
+
+
+def write_c_wrapper(out, decl, return_val, write_body):
+    """Write the C wrapper for an MPI function."""
+    out.write(decl.prototype())
+    out.write(" { \n")
+    out.write("    int %s = 0;\n" % return_val)
+
+    write_enter_guard(out, decl)
+    write_body(out)
+    write_exit_guard(out)
+
     out.write("    return %s;\n" % return_val)
     out.write("}\n\n")
 
@@ -408,18 +419,17 @@ class FortranDelegation:
     def __init__(self, fn_name, return_val):
         self.fn_name = fn_name
         self.return_val = return_val
-        self.locals = []
-        self.pre = []
-        self.post = []
 
-        self.temps = []
+        self.temps = set()
         self.copies = []
         self.writebacks = []
         self.actuals = []
         self.mpich_actuals = []
 
     def addTemp(self, type, name):
-        self.temps.append("    %s %s;" % (type, name))
+        """Adds a temp var with a particular name.  Adds the same var only once."""
+        temp = "    %s %s;" % (type, name)
+        self.temps.add(temp)
 
     def addActual(self, actual):
         self.actuals.append(actual)
@@ -438,12 +448,13 @@ class FortranDelegation:
         self.copies.append("    %s" % stmt)
 
     def write(self, out):
-        call = "    int %s = %s" % (self.return_val, self.fn_name)
         assert len(self.actuals) == len(self.mpich_actuals)
-
+        
+        call = "    %s = %s" % (self.return_val, self.fn_name)
         mpich_call = "%s(%s);\n" % (call, ", ".join(self.mpich_actuals))
         mpi2_call = "%s(%s);\n" % (call, ", ".join(self.actuals))
 
+        out.write("    int return_val = 0;\n")
         if mpich_call == mpi2_call and not (self.temps or self.copies or self.writebacks):
             out.write(mpich_call)
         else:
@@ -492,7 +503,7 @@ def write_fortran_wrappers(out, decl, return_val):
         if not (arg.pointers or arg.array):
             if not arg.isHandle():
                 # These are pass-by-value arguments, so just deref and pass thru
-                dereferenced = "*(%s)" % arg.name
+                dereferenced = "*%s" % arg.name
                 call.addActual(dereferenced)
             else:
                 # Non-ptr, non-arr handles need to be converted with MPI_Blah_f2c
@@ -523,9 +534,10 @@ def write_fortran_wrappers(out, decl, return_val):
                         call.addCopy("%s = %s_f2c(*%s);"  % (temp, conv, arg.name))
                         call.addWriteback("*%s = %s_c2f(%s);" % (arg.name, conv, temp))
                 else:
-                    # Make a temporary variable for the array
+                    # Make temporary variables for the array and the loop var
                     temp_arr_type = "%s*" % arg.type
                     call.addTemp(temp_arr_type, temp)
+                    call.addTemp("int", "i")
                 
                     # generate a copy and a writeback statement for this type of handle
                     if arg.isStatus():
@@ -536,13 +548,13 @@ def write_fortran_wrappers(out, decl, return_val):
                         writeback = "    %s[i] = %s_c2f(temp_%s[i])" % (arg.name, conv, arg.name)
                 
                     # Generate the call surrounded by temp array allocation, copies, writebacks, and temp free
-                    count = "*(%s)" % arg.countParam().name
+                    count = "*%s" % arg.countParam().name
                     call.addCopy("%s = (%s)malloc(sizeof(%s) * %s);" %
                                  (temp, temp_arr_type, arg.type, count))
-                    call.addCopy("for (int i=0; i < %s; i++)" % count)
+                    call.addCopy("for (i=0; i < %s; i++)" % count)
                     call.addCopy("%s;" % copy)
                     call.addActualMPI2(temp)
-                    call.addWriteback("for (int i=0; i < %s; i++)" % count)
+                    call.addWriteback("for (i=0; i < %s; i++)" % count)
                     call.addWriteback("%s;" % writeback)
                     call.addWriteback("free(%s);" % temp)
 
@@ -641,7 +653,7 @@ def fn(out, scope, args, children):
         scope["return_val"] = return_val
 
         c_call = "%s = P%s%s;" % (return_val, fn.name, fn.argList())
-        if fn_name == "MPI_Init":
+        if fn_name == "MPI_Init" and output_fortran_wrappers:
             def callfn(out, scope, args, children):
                 # All this is to deal with fortran, since fortran's MPI_Init() function is different
                 # from C's.  We need to make sure to delegate specifically to the fortran init wrapping.
@@ -795,17 +807,19 @@ for opt, arg in opts:
         output_guards = True
     if opt == "-c": 
         mpicc = arg
-    if opt == "-i": 
-        pmpi_init_binding = arg
+    if opt == "-i":
+        possible_bindings = ["PMPI_INIT", "pmpi_init", "pmpi_init_", "pmpi_init__"]
+        if not arg in possible_bindings:
+            print "ERROR: PMPI_Init binding must be one of:\n    %s\n" % " ".join(possible_bindings)
+            usage()
+        else:
+            pmpi_init_binding = arg
     if opt == "-o": 
         try:
             output = open(arg, "w")
         except IOError:
             sys.stderr.write("Error: couldn't open file " + arg + " for writing.\n")
             sys.exit(1)
-
-if not output_fortran_wrappers:
-    pmpi_init_binding = "pmpi_init_error"
 
 #
 # Parse mpi.h and put declarations into a map.
@@ -818,6 +832,7 @@ for decl in enumerate_mpi_declarations(mpicc):
 output.write('''
 #include <mpi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -837,16 +852,13 @@ extern "C" {
     void pmpi_init_(MPI_Fint *ierr);
     void pmpi_init__(MPI_Fint *ierr);
 
-    /* This binding is used if we build with no fortran wrappers. */
-    static void pmpi_init_error() {
-        fprintf(stderr, "ERROR: wrappers not generated with Fortran support.\\n");
-    }
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
-static int fortran_init = 0;
 ''')
+
+if output_fortran_wrappers:
+    output.write("static int fortran_init = 0;\n")
 
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
