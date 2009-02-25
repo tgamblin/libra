@@ -188,6 +188,9 @@ EGREP = @EGREP@
 ELF_LDFLAGS = @ELF_LDFLAGS@
 EXEEXT = @EXEEXT@
 F77 = @F77@
+FC = @FC@
+FCFLAGS = @FCFLAGS@
+FCLIBS = @FCLIBS@
 FFLAGS = @FFLAGS@
 GREP = @GREP@
 IBERTY_LDFLAGS = @IBERTY_LDFLAGS@
@@ -217,6 +220,7 @@ PAPI_CPPFLAGS = @PAPI_CPPFLAGS@
 PAPI_LDFLAGS = @PAPI_LDFLAGS@
 PARADYN_CPPFLAGS = @PARADYN_CPPFLAGS@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PMPI_INIT = @PMPI_INIT@
 PNMPI_CPPFLAGS = @PNMPI_CPPFLAGS@
 PNMPI_LDFLAGS = @PNMPI_LDFLAGS@
 PNMPI_PATCH = @PNMPI_PATCH@
@@ -255,6 +259,7 @@ abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
+ac_ct_FC = @ac_ct_FC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -338,9 +343,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  tests/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  tests/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  tests/Makefile
+	  $(AUTOMAKE) --gnu  tests/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

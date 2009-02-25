@@ -94,7 +94,7 @@ CLEANFILES=effort_wrapper.C
 EXTRA_DIST=effort_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
 effort_wrapper.C: effort_wrapper.w
-	$(PYTHON) $(srcdir)/wrap.py -fg $< -o $@
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 INCLUDES= $(PNMPI_CPPFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet \
  -I$(top_srcdir)/callpath $(PARADYN_CPPFLAGS) $(PAPI_CPPFLAGS) $(SW_CPPFLAGS)

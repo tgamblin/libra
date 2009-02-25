@@ -16,6 +16,10 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
+# Fortran binding for MPI_Init
+AC_FC_FUNC(PMPI_Init, PMPI_INIT)
+AC_SUBST(PMPI_INIT)
+
 # Test whether we're on BlueGene/L and define things in config.h accordingly
 AC_LANG_PUSH([C++])
 AC_DETECT_BLUEGENE

@@ -229,6 +229,9 @@ EGREP = @EGREP@
 ELF_LDFLAGS = @ELF_LDFLAGS@
 EXEEXT = @EXEEXT@
 F77 = @F77@
+FC = @FC@
+FCFLAGS = @FCFLAGS@
+FCLIBS = @FCLIBS@
 FFLAGS = @FFLAGS@
 GREP = @GREP@
 IBERTY_LDFLAGS = @IBERTY_LDFLAGS@
@@ -258,6 +261,7 @@ PAPI_CPPFLAGS = @PAPI_CPPFLAGS@
 PAPI_LDFLAGS = @PAPI_LDFLAGS@
 PARADYN_CPPFLAGS = @PARADYN_CPPFLAGS@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PMPI_INIT = @PMPI_INIT@
 PNMPI_CPPFLAGS = @PNMPI_CPPFLAGS@
 PNMPI_LDFLAGS = @PNMPI_LDFLAGS@
 PNMPI_PATCH = @PNMPI_PATCH@
@@ -296,6 +300,7 @@ abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
+ac_ct_FC = @ac_ct_FC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -431,9 +436,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  effort/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  effort/Makefile
+	  $(AUTOMAKE) --gnu  effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -839,7 +844,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 @PNMPI_EFFORT_TRUE@	chmod u+x .libs/effort-patched.so
 @PNMPI_EFFORT_TRUE@	mv -f .libs/effort-patched.so .libs/effort.so
 effort_wrapper.C: effort_wrapper.w
-	$(PYTHON) $(srcdir)/wrap.py -fg $< -o $@
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

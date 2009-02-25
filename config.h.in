@@ -6,6 +6,13 @@
 /* Define if we're compiling for a BlueGene/P system */
 #undef BLUEGENE_P
 
+/* Define to dummy `main' function (if any) required to link to the Fortran
+   libraries. */
+#undef FC_DUMMY_MAIN
+
+/* Define if F77 and FC dummy `main' functions are identical. */
+#undef FC_DUMMY_MAIN_EQ_F77
+
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 
