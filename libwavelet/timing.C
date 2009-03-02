@@ -80,7 +80,7 @@ timing_t get_time_ns() {
 timing_t get_time_ns() {
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC, &ts);
-  return (ts.tv_sec * 1000000000 + ts.tv_nsec);
+  return (ts.tv_sec * 1000000000ll + ts.tv_nsec);
 }
 
 
@@ -95,7 +95,7 @@ timing_t get_time_ns() {
 timing_t get_time_ns() {
   struct timeval tv;
   gettimeofday(&tv, NULL);
-  return tv.tv_sec * 1000000000 + tv.tv_usec * 1000;
+  return tv.tv_sec * 1000000000ll + tv.tv_usec * 1000ll;
 }
 
 
