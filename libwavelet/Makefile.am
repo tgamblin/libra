@@ -26,6 +26,7 @@ libwavelet_la_SOURCES = \
 	arithmetic_codec.C \
 	byte_budget_exception.C \
 	timing.C \
+	Timer.C \
 	rle.C \
 	huffman.C
 libwavelet_la_LDFLAGS=-avoid-version
@@ -58,6 +59,7 @@ include_HEADERS = \
 	obitstream.h \
 	par_ezw_encoder.h \
 	timing.h \
+	Timer.h \
 	vector_ibitstream.h \
 	vector_obitstream.h \
 	wavelet.h \
