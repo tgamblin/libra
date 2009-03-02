@@ -3,6 +3,7 @@
 
 #include <mpi.h>
 #include "ezw_encoder.h"
+#include "Timer.h"
 
 namespace wavelet {
 
@@ -36,6 +37,8 @@ namespace wavelet {
     /// Gets the root of the reduction that this will do.  May not be zero.
     int get_root(MPI_Comm comm = MPI_COMM_WORLD);
 
+    const Timer& get_timer() { return timer; }
+
   protected:
     /// Whether we output EZW bits in same order as sequential coder.  Defaults to false.
     bool use_sequential_order;
@@ -45,7 +48,8 @@ namespace wavelet {
     
     size_t block_encode(const unsigned char *passes, size_t total_bytes, std::ostream& out, 
 			ezw_header& header, MPI_Comm comm);
-    
+
+    Timer timer;
   };
 
 }

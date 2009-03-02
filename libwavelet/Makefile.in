@@ -84,7 +84,8 @@ am__libwavelet_la_SOURCES_DIST = cdf97.C wt_2d.C wt_lift.C wt_direct.C \
 	ibitstream.C buffered_obitstream.C buffered_ibitstream.C \
 	vector_obitstream.C vector_ibitstream.C ac_obitstream.C \
 	ac_ibitstream.C arithmetic_codec.C byte_budget_exception.C \
-	timing.C rle.C huffman.C wt_parallel.C par_ezw_encoder.C
+	timing.C Timer.C rle.C huffman.C wt_parallel.C \
+	par_ezw_encoder.C
 @HAVE_MPI_TRUE@am__objects_1 = wt_parallel.lo par_ezw_encoder.lo
 am_libwavelet_la_OBJECTS = cdf97.lo wt_2d.lo wt_lift.lo wt_direct.lo \
 	wt_1d_direct.lo wt_utils.lo io_utils.lo matrix_utils.lo \
@@ -92,8 +93,8 @@ am_libwavelet_la_OBJECTS = cdf97.lo wt_2d.lo wt_lift.lo wt_direct.lo \
 	obitstream.lo ibitstream.lo buffered_obitstream.lo \
 	buffered_ibitstream.lo vector_obitstream.lo \
 	vector_ibitstream.lo ac_obitstream.lo ac_ibitstream.lo \
-	arithmetic_codec.lo byte_budget_exception.lo timing.lo rle.lo \
-	huffman.lo $(am__objects_1)
+	arithmetic_codec.lo byte_budget_exception.lo timing.lo \
+	Timer.lo rle.lo huffman.lo $(am__objects_1)
 libwavelet_la_OBJECTS = $(am_libwavelet_la_OBJECTS)
 libwavelet_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -116,7 +117,7 @@ am__include_HEADERS_DIST = ac_obitstream.h ac_ibitstream.h \
 	buffered_obitstream.h buffered_ibitstream.h \
 	byte_budget_exception.h cdf97.h ezw.h ezw_encoder.h \
 	ezw_decoder.h filter_bank.h ibitstream.h io_utils.h \
-	matrix_utils.h obitstream.h par_ezw_encoder.h timing.h \
+	matrix_utils.h obitstream.h par_ezw_encoder.h timing.h Timer.h \
 	vector_ibitstream.h vector_obitstream.h wavelet.h wt_2d.h \
 	wt_direct.h wt_1d_direct.h wt_lift.h wt_parallel.h
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
@@ -290,7 +291,7 @@ libwavelet_la_SOURCES = cdf97.C wt_2d.C wt_lift.C wt_direct.C \
 	ibitstream.C buffered_obitstream.C buffered_ibitstream.C \
 	vector_obitstream.C vector_ibitstream.C ac_obitstream.C \
 	ac_ibitstream.C arithmetic_codec.C byte_budget_exception.C \
-	timing.C rle.C huffman.C $(am__append_1)
+	timing.C Timer.C rle.C huffman.C $(am__append_1)
 libwavelet_la_LDFLAGS = -avoid-version
 
 #
@@ -300,7 +301,7 @@ include_HEADERS = ac_obitstream.h ac_ibitstream.h \
 	buffered_obitstream.h buffered_ibitstream.h \
 	byte_budget_exception.h cdf97.h ezw.h ezw_encoder.h \
 	ezw_decoder.h filter_bank.h ibitstream.h io_utils.h \
-	matrix_utils.h obitstream.h par_ezw_encoder.h timing.h \
+	matrix_utils.h obitstream.h par_ezw_encoder.h timing.h Timer.h \
 	vector_ibitstream.h vector_obitstream.h wavelet.h wt_2d.h \
 	wt_direct.h wt_1d_direct.h wt_lift.h wt_parallel.h \
 	$(am__append_2)
@@ -392,6 +393,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Timer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ac_ibitstream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ac_obitstream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arithmetic_codec.Plo@am__quote@

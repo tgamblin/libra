@@ -13,6 +13,7 @@ using namespace wavelet;
 #include "synchronize_keys.h"
 #include "effort_metadata.h"
 #include "effort_module.h"
+#include "timing.h"
 
 namespace effort {
 
@@ -36,11 +37,13 @@ namespace effort {
       ofstream exact_file(exact_file_name.str().c_str());
       output(mat, exact_file);
       exact_file.close();
+      timer.record("ExactData");
     }
   
     // Do wavelet transform in parallel
     wt_parallel pwt;
     int level = pwt.fwt_2d(mat, -1, comm);
+    timer.record("WaveletTransform");
   
     // Encode transformed data in parallel
     par_ezw_encoder encoder;
@@ -66,12 +69,17 @@ namespace effort {
       md.write_out(encoded_stream);
     }
 
+    timer.record("OpenOutputFiles");
+
     encoder.encode(mat, encoded_stream, level, comm);
+    timer += encoder.get_timer();  // include ezw timings.
   }
 
 
 
   void parallel_compressor::compress(effort_data& effort_log, MPI_Comm comm_world) {
+    timer.clear();
+
     int rank, size;
     PMPI_Comm_rank(comm_world, &rank);
     PMPI_Comm_size(comm_world, &size);
@@ -105,6 +113,8 @@ namespace effort {
       effort_log.progress_step(gePowerOf2(effort_log.progress_count));
     }
 
+    timer.record("LogCheck");
+    
     // first need to synchronize effort keys across all processors so that everyone
     // participates in the right transforms.  Otherwise traversals of the effort
     // map will be different depending on the node.
@@ -114,6 +124,8 @@ namespace effort {
       size_t synced = effort_log.size();
       cerr << synced << " total effort regions (" << (synced - unsynced) << " new from sync)." << endl;
     }
+
+    timer.record("SyncKeys");
   
     // now we traverse the effort map and do a transform for each type of effort 
     // we encountered.  We farm these out to different modulo sets of the cluster.
@@ -139,6 +151,8 @@ namespace effort {
       sorted_keys.push_back(e->first);
     }
 
+    timer.record("SplitAndDumpKeys");
+
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
     for (size_t id=0; id < sorted_keys.size(); /* id is incremented in inner loop */) {
@@ -163,6 +177,7 @@ namespace effort {
         // consolidate all data for the set onto its processors
         wt_parallel::aggregate(mat, record.values, m, set, reqs, comm_world);      
       }
+      timer.record("Aggregate");
 
       // we've farmed out enough work for all procs; need to do transforms
       if (reqs.size() || size == 1) { 

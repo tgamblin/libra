@@ -60,7 +60,7 @@ namespace wavelet {
   
   
   static void rle_gather(vector<unsigned char>& dest, vector<unsigned char>& data,
-			 int root = 0, MPI_Comm comm = MPI_COMM_WORLD) {
+                         int root = 0, MPI_Comm comm = MPI_COMM_WORLD) {
     int rank, size;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
@@ -128,7 +128,7 @@ namespace wavelet {
 
 
   size_t par_ezw_encoder::bit_stitch_encode(const unsigned char *passes, size_t local_bytes, ostream& out, 
-					    ezw_header& header, MPI_Comm comm) {
+                                            ezw_header& header, MPI_Comm comm) {
     int rank, size;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
@@ -219,21 +219,21 @@ namespace wavelet {
       threshold >>= 1;
 
       if (threshold) {
-	// stitch subordinate passes together in proper order (they are accumulated per pass)
-	for (size_t p=0; p <= i; p++) {
-	  // write data from each neighbor.
-	  size_t left_chunk_size = left_sub_sizes[p] - (p ? left_sub_sizes[p-1] : 0);
-	  merged_bits.write_bits(&left_buf[0], left_chunk_size, left_offset);
-	  left_offset += left_chunk_size;
+        // stitch subordinate passes together in proper order (they are accumulated per pass)
+        for (size_t p=0; p <= i; p++) {
+          // write data from each neighbor.
+          size_t left_chunk_size = left_sub_sizes[p] - (p ? left_sub_sizes[p-1] : 0);
+          merged_bits.write_bits(&left_buf[0], left_chunk_size, left_offset);
+          left_offset += left_chunk_size;
 	  
-	  size_t local_chunk_size = sub_sizes[p] - (p ? sub_sizes[p-1] : 0);
-	  merged_bits.write_bits(passes, local_chunk_size, local_offset);
-	  local_offset += local_chunk_size;
+          size_t local_chunk_size = sub_sizes[p] - (p ? sub_sizes[p-1] : 0);
+          merged_bits.write_bits(passes, local_chunk_size, local_offset);
+          local_offset += local_chunk_size;
 	  
-	  size_t right_chunk_size = right_sub_sizes[p] - (p ? right_sub_sizes[p-1] : 0);
-	  merged_bits.write_bits(&right_buf[0], right_chunk_size, right_offset);
-	  right_offset += right_chunk_size;
-	}
+          size_t right_chunk_size = right_sub_sizes[p] - (p ? right_sub_sizes[p-1] : 0);
+          merged_bits.write_bits(&right_buf[0], right_chunk_size, right_offset);
+          right_offset += right_chunk_size;
+        }
       }
 
       new_sub_sizes[i] = (left_sub_sizes[i] + sub_sizes[i] + right_sub_sizes[i]);
@@ -264,7 +264,7 @@ namespace wavelet {
 
 
   size_t par_ezw_encoder::block_encode(const unsigned char *passes, size_t local_bytes, ostream& out, 
-				       ezw_header& header, MPI_Comm comm) {
+                                       ezw_header& header, MPI_Comm comm) {
     int rank;
     MPI_Comm_rank(comm, &rank);
 
@@ -278,6 +278,8 @@ namespace wavelet {
 
     const size_t rle_size = RLE_Compress((unsigned char*)passes, &rle_buffer[0], local_bytes);
     rle_buffer.resize(rle_size); // tighten buffer around encoded data.
+
+    timer.record("LocalRLE");
     
     // gather compressed RLE representation w/o decompressing.  Ends of rle buffers
     // are stitched together as the merge goes on.  Note that we'll need to reorder
@@ -286,6 +288,8 @@ namespace wavelet {
     rle_gather(gathered, rle_buffer, 0, comm);
     const int all_rle_size = gathered.size();
     
+    timer.record("RLEGather");
+
     if (rank == root) {
       header.ezw_size = all_bytes;
       header.rle_size = all_rle_size;
@@ -297,6 +301,8 @@ namespace wavelet {
 
 
   size_t par_ezw_encoder::encode(wt_matrix& mat, ostream& out, int level, MPI_Comm comm) {
+    timer.clear();
+
     int size, rank;
     MPI_Comm_size(comm, &size);
     MPI_Comm_rank(comm, &rank);
@@ -322,6 +328,8 @@ namespace wavelet {
     quantized_t all_abs_max;
     MPI_Allreduce(&abs_max, &all_abs_max, 1, MPI_QUANTIZED_T, MPI_MAX, comm);
 
+    timer.record("EZWStats");
+
     // Compute threshold and level in standard way.
     threshold = lePowerOf2((uint64_t)all_abs_max);
 
@@ -341,7 +349,11 @@ namespace wavelet {
       header.passes = pass_limit;
 
       do_encode(local_bits, header, false);
-      return block_encode(local_bits.get_buffer(), local_bits.get_out_bytes(), out, header, comm);
+      timer.record("EZWEncode");
+
+      size_t result = block_encode(local_bits.get_buffer(), local_bits.get_out_bytes(), out, header, comm);
+      timer.record("Entropy");
+      return result;
     }
   }
 } // namespace

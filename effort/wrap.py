@@ -54,6 +54,9 @@ formal_re = re.compile(
 # Fortran wrapper suffix
 f_wrap_suffix = "_fortran_wrapper"
 
+# Default modifiers for generated bindings
+default_modifiers = ["_EXTERN_C_"]  # _EXTERN_C_ is defined at the start of generated file (see below)
+
 # Set of MPI Handle types
 mpi_handle_types = set(["MPI_Comm", "MPI_Errhandler", "MPI_File", "MPI_Group", "MPI_Info", 
                         "MPI_Op", "MPI_Request", "MPI_Status", "MPI_Datatype", "MPI_Win" ])
@@ -283,8 +286,9 @@ class Declaration:
         if self.name == "MPI_Init": names = []
         return "(%s)" % ", ".join(names + ["ierr"])
 
-    def prototype(self):
-        return "%s %s%s" % (self.retType(), self.name, self.argTypeList())
+    def prototype(self, modifiers=""):
+        if modifiers: modifiers = joinlines(modifiers, " ")
+        return "%s%s %s%s" % (modifiers, self.retType(), self.name, self.argTypeList())
     
     def fortranPrototype(self, name=None, modifiers=""):
         if not name: name = self.name
@@ -386,7 +390,7 @@ def write_exit_guard(out):
 
 def write_c_wrapper(out, decl, return_val, write_body):
     """Write the C wrapper for an MPI function."""
-    out.write(decl.prototype())
+    out.write(decl.prototype(default_modifiers))
     out.write(" { \n")
     out.write("    int %s = 0;\n" % return_val)
 
@@ -403,7 +407,7 @@ def write_fortran_binding(out, decl, delegate_name, binding, stmts=None):
        primary Fortran wrapper.  Optionally takes a list of statements to execute
        before delegating.
     """
-    out.write(decl.fortranPrototype(binding))
+    out.write(decl.fortranPrototype(binding, default_modifiers))
     out.write(" { \n")
     if stmts:
         out.write(joinlines(map(lambda s: "    " + s, stmts)))
@@ -855,6 +859,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#ifndef _EXTERN_C_
+#ifdef __cplusplus
+#define _EXTERN_C_ extern "C"
+#else /* __cplusplus */
+#define _EXTERN_C_ 
+#endif /* __cplusplus */
+#endif /* _EXTERN_C_ */
 ''')
 
 if output_fortran_wrappers:

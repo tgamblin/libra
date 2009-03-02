@@ -22,6 +22,7 @@ using namespace std;
 #include "pnmpimod.h"
 #endif // PMPI_EFFORT
 
+#include "Timer.h"
 #include "timing.h"
 #include "io_utils.h"
 #include "mpi_utils.h"
@@ -87,8 +88,7 @@ struct effort_module {
   string effort_dir;            /// Location of effort data output, inited in MPI_Finalize().
   string exact_dir;             /// Location of exact (verification) data, inited in MPI_Finalize().
 
-  double init_time;             /// Time MPI_Init ran.
-  double finalize_time;         /// Time MPI_Finalize ran.
+  Timer timer;                  /// Timing for various phases of the code.
 
   size_t sample_count;          /// Sample count for progress steps
   regions_t regions;            /// region collection mode (effort, comm, or both)
@@ -105,7 +105,6 @@ struct effort_module {
   effort_module() 
     : cur_effort_type(0)
     , working_dir(get_wd())
-    , init_time(get_time_ns())
     , keep_time(true)
     , start_time(-1)
 #ifdef HAVE_LIBPAPI
@@ -392,20 +391,6 @@ struct effort_module {
   }
 
 
-  /// Prints out module-related timing data to a file in the effort directory.
-  inline void dump_timing() {
-    // print out all the callpaths for each process
-    ostringstream fn;
-    fn << effort_dir << "/times";
-    ofstream times(fn.str().c_str());
-  
-    double now = get_time_ns();
-    times << "APP:\t"   << (finalize_time - init_time)/1e9 << endl;
-    times << "COMP:\t"  << (now - finalize_time)/1e9 << endl;
-    times << "TOTAL:\t" << (now - init_time)/1e9 << endl;
-  }
-
-
   ///
   /// MPI_Finalize prints out timings and stackwalk counts, then initiates
   /// parallel compression on observed effort data.
@@ -415,7 +400,7 @@ struct effort_module {
     PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
     PMPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    finalize_time = get_time_ns();
+    timer.record("APP"); // time spent in application
 
     // this aggregates walks from all nodes
     size_t walks = runtime.numWalks();
@@ -432,8 +417,11 @@ struct effort_module {
       cerr << (100.0 * total_bad_walks / total_walks) << "% bad walks" << endl;
     }
 
+    timer.record("StackwalkStats");
+
     // this sets up the directory where we'll do the work.
     setup_effort_directories();
+    timer.record("Mkdirs");
 
     // distribute and do compression.
     parallel_compressor compressor(params);
@@ -443,7 +431,12 @@ struct effort_module {
 
     // dump times on rank 0.
     if (rank == 0) {
-      dump_timing();
+      ostringstream filename;
+      filename << effort_dir << "/times";
+      ofstream time_file(filename.str().c_str());
+
+      timer += compressor.get_timer();
+      timer.write(time_file);
     }
   }
 };

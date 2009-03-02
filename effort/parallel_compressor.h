@@ -5,6 +5,7 @@
 #include "wavelet.h"
 #include "effort_params.h"
 #include "effort_data.h"
+#include "Timer.h"
 
 namespace effort {
 
@@ -27,6 +28,11 @@ namespace effort {
       exact_dir = dir;
     }
 
+    /// Returns timings for last call to compress()
+    const Timer& get_timer() {
+      return timer;
+    }
+
   private:
     /// Helper for distribute_work().  Actually does the work of compression on a subcommunicator
     void do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm);
@@ -34,6 +40,8 @@ namespace effort {
     const effort_params& params;
     std::string output_dir;
     std::string exact_dir;
+
+    Timer timer;   // keeps stats on timings of compression phases
   };
 
 } //namespace
