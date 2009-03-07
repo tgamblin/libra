@@ -37,10 +37,6 @@ using namespace wavelet;
 #include "parallel_compressor.h"
 using namespace effort;
 
-#include "string_utils.h"
-using namespace stringutils;
-
-
 typedef enum {
   REGIONS_EFFORT, REGIONS_COMM, REGIONS_BOTH, REGIONS_INVALID
 } regions_t;
@@ -94,7 +90,6 @@ struct effort_module {
   regions_t regions;            /// region collection mode (effort, comm, or both)
 
   // Storage and metadata for PAPI counters
-  bool keep_time;               /// Whether to record wall-clock timing as a metric
   double start_time;            /// Start time for system clock.
 
   vector<string> metric_names;  /// Mapping from id to metric name (PAPI or otherwise)
@@ -154,19 +149,6 @@ struct effort_module {
   }
   
 
-  string id_to_metric_name(int id) {
-    if (id < 0) {
-      return METRIC_TIME;
-    } else if (id < (int)metric_names.size()) {
-      return metric_names[id];
-    } else {
-      ostringstream idstr;
-      idstr << id;
-      return idstr.str();
-    }
-  }
-  
-  
 #ifndef HAVE_LIBPAPI
   void metric_setup() { }
 #else // HAVE_LIBPAPI

@@ -39,7 +39,7 @@ PMPI_EFFORT_SRCS=effort_module.C \
 if HAVE_SYMTAB
 SYMTAB_PROGS=ef
 endif
-bin_PROGRAMS= $(SYMTAB_PROGS) nrmse
+bin_PROGRAMS= $(SYMTAB_PROGS) nrmse tuner
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 ef_SOURCES=ef.C
@@ -47,6 +47,9 @@ ef_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(S
 
 nrmse_SOURCES=nrmse.C 
 nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+
+tuner_SOURCES=tuner.C
+tuner_LDADD=libpmpi-effort.la libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib

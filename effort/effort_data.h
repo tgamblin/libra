@@ -43,6 +43,7 @@ namespace effort {
     bool contains(const effort_key& key) {
       return emap.find(key) != emap.end();
     }
+    void clear() { emap.clear(); }
 
   private:
 

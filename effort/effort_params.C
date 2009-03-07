@@ -1,6 +1,10 @@
 #include "effort_params.h"
 #include <iomanip>
+#include <cstring>
 using namespace std;
+
+#include "string_utils.h"
+using namespace stringutils;
 
 namespace effort {
 
@@ -34,6 +38,40 @@ namespace effort {
       config_desc()
     };
     return args;
+  }
+
+
+  void parse_metrics() {
+    if (strlen(metrics) && !metric_names.size()) {
+      
+    }
+    
+
+    // Split out what the user asked for into separate strings.
+    split(metrics, " ,", metric_names);
+
+    // move time first if it's there 
+    vector<string>::iterator todel = remove_if(metric_names.begin(), metric_names.end(), 
+                                               bind2nd(equal_to<string>(), METRIC_TIME));
+    keep_time = todel != metric_names.end()
+    metric_names.erase(todel, metric_names.end());
+  }
+
+    size_t num_metrics();
+
+  const string& metric_name(int id) {
+
+
+    if (id < 0) {
+      return METRIC_TIME;
+    } else if (id < (int)metric_names.size()) {
+      return metric_names[id];
+    } else {
+      ostringstream idstr;
+      idstr << id;
+      return idstr.str();
+    }
+
   }
 
 } //namespace

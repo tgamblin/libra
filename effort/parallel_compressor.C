@@ -12,7 +12,6 @@ using namespace wavelet;
 
 #include "synchronize_keys.h"
 #include "effort_metadata.h"
-#include "effort_module.h"
 #include "timing.h"
 
 namespace effort {
@@ -24,16 +23,14 @@ namespace effort {
     PMPI_Comm_rank(comm, &rank);
     PMPI_Comm_size(comm, &size);
   
+    ostringstream file_suffix;
+    file_suffix << "-" << id_to_metric_name(key.metric) << "-" << key.type << "-" << id;
+
     // if verify is on, then output exact data in a separate directory.
     if (params.verify) {
       // write out exact data to a file for verification later.
       ostringstream exact_file_name;
-      exact_file_name << exact_dir 
-                      << "/exact" 
-                      << "-" << id_to_metric_name(key.metric) 
-                      << "-" << key.type 
-                      << "-" << id 
-                      << "-" << rank;
+      exact_file_name << exact_dir << "/exact" << file_suffix.str() << "-" << rank;
       ofstream exact_file(exact_file_name.str().c_str());
       output(mat, exact_file);
       exact_file.close();
@@ -56,11 +53,7 @@ namespace effort {
     if (rank == encoder.get_root(comm)) {
       // open the encoded file stream on the root process
       ostringstream filename;
-      filename << output_dir 
-               << "/effort" 
-               << "-" << id_to_metric_name(key.metric)
-               << "-" << key.type 
-               << "-" << id;
+      filename << output_dir << "/effort" << file_suffix;
       encoded_stream.open(filename.str().c_str());
 
       // output the effort metadata (type, callpaths) first
