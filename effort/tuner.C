@@ -27,7 +27,7 @@ extern dummy_callpath dummies[];
 
 void fill_pathvector(const string& module_name, const uintptr_t arr[], vector<FrameId>& vec) {
   for (const uintptr_t *off = arr; *off; off++) {
-    vec.push_back(FrameId::create(module_name, *off));
+    vec.push_back(FrameId(module_name, *off));
   }
 }
 

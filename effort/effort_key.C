@@ -88,7 +88,7 @@ namespace effort {
   }
 
 
-  effort_key effort_key::unpack(module_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm) {
+  effort_key effort_key::unpack(const Module::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm) {
     effort_key key;
     key.metric = Metric::unpack(buf, bufsize, position, comm);
     PMPI_Unpack(buf, bufsize, position, &key.type, 1, MPI_INT,  comm);

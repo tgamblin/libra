@@ -1,8 +1,10 @@
 #ifndef UNIQUE_ID_H
 #define UNIQUE_ID_H
 
+#include <stdint.h>
 #include <string>
 #include <set>
+#include <map>
 #include <ostream>
 
 #include "io_utils.h"
@@ -32,6 +34,7 @@ struct dereference_lt {
 /// To make your own unique id class out of this:
 /// 
 ///    class MyUniqueIdClass : public UniqueId<MyUniqueIdClass> {
+///    public:
 ///        MyUniqueIdClass(const std::string& id) : UniqueId<MyUniqueIdClass>(id) { }
 ///    };
 ///
@@ -39,11 +42,17 @@ struct dereference_lt {
 ///
 template <class Derived>
 class UniqueId {
-protected:
+public:
   /// Type for set of unique uid values.
   typedef std::set<const std::string*, dereference_lt> id_set;
   typedef typename id_set::iterator id_set_iterator;
 
+  /// Map type for translating ids from remote processes.  This maps unintptr_t's 
+  /// (remote pointer values) to local string*'s.  It needs to be specially constructed
+  /// using static routines below.
+  typedef std::map<uintptr_t, Derived> id_map;
+
+protected:
   /// Unique identifier for this instance of the UniqueId
   const std::string *identifier;
   
@@ -51,6 +60,9 @@ protected:
     static id_set ids;
     return ids;
   }
+
+  /// Raw pointer constructor.  Used internally for serialization.
+  UniqueId(const std::string *id) : identifier(id) { }
   
   /// Constructor takes a const std::string reference, gets a unique pointer to its value,
   /// and inits this uid with the pointer.
@@ -100,11 +112,24 @@ public:
     buf[id_size] = '\0';
     return Derived(buf);
   }
+  
+  void write_id(std::ostream& out) const {
+    wavelet::vl_write(out, reinterpret_cast<uintptr_t>(identifier));
+  }
+  
+  static Derived read_id(const id_map& trans, std::istream& in) {
+    uintptr_t id = wavelet::vl_read(in);
+    return trans.find(id)->second;
+  }
 
   template<class Derived>
   friend std::ostream& operator<<(std::ostream& out, UniqueId<Derived> uid);
 
 #ifdef LIBRA_HAVE_MPI
+  // ----------------------------------------------------------------------------------
+  // These routines pack UniqueIds as raw strings.  Receiver process looks up received 
+  // strings and returns UniqueIds. 
+  // ----------------------------------------------------------------------------------
   int packed_size(MPI_Comm comm) const {
     int size = 0;
     size += mpi_packed_size(1, MPI_INT, comm);  // identifier size
@@ -116,7 +141,10 @@ public:
   void pack(void *buf, int bufsize, int *position, MPI_Comm comm) const {
     int size = identifier->size();
     PMPI_Pack(&size, 1, MPI_INT, buf, bufsize, position, comm);
-    PMPI_Pack(const_cast<char*>(identifier->c_str()), identifier->size(), MPI_CHAR, buf, bufsize, position, comm);
+    if (size) {
+      char *casted = const_cast<char*>(identifier->c_str());
+      PMPI_Pack(casted, identifier->size(), MPI_CHAR, buf, bufsize, position, comm);
+    }
   }
 
 
@@ -125,11 +153,80 @@ public:
     PMPI_Unpack(buf, bufsize, position, &size, 1, MPI_INT,  comm);
     
     char idstring[size+1];
-    PMPI_Unpack(buf, bufsize, position, idstring, size, MPI_CHAR,  comm);
+    if (size) PMPI_Unpack(buf, bufsize, position, idstring, size, MPI_CHAR,  comm);
     idstring[size] = '\0';
 
     return Derived(idstring);
   }
+  
+  // ----------------------------------------------------------------------------------
+  // Below routines pack UniqueIds by id.  They require that you first send an id_map
+  // that the receiver can use to translate remote ids, but can be more efficient than
+  // sending raw strings as above.  See below for routines for transferring id_maps.
+  // ----------------------------------------------------------------------------------
+
+  /// Returns size of raw identifier.
+  size_t packed_size_id(MPI_Comm comm) const {
+    return mpi_packed_size(1, MPI_UINTPTR_T, comm);
+  }
+
+  /// Packs raw identifier onto a buffer.  Receiver will need an id_map to translate.
+  void pack_id(void *buf, int bufsize, int *position, MPI_Comm comm) const {
+    const std::string** casted = const_cast<const std::string**>(&identifier);
+    PMPI_Pack(casted, 1, MPI_UINTPTR_T, buf, bufsize, position, comm);
+  }
+
+  /// Unpacks remote raw identifier and builds a local unique id using the id_map supplied.
+  static Derived unpack_id(const id_map& remote_to_local, void *buf, int bufsize, int *position, MPI_Comm comm) {
+    uintptr_t remote_addr;
+    PMPI_Unpack(buf, bufsize, position, &remote_addr, 1, MPI_UINTPTR_T, comm);
+    return remote_to_local.find(remote_addr)->second;
+  }
+
+  // ----------------------------------------------------------------------------------
+  // Below routines are for sending id_maps between processes.
+  // ----------------------------------------------------------------------------------
+  /// packed size of entire buffer full of id_map
+  static size_t packed_size_id_map(MPI_Comm comm) {
+    size_t size = 0;
+    size += mpi_packed_size(1, MPI_INT, comm);                // number of mappings
+
+    id_set& ids = get_identifiers();
+    for (id_set_iterator i=ids.begin(); i != ids.end(); i++) {
+      size += mpi_packed_size(1, MPI_UINTPTR_T, comm);     // local addr of module string
+      size += UniqueId<Derived>(*i).packed_size(comm);     // size of raw string
+    }
+    return size;
+  }
+  
+  /// Sends all known pointer/identifier mappings to anther process. 
+  static void pack_id_map(void *buf, int bufsize, int *position, MPI_Comm comm) {
+    int len = get_identifiers().size();
+    PMPI_Pack(&len, 1, MPI_INT, buf, bufsize, position, comm);
+
+    id_set& ids = get_identifiers();
+    for (id_set_iterator i=ids.begin(); i != ids.end(); i++) {
+      std::string **addr = const_cast<std::string**>(&(*i));      // local addr of module string
+      PMPI_Pack(addr, 1, MPI_UINTPTR_T, buf, bufsize, position, comm);
+      UniqueId<Derived>(*i).pack(buf, bufsize, position, comm);   // raw string.
+    }
+  }
+
+  /// Receies identifier mappings from another process.  Builds an id_map (translation table)
+  /// that can be used to unpack UniqueIds in bulk.
+  static void unpack_id_map(void *buf, int bufsize, int *position, id_map& dest, MPI_Comm comm) {
+    int len;
+    PMPI_Unpack(buf, bufsize, position, &len, 1, MPI_INT, comm);
+
+    for (int i=0; i < len; i++) {
+      uintptr_t remote_addr;     // addr of string on remote machine
+      PMPI_Unpack(buf, bufsize, position, &remote_addr, 1, MPI_UINTPTR_T, comm); 
+      
+      // unpack, look up, and add mapping for raw identifier from remote process.
+      dest.insert(id_map::value_type(remote_addr, Derived::unpack(buf, bufsize, position, comm)));
+    }
+  }
+  
 #endif // LIBRA_HAVE_MPI
 };
 

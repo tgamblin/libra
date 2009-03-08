@@ -12,7 +12,7 @@ using namespace std;
 #include "config.h"
 #endif // HAVE_CONFIG_H
 
-#include "UniqueId.h"
+#include "Module.h"
 #include "wavelet.h"
 #include "wt_direct.h"
 #include "ezw_decoder.h"
@@ -176,20 +176,21 @@ struct symtab_info {
       name = sym->getName();
   }
 };
-typedef map<const string*, symtab_info, dereference_lt> symtab_cache;
+
+typedef map<Module, symtab_info> symtab_cache;
 static symtab_cache symtabs;
 
 
 /// Reads in a symbol table for the executable file; aborts on failure.
-symtab_info *getSymtabInfo(const string *modname) {
-  symtab_cache::iterator sti = symtabs.find(modname);
+symtab_info *getSymtabInfo(Module module) {
+  symtab_cache::iterator sti = symtabs.find(module);
   if (sti == symtabs.end()) {
     Symtab *symtab;
-    if (!Symtab::openFile(symtab, *modname)) {
-      cerr << "Error opening file: " << modname << endl;
+    if (!Symtab::openFile(symtab, module.str())) {
+      cerr << "Error opening file: " << module.str() << endl;
       exit(1);
     }
-    sti = symtabs.insert(symtab_cache::value_type(modname, symtab_info(symtab))).first;
+    sti = symtabs.insert(symtab_cache::value_type(module, symtab_info(symtab))).first;
   }
 
   return &sti->second;

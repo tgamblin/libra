@@ -4,6 +4,7 @@
 #include "UniqueId.h"
 
 class Module : public UniqueId<Module> {
+public:
   Module(const std::string& id);
 };
 

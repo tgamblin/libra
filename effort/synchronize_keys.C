@@ -22,8 +22,8 @@ namespace effort {
     PMPI_Recv(buf, bufsize, MPI_PACKED, src, 0, comm, &status);
     
     int position = 0;
-    module_map modules;
-    Callpath::unpack_modules(buf, bufsize, &position, modules, comm);
+    Module::id_map modules;
+    Module::unpack_id_map(buf, bufsize, &position, modules, comm);
 
     int num_keys;
     PMPI_Unpack(buf, bufsize, &position, &num_keys, 1, MPI_INT, comm);
@@ -38,7 +38,7 @@ namespace effort {
 
   void send_keys(effort_data& effort_log, int dest, MPI_Comm comm) {
     int bufsize = 0;
-    bufsize += Callpath::packed_size_modules(comm);   // size of module map
+    bufsize += Module::packed_size_id_map(comm);     // size of module map
     bufsize += mpi_packed_size(1, MPI_INT, comm);     // number of keys
     for (effort_data::iterator i=effort_log.begin(); i != effort_log.end(); i++) {
       bufsize += i->first.packed_size(comm);          // size of each key
@@ -48,7 +48,7 @@ namespace effort {
     char buf[bufsize];
     int position = 0;
 
-    Callpath::pack_modules(buf, bufsize, &position, comm);
+    Module::pack_id_map(buf, bufsize, &position, comm);
 
     int num_keys = effort_log.size();
     PMPI_Pack(&num_keys, 1, MPI_INT, buf, bufsize, &position, comm);

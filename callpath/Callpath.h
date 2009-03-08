@@ -12,15 +12,10 @@
 #include <string>
 #include <iostream>
 #include "FrameId.h"
-
-typedef std::vector<FrameId> pathvector;
-typedef std::map<uintptr_t, const std::string*> module_map;
-
+#include "Module.h"
 
 /// This class represents a unique callpath, along with some extra info 
 /// for easy callpath lookup.
-/// 
-/// TODO: Currently, there is no way to free up all the callpaths traced so far.
 class Callpath {
 public:
 
@@ -43,7 +38,7 @@ public:
   static void dump(std::ostream& out);
     
 
-  static Callpath create(const pathvector& path);
+  static Callpath create(const std::vector<FrameId>& path);
 
 
   /// Gets the ith element in the callpath.
@@ -74,25 +69,16 @@ public:
   /// Unpacks a callpath packed by pack().  Ensures path pointer uniqueness 
   /// within processes, but not across nodes.  Requires module translation via
   /// a map from send_modules().
-  static Callpath unpack(module_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
+  static Callpath unpack(const Module::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
   
-  /// packed size of entire buffer full of modules, use with send_modules and receive_modules.
-  static size_t packed_size_modules(MPI_Comm comm);
-  
-  /// Sends all modules this process knows about to anther process. 
-  static void pack_modules(void *buf, int bufsize, int *position, MPI_Comm comm);
-
-  /// Receies module information from another process.  Builds a translation table
-  /// to be used for unpacking Callpaths.
-  static void unpack_modules(void *buf, int bufsize, int *position, module_map& dest, MPI_Comm comm);
 #endif // LIBRA_HAVE_MPI
   
 private:
   /// Unique, null-terminated array of symbol_ids for this callpath
-  const pathvector *path;
+  const std::vector<FrameId> *path;
 
   /// Private value constructor: used only by this class.
-  Callpath(const pathvector *path);
+  Callpath(const std::vector<FrameId> *path);
 
   // Declare operators as friends so they can get at the internals.
   friend std::ostream& operator<<(std::ostream& out, const Callpath& path);
@@ -130,7 +116,7 @@ std::ostream& operator<<(std::ostream& out, const Callpath& path);
 template <class LessThan>
 struct pathvector_lt {
   LessThan lt;
-  bool operator()(const pathvector *lhs, const pathvector *rhs) {
+  bool operator()(const std::vector<FrameId> *lhs, const std::vector<FrameId> *rhs) {
     if (lhs == rhs)  return false;
     if (lhs == NULL) return true;
     if (rhs == NULL) return false;

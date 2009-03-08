@@ -3,6 +3,7 @@
 
 #include "Callpath.h"
 #include "Metric.h"
+#include "Module.h"
 
 #include "libra-config.h"
 #ifdef LIBRA_HAVE_MPI
@@ -50,7 +51,7 @@ namespace effort {
     // module_map and unpack properly.
     int packed_size(MPI_Comm comm) const;
     void pack(void *buf, int bufsize, int *position, MPI_Comm comm) const;
-    static effort_key unpack(module_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
+    static effort_key unpack(const Module::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
 #endif // LIBRA_HAVE_MPI
   };
 

@@ -122,7 +122,7 @@ SOURCES = $(callpath_la_SOURCES) $(nodist_callpath_la_SOURCES) \
 DIST_SOURCES = $(am__callpath_la_SOURCES_DIST) \
 	$(am__libcallpath_la_SOURCES_DIST)
 am__include_HEADERS_DIST = FrameId.h Callpath.h CallpathRuntime.h \
-	callpath_module.h
+	UniqueId.h Module.h callpath_module.h
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
@@ -292,8 +292,8 @@ libcallpath_la_SOURCES = \
 
 libcallpath_la_LIBADD = $(SW_LDFLAGS)
 libcallpath_la_LDFLAGS = -avoid-version 
-include_HEADERS = FrameId.h Callpath.h CallpathRuntime.h \
-	$(am__append_1)
+include_HEADERS = FrameId.h Callpath.h CallpathRuntime.h UniqueId.h \
+	Module.h $(am__append_1)
 INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 
 #
