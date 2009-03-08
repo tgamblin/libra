@@ -17,7 +17,9 @@ libcallpath_la_LDFLAGS = -avoid-version
 include_HEADERS = \
 	FrameId.h \
 	Callpath.h \
-	CallpathRuntime.h
+	CallpathRuntime.h \
+  UniqueId.h \
+	Module.h
 
 INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 
