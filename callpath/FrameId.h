@@ -11,7 +11,7 @@
 #include <mpi.h>
 #endif // LIBRA_HAVE_MPI
 
-#include "Module.h"
+#include "ModuleId.h"
 
 ///
 /// Module, offset representation for Callpath frames.  
@@ -19,10 +19,10 @@
 ///
 class FrameId {
 public:
-  Module module;
+  ModuleId module;
   uintptr_t offset;
 
-  FrameId(Module m, uintptr_t offset);
+  FrameId(ModuleId m, uintptr_t offset);
   FrameId(const std::string& modname, uintptr_t offset);
   FrameId(const FrameId& other);
 
@@ -33,7 +33,7 @@ public:
 
   /// reads a frame's raw values in from a file.  module will require
   /// translation before it is usable.
-  static FrameId read_in(const Module::id_map& trans, std::istream& in);
+  static FrameId read_in(const ModuleId::id_map& trans, std::istream& in);
 
   /// Assignment.
   FrameId& operator=(const FrameId& other);
@@ -48,7 +48,7 @@ public:
 
   /// Unpacks a frame from am MPI buffer.  Requires a module id map for translating
   /// remote to local module ids.
-  static FrameId unpack(const Module::id_map& trans, void *buf, int bufsize, int *position, MPI_Comm comm);
+  static FrameId unpack(const ModuleId::id_map& trans, void *buf, int bufsize, int *position, MPI_Comm comm);
 #endif // LIBRA_HAVE_MPI  
   
 private:

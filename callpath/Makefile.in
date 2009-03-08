@@ -88,10 +88,11 @@ callpath_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(callpath_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_callpath_la_rpath = -rpath $(pnmpidir)
 libcallpath_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__libcallpath_la_SOURCES_DIST = Callpath.C FrameId.C \
+am__libcallpath_la_SOURCES_DIST = Callpath.C FrameId.C ModuleId.C \
 	CallpathRuntime.C
 @HAVE_SW_TRUE@am__objects_1 = CallpathRuntime.lo
-am_libcallpath_la_OBJECTS = Callpath.lo FrameId.lo $(am__objects_1)
+am_libcallpath_la_OBJECTS = Callpath.lo FrameId.lo ModuleId.lo \
+	$(am__objects_1)
 libcallpath_la_OBJECTS = $(am_libcallpath_la_OBJECTS)
 libcallpath_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -122,7 +123,7 @@ SOURCES = $(callpath_la_SOURCES) $(nodist_callpath_la_SOURCES) \
 DIST_SOURCES = $(am__callpath_la_SOURCES_DIST) \
 	$(am__libcallpath_la_SOURCES_DIST)
 am__include_HEADERS_DIST = FrameId.h Callpath.h CallpathRuntime.h \
-	UniqueId.h Module.h callpath_module.h
+	UniqueId.h ModuleId.h callpath_module.h
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
@@ -288,12 +289,13 @@ lib_LTLIBRARIES = libcallpath.la
 libcallpath_la_SOURCES = \
 	Callpath.C \
 	FrameId.C \
+	ModuleId.C \
 	$(SW_ONLY_SRCS)
 
 libcallpath_la_LIBADD = $(SW_LDFLAGS)
 libcallpath_la_LDFLAGS = -avoid-version 
 include_HEADERS = FrameId.h Callpath.h CallpathRuntime.h UniqueId.h \
-	Module.h $(am__append_1)
+	ModuleId.h $(am__append_1)
 INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 
 #
@@ -406,6 +408,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Callpath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CallpathRuntime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameId.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ModuleId.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callpath_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callpath_wrapper.Plo@am__quote@
 

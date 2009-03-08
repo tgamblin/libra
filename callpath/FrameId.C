@@ -14,7 +14,7 @@ using namespace wavelet;
 using namespace std;
 
 
-FrameId::FrameId(Module mod, uintptr_t off) 
+FrameId::FrameId(ModuleId mod, uintptr_t off) 
   : module(mod), offset(off) { }
 
 FrameId::FrameId(const string& modname, uintptr_t off)
@@ -34,8 +34,8 @@ void FrameId::write_out(ostream& out) const {
   vl_write(out, offset);
 }
 
-FrameId FrameId::read_in(const Module::id_map& trans, istream& in) {
-  FrameId fid(Module::read_id(trans, in), 0);
+FrameId FrameId::read_in(const ModuleId::id_map& trans, istream& in) {
+  FrameId fid(ModuleId::read_id(trans, in), 0);
   fid.offset = vl_read(in);      // force eval order of reads.
   return fid;
 }
@@ -60,8 +60,8 @@ void FrameId::pack(void *buf, int bufsize, int *position, MPI_Comm comm) const {
   PMPI_Pack(const_cast<uintptr_t*>(&offset), 1, MPI_UINTPTR_T, buf, bufsize, position, comm);
 }
 
-FrameId FrameId::unpack(const Module::id_map& trans, void *buf, int bufsize, int *position, MPI_Comm comm) {
-  FrameId result(Module::unpack_id(trans, buf, bufsize, position, comm), 0);
+FrameId FrameId::unpack(const ModuleId::id_map& trans, void *buf, int bufsize, int *position, MPI_Comm comm) {
+  FrameId result(ModuleId::unpack_id(trans, buf, bufsize, position, comm), 0);
   PMPI_Unpack(buf, bufsize, position, &result.offset, 1, MPI_UINTPTR_T, comm);
   return result;
 }

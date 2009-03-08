@@ -72,7 +72,7 @@ void Callpath::pack(void *buf, int bufsize, int *position, MPI_Comm comm) const 
 }
 
 
-Callpath Callpath::unpack(const Module::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm) {
+Callpath Callpath::unpack(const ModuleId::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm) {
   int len;
   PMPI_Unpack(buf, bufsize, position, &len, 1, MPI_INT, comm); // number of elements
   
@@ -116,14 +116,14 @@ size_t Callpath::size() const {
 
 void Callpath::write_out(ostream& out) {
   // build set of modules referenced in this particular callpath
-  set<Module> my_modules;
+  set<ModuleId> my_modules;
   for (size_t i=0; i < size(); i++) {
     my_modules.insert((*path)[i].module);
   }
 
   // write out names/string addrs of all module strings used here
   vl_write(out, my_modules.size());
-  for (set<Module>::iterator i=my_modules.begin(); i != my_modules.end(); i++) {
+  for (set<ModuleId>::iterator i=my_modules.begin(); i != my_modules.end(); i++) {
     i->write_id(out);
     i->write_out(out);
   }
@@ -140,10 +140,10 @@ Callpath Callpath::read_in(istream& in) {
   size_t num_modules = vl_read(in);
 
   // read in strings and make entries to translate addresses
-  Module::id_map trans;
+  ModuleId::id_map trans;
   for (size_t i=0; i < num_modules; i++) {
     uintptr_t addr = vl_read(in);
-    trans.insert(Module::id_map::value_type(addr, Module::read_in(in)));
+    trans.insert(ModuleId::id_map::value_type(addr, ModuleId::read_in(in)));
   }
 
   size_t len = vl_read(in);

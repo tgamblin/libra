@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 #include "FrameId.h"
-#include "Module.h"
+#include "ModuleId.h"
 
 /// This class represents a unique callpath, along with some extra info 
 /// for easy callpath lookup.
@@ -69,7 +69,7 @@ public:
   /// Unpacks a callpath packed by pack().  Ensures path pointer uniqueness 
   /// within processes, but not across nodes.  Requires module translation via
   /// a map from send_modules().
-  static Callpath unpack(const Module::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
+  static Callpath unpack(const ModuleId::id_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
   
 #endif // LIBRA_HAVE_MPI
   
