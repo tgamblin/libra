@@ -19,12 +19,15 @@ extern "C" {
   /// called the same number of times on each process.
   void progress_step();
 
-  /// This should be called within progress steps to accumulate time (or some other
-  /// metric) spent in effort regions.  Metrics are kept track of by id (position
-  /// in the vector), and the runtime keeps per-id traces.  At the end of each timestep,
-  /// the sum of all counter values within that timestep is appended to the trace for
-  /// each metric.
-  void record_effort(size_t count, double *counter_values);
+  /// Inits manual effort library with a list of metric names.
+  /// This needs to be called before effort initialization (before MPI_Init())
+  void init_metrics(size_t metric_count, const char **metric_names);
+
+  /// This should be called within progress steps to accumulate elapsed metrics in effort regions.
+  /// Metrics are assumed to be positionally correlated with the names passed to init_effort, and
+  /// metric_values is assumed to have at least as many elements as the metric_count passed to 
+  /// init_effort.
+  void record_effort(double *metric_values);
   
 #ifdef __cplusplus
 }

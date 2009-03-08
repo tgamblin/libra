@@ -20,7 +20,8 @@ using namespace std;
 using namespace wavelet;
 
 
-
+/// This is the set of all unique callpaths seen so far.  Used to unique
+/// callpaths on creation, so that instances can be compared by pointer.
 typedef set<const pathvector*, pathvector_lt<less<FrameId> > > callpath_set;
 
 static callpath_set& paths() {
@@ -34,11 +35,11 @@ Callpath::Callpath(const pathvector *p) : path(p) { }
 Callpath::Callpath(const Callpath& other) : path(other.path) { }
 
 
-Callpath Callpath::create(const pathvector *path) {
-  callpath_set::iterator u = paths().find(path);
+Callpath Callpath::create(const pathvector& path) {
+  callpath_set::iterator u = paths().find(&path);
   if (u == paths().end()) {
     // if the vector isn't in there already then create a copy to add
-    pathvector *temp = new pathvector(*path);
+    pathvector *temp = new pathvector(path);
 
     // unique all the module pointers in the new vector.
     for (pathvector::iterator i=temp->begin(); i != temp->end(); i++) {
@@ -145,7 +146,7 @@ Callpath Callpath::unpack(module_map& modules, void *buf, int bufsize, int *posi
     path.push_back(raw_frame);
   }
   
-  return create(&path);
+  return create(path);
 }
 #endif // LIBRA_HAVE_MPI
 
@@ -229,7 +230,7 @@ Callpath Callpath::read_in(istream& in) {
       fid.module = translation[reinterpret_cast<uintptr_t>(fid.module)];
       temp.push_back(fid);
     }
-    return create(&temp);
+    return create(temp);
   }
 }
 

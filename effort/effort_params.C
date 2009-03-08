@@ -41,37 +41,21 @@ namespace effort {
   }
 
 
-  void parse_metrics() {
-    if (strlen(metrics) && !metric_names.size()) {
-      
-    }
-    
-
+  void effort_params::parse_metrics() {
     // Split out what the user asked for into separate strings.
+    vector<string> metric_names;
     split(metrics, " ,", metric_names);
 
-    // move time first if it's there 
-    vector<string>::iterator todel = remove_if(metric_names.begin(), metric_names.end(), 
-                                               bind2nd(equal_to<string>(), METRIC_TIME));
-    keep_time = todel != metric_names.end()
-    metric_names.erase(todel, metric_names.end());
-  }
-
-    size_t num_metrics();
-
-  const string& metric_name(int id) {
-
-
-    if (id < 0) {
-      return METRIC_TIME;
-    } else if (id < (int)metric_names.size()) {
-      return metric_names[id];
-    } else {
-      ostringstream idstr;
-      idstr << id;
-      return idstr.str();
+    for (size_t i=0; i < metric_names.size(); i++) {
+      Metric m(metric_names[i]);
+      if (m == Metric::time()) {
+        have_time = true;
+      } else {
+        all_metrics.push_back(m);
+      }
     }
 
+    parsed = true;
   }
 
 } //namespace

@@ -60,6 +60,9 @@ int main(int argc, char **argv) {
   double scale = ((double)bunny.size1() / size);
   double x = rank * scale;  
 
+  const char* metrics[] = {"Bunny", "BunnyFlipped", "Bunny2x", "Bunny0.5x"};
+  init_metrics(4, metrics);
+  
   double values[4];
   for (size_t i = 0; i < size; i++) {
     double y = i * scale;
@@ -72,7 +75,7 @@ int main(int argc, char **argv) {
     values[2] = 2.0 * values[0];
     values[3] = 0.5 * values[0];
 
-    record_effort(4, values);
+    record_effort(values);
     progress_step();
   }
 

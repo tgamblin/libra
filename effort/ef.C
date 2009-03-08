@@ -12,13 +12,14 @@ using namespace std;
 #include "config.h"
 #endif // HAVE_CONFIG_H
 
+#include "UniqueId.h"
 #include "wavelet.h"
 #include "wt_direct.h"
 #include "ezw_decoder.h"
 #include "matrix_utils.h"
 using namespace wavelet;
 
-#include "effort_metadata.h"
+#include "effort_key.h"
 using namespace effort;
 
 #include "string_utils.h"
@@ -344,10 +345,10 @@ ostream& operator<<(ostream& out, const row_header& h) {
   return out;
 }
 
-void write_field(char fid, ostream& out, const effort_metadata& md, const ezw_header& header) {
+void write_field(char fid, ostream& out, const effort_key& key, const ezw_header& header) {
   switch (fid) {
-  case 'm': out << row_header("Metric")   << md.metric;       break;
-  case 't': out << row_header("Type")     << md.type;         break;  
+  case 'm': out << row_header("Metric")   << key.metric;      break;
+  case 't': out << row_header("Type")     << key.type;        break;  
   case 'r': out << row_header("Rows")     << header.rows;     break;
   case 'c': out << row_header("Cols")     << header.cols;     break;
   case 'l': out << row_header("Level")    << header.level;    break;
@@ -363,11 +364,11 @@ void write_field(char fid, ostream& out, const effort_metadata& md, const ezw_he
   case 'T': out << row_header("Thresh")   << hex << "0x"     << header.threshold << dec; break;
   case 'a': 
     out << row_header("Start");
-    write_names_for_path(out, md.start_path);
+    write_names_for_path(out, key.start_path);
     break;
   case 'z': 
     out << row_header("End");
-    write_names_for_path(out, md.end_path);
+    write_names_for_path(out, key.end_path);
     break;
 
   default: // ignore
@@ -377,9 +378,9 @@ void write_field(char fid, ostream& out, const effort_metadata& md, const ezw_he
 
 
 
-void write_metadata(ostream& out, const effort_metadata& md, const ezw_header& header) {
+void write_metadata(ostream& out, const effort_key& key, const ezw_header& header) {
   for (size_t i=0; i < fields.size(); i++) {
-    write_field(fields[i], out, md, header);
+    write_field(fields[i], out, key, header);
 
     if (one_line && (i < fields.size()-1)) {
       out << " | ";
@@ -404,14 +405,14 @@ int main(int argc, char **argv) {
       exit(1);
     }
     
-    effort_metadata md;
+    effort_key key;
     ezw_header header;
 
-    effort_metadata::read_in(comp_file, md);    
+    effort_key::read_in(comp_file, key);    
     ezw_header::read_in(comp_file, header);
 
     if (stage == none) {      // no parameters
-      write_metadata(cout, md, header);
+      write_metadata(cout, key, header);
       continue;
     }
 
@@ -430,7 +431,7 @@ int main(int argc, char **argv) {
       ostringstream mdname;
       mdname <<  "md" << suffix;
       ofstream mdfile(mdname.str().c_str());
-      write_metadata(mdfile, md, header);
+      write_metadata(mdfile, key, header);
     }
 
     if (stage < wt_coeff) return 0;

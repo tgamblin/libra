@@ -26,7 +26,7 @@ EffortData::EffortData(const string& fn) : filename(fn), approximation_level(-1)
   }
 
   // just read in the metadata here
-  effort_metadata::read_in(in, metadata);
+  effort_key::read_in(in, id);
   ezw_header::read_in(in, header);
 } 
 
@@ -52,9 +52,9 @@ void EffortData::load_from_file() const {
   }
 
   // have to read in the metadata again to get to the data.
-  effort_metadata md;
+  effort_key key;
   ezw_header hdr;
-  effort_metadata::read_in(in, md);
+  effort_key::read_in(in, key);
   ezw_header::read_in(in, hdr);
 
   // here we read in wavelet coefficients from the ezw stream.
@@ -96,19 +96,19 @@ std::string EffortData::getFilename() {
 }
 
 Callpath EffortData::getStart() {
-  return metadata.start_path;
+  return id.start_path;
 }
 
 Callpath EffortData::getEnd() {
-  return metadata.end_path;
+  return id.end_path;
 }
 
 int EffortData::getType() {
-  return metadata.type;
+  return id.type;
 }
 
 std::string EffortData::getMetric() {
-  return metadata.metric;
+  return id.metric.str();
 }
 
 void EffortData::setApproximationLevel(int level) {

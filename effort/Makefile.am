@@ -3,32 +3,32 @@ include_HEADERS = effort_api.h
 dist_noinst_HEADERS = \
 	effort_data.h \
 	effort_key.h \
-	effort_metadata.h \
 	effort_module.h \
 	effort_params.h \
 	effort_record.h \
 	parallel_compressor.h \
 	env_config.h \
 	string_utils.h \
-	synchronize_keys.h
+	synchronize_keys.h \
+	Metric.h
 
 lib_LTLIBRARIES = libeffort.la
 
 #
 # This is used by 
 #
-libeffort_la_SOURCES = effort_metadata.C \
+libeffort_la_SOURCES = effort_key.C \
 						 		       effort_record.C \
-											 string_utils.C
+                       effort_data.C \
+                       effort_params.C \
+											 string_utils.C \
+											 Metric.C
 libeffort_la_LDFLAGS = -avoid-version
 
 #
 # Sources for both PMPI and PnMPI library
 #
 PMPI_EFFORT_SRCS=effort_module.C \
-                 effort_params.C \
-								 effort_key.C \
-                 effort_data.C \
 								 parallel_compressor.C \
 						 		 synchronize_keys.C \
 								 env_config.C
@@ -49,7 +49,7 @@ nrmse_SOURCES=nrmse.C
 nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 tuner_SOURCES=tuner.C
-tuner_LDADD=libpmpi-effort.la libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib

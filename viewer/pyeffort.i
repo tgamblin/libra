@@ -7,7 +7,7 @@
 #include "Callpath.h"
 #include "EffortData.h"
 #include "FrameId.h"
-#include "effort_metadata.h"
+#include "effort_key.h"
 #include "ezw.h"
 using namespace wavelet;
 using namespace effort;

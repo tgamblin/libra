@@ -2,12 +2,15 @@
 #define EFFORT_KEY_H
 
 #include "Callpath.h"
+#include "Metric.h"
+
+#include "libra-config.h"
+#ifdef LIBRA_HAVE_MPI
+#include <mpi.h>
+#endif // LIBRA_HAVE_MPI
 
 /// integer type for progress to pass to MPI_Pcontrol()
 #define PROGRESS_TYPE 0
-
-#define METRIC_TIME "time"
-#define METRIC_TIME_ID -1
 
 namespace effort {
   
@@ -16,16 +19,16 @@ namespace effort {
   /// ended the effort region.  Type is a user-defined value for phase id, which
   /// can be used to further differentiate effort.
   struct effort_key {
-    int metric;
+    Metric metric;
     int type;
     Callpath start_path;
     Callpath end_path;
 
     /// Constructs an effort key with two null callpaths.
-    effort_key(int m = METRIC_TIME_ID, int t = PROGRESS_TYPE) : metric(m), type(t) { }
+    effort_key(Metric m = Metric::time(), int t = PROGRESS_TYPE) : metric(m), type(t) { }
     
     /// Value constructor.
-    effort_key(int m, int t, Callpath start, Callpath end);
+    effort_key(Metric m, int t, Callpath start, Callpath end);
 
     /// Copy constructor.
     effort_key(const effort_key& other);
@@ -36,11 +39,19 @@ namespace effort {
     /// True if the effort key represents communciation.
     bool isComm() const;
 
+    /// Writes out this effort id to a stream
+    void write_out(std::ostream& out);
+    
+    /// Reads an effort id out of a stream.
+    static void read_in(std::istream& in, effort_key& md);
+
+#ifdef LIBRA_HAVE_MPI
     // For MPI packing -- you'll need Callpath::pack_modules() to get a 
     // module_map and unpack properly.
     int packed_size(MPI_Comm comm) const;
     void pack(void *buf, int bufsize, int *position, MPI_Comm comm) const;
     static effort_key unpack(module_map& modules, void *buf, int bufsize, int *position, MPI_Comm comm);
+#endif // LIBRA_HAVE_MPI
   };
 
   /// compares type and signatures to make sure they're the same.
@@ -68,6 +79,11 @@ namespace effort {
     bool operator()(const effort_key& lhs, const effort_key& rhs);
   };
   
+
+  /// Utility function to identify valid filenames output by the tool
+  /// TODO : provide something to make a filename here too.
+  bool parse_filename(const std::string& filename, std::string *metric = NULL, int *type = NULL, int *number = NULL);
+
 } // namespace
 
 #endif // EFFORT_KEY_H

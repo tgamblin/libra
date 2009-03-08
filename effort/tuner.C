@@ -4,7 +4,11 @@
 #include <vector>
 using namespace std;
 
+#include "FrameId.h"
+
 #include "effort_data.h"
+#include "effort_params.h"
+#include "Metric.h"
 #include "Timer.h"
 using namespace effort;
 
@@ -12,8 +16,8 @@ using namespace effort;
 
 /// type for dummy callpaths; just includes start/end pair.
 struct dummy_callpath {
-  const uintptr_t start[MAX_PATH];
-  const uintptr_t end[MAX_PATH];
+  uintptr_t start[MAX_PATH];
+  uintptr_t end[MAX_PATH];
 };
 
 /// Array of null-terminated dummy callpaths from S3D on Blue Gene/P.
@@ -21,35 +25,36 @@ struct dummy_callpath {
 extern dummy_callpath dummies[];
 
 
-void fill_pathvector(unintptr_t arr[], vector<FromeId>& vec) {
-  for (unintptr_t *off = arr; *off; off++) {
-    vec.push_back(Frame_Id(module_name, *off));
+void fill_pathvector(const string& module_name, const uintptr_t arr[], vector<FrameId>& vec) {
+  for (const uintptr_t *off = arr; *off; off++) {
+    vec.push_back(FrameId::create(module_name, *off));
   }
 }
 
 
 int main(int argc, char **argv) {
-  PMPI_Init(&argc, &argv);
+  MPI_Init(&argc, &argv);
 
   int rank, size;
   PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
   PMPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  timesteps = 1024;
+  size_t timesteps = 1024;
 
   // load up an effort log with synthetic data
   effort_data effort_log;
-  for (dummy_callpath *dummy = dummies[0]; dummy->start[0]; dummy++) {
+  size_t k=1;
+  for (dummy_callpath *dummy = dummies; dummy->start[0]; dummy++) {
     // for now just use one module name, like bluegene.
     string module_name("[unknown_module]");
 
     // two synthetic callpaths
-    vector<FromeId> start, end;
-    fill_pathvector(dummy->start, start);
-    fill_pathvector(dummy->end, end);
+    vector<FrameId> start, end;
+    fill_pathvector(module_name, dummy->start, start);
+    fill_pathvector(module_name, dummy->end, end);
 
     // construct identifier from callpaths
-    effort_key key(METRIC_TIME_ID, 0, Callpath::create(&start[0]), Callpath::create(&end[0]));
+    effort_key key(Metric::time(), 0, Callpath::create(start), Callpath::create(end));
 
     // fill up local trace with some values.
     vector<double>& values = effort_log[key].values;
@@ -57,16 +62,17 @@ int main(int argc, char **argv) {
     for (size_t i=0; i < values.size(); i++) {
       values[i] = ((.06 + rank) * (5+i+0.4*i*i-0.02*i*i*k));
     }
+    k++;
   }
   effort_log.progress_count = timesteps;
   
   effort_params params;
-
+  /*
   params.rows_per_process = ;
   params.verify = ;
   params.pass_limit = ;
   params.encoding = ; // rle, huffman
-  
+  */
   
   
   // # regions
@@ -77,7 +83,7 @@ int main(int argc, char **argv) {
 
 
   effort_log.clear();
-  PMPI_Finalize(&argc, &argv);
+  MPI_Finalize();
 }
 
 

@@ -23,7 +23,6 @@ using namespace std;
 #include "matrix_utils.h"
 using namespace wavelet;
 
-#include "effort_metadata.h"
 #include "wavelet_ssim.h"
 using namespace effort;
 

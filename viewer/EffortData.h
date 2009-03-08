@@ -4,7 +4,7 @@
 #include <string>
 #include "wavelet.h"
 #include "ezw.h"
-#include "effort_metadata.h"
+#include "effort_key.h"
 #include "Callpath.h"
 
 /// This class represents data and metadata from a particular effort
@@ -76,9 +76,9 @@ public:
   const wavelet::wt_matrix& getCoefficients() const;
 
 private:
-  wavelet::ezw_header header;          /// Header data
-  effort::effort_metadata metadata;    /// Metadata
-  std::string filename;                /// Name of file that data came from.
+  wavelet::ezw_header header;           /// Header data
+  effort::effort_key id;                /// Metadata
+  std::string filename;                 /// Name of file that data came from.
   int approximation_level;              /// Level of approx to expand to.
 
   EffortData(const EffortData& other);            // not implemented

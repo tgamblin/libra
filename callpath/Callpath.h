@@ -43,7 +43,7 @@ public:
   static void dump(std::ostream& out);
     
 
-  static Callpath create(const pathvector *path);
+  static Callpath create(const pathvector& path);
 
 
   /// Gets the ith element in the callpath.

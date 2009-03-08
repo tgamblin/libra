@@ -9,7 +9,7 @@ using namespace std;
 #include "matrix_utils.h"
 using namespace wavelet;
 
-#include "effort_metadata.h"
+#include "effort_key.h"
 using namespace effort;
 
 
@@ -35,11 +35,11 @@ int main(int argc, char **argv) {
     string exact_filename(argv[2]);
     ifstream exact_file(exact_filename.c_str());
 
-    effort_metadata md;
+    effort_key key;
     ezw_decoder decoder;
     wt_direct wt;
 
-    effort_metadata::read_in(exact_file, md);
+    effort_key::read_in(exact_file, key);
     int level = decoder.decode(exact_file, exact);
     wt.iwt_2d(exact, level);
     
@@ -68,11 +68,11 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  effort_metadata md;
+  effort_key key;
   ezw_decoder decoder;
   wt_direct wt;
 
-  effort_metadata::read_in(comp_file, md);
+  effort_key::read_in(comp_file, key);
   int level = decoder.decode(comp_file, reconstruction);
   wt.iwt_2d(reconstruction, level);
 

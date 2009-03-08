@@ -69,7 +69,7 @@ Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
     temp.push_back(FrameId(&temp_modules[i], offset));
   }
 
-  return Callpath::create(&temp);
+  return Callpath::create(temp);
 }
 
 

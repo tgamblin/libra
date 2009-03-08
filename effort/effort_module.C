@@ -92,7 +92,6 @@ struct effort_module {
   // Storage and metadata for PAPI counters
   double start_time;            /// Start time for system clock.
 
-  vector<string> metric_names;  /// Mapping from id to metric name (PAPI or otherwise)
   vector<long long> counters;   /// HW counter value storage for PAPI
   int event_set;                /// PAPI event set.
 
@@ -100,7 +99,6 @@ struct effort_module {
   effort_module() 
     : cur_effort_type(0)
     , working_dir(get_wd())
-    , keep_time(true)
     , start_time(-1)
 #ifdef HAVE_LIBPAPI
     , event_set(PAPI_NULL) 
@@ -135,7 +133,7 @@ struct effort_module {
     }
 
     metric_setup();  
-    if (keep_time) start_time = get_time_ns();
+    start_time = get_time_ns();
 
     if (rank == 0) {
       cerr << "========================================================" << endl;
@@ -171,23 +169,13 @@ struct effort_module {
   /// Initializes PAPI library and sets up performance metrics.
   ///
   void metric_setup() {
-    // First determine if we need PAPI or not by looking through 
-    // the metrics the user wants.
-    split(params.metrics, " ,", metric_names);
-
-    // move time first if it's there 
-    vector<string>::iterator todel = remove_if(metric_names.begin(), metric_names.end(), 
-                                               bind2nd(equal_to<string>(), METRIC_TIME));
-    if (todel == metric_names.end()) {
-      keep_time = false;
-    } else {
-      keep_time = true;
-      metric_names.erase(todel, metric_names.end());
-    }
-    counters.resize(metric_names.size());
+    const vector<Metric>& metrics = params.get_metrics();
+    size_t num_counters = metrics.size();
 
     // if there are no hardware metrics, then just skip this.
-    if (counters.size() == 0) return;
+    if (!num_counters) return;
+
+    counters.resize(num_counters);
 
     // Initialize the PAPI library 
     int retval = PAPI_library_init(PAPI_VER_CURRENT);
@@ -204,9 +192,9 @@ struct effort_module {
       ERROR("Couldn't create event set!");
     }
 
-    for (size_t i=0; i < metric_names.size(); i++) {
+    for (size_t i=0; i < metrics.size(); i++) {
       int event;
-      char *name = const_cast<char*>(metric_names[i].c_str());
+      char *name = const_cast<char*>(metrics[i].c_str());
 
       if (PAPI_event_name_to_code(name, &event) != PAPI_OK) {
         ERROR("Error adding event: " << name);
@@ -230,25 +218,27 @@ struct effort_module {
   
 
   /// Creates an effort key and adds the provided delta to the key's entry in the effort log.
-  inline void record_metric(const Callpath& start, const Callpath& end, int metric_id, double delta) {
-    effort_key key(metric_id, cur_effort_type, start, end);
+  inline void record_metric(const Callpath& start, const Callpath& end, Metric metric, double delta) {
+    effort_key key(metric, cur_effort_type, start, end);
     effort_log[key] += delta;
   }
 
   /// Does the work of inserting the effort key for the current region into the map.
   /// Records time, current effort type, and whatever counters are enabled.
   inline void record_region(const Callpath& start, const Callpath& end) {
-    if (keep_time) {
+    if (params.keep_time()) {
       double cur_time = get_time_ns();
-      record_metric(start, end, METRIC_TIME_ID, cur_time - start_time);
+      record_metric(start, end, Metric::time(), cur_time - start_time);
       start_time = cur_time;
     }
 
 #ifdef HAVE_LIBPAPI
-    if (counters.size() != 0) {
+    if (counters.size()) {
       PAPI_accum(event_set, &counters[0]);  // get deltas
-      for (size_t i=0; i < metric_names.size(); i++) {
-        record_metric(start, end, i, counters[i]);
+
+      const vector<Metric>& metrics = params.get_metrics();
+      for (size_t i=0; i < metrics.size(); i++) {
+        record_metric(start, end, metrics[i], counters[i]);
         counters[i] = 0;
       }
     }
@@ -258,14 +248,14 @@ struct effort_module {
 
   /// Just resets counters and timers; doesn't record anything.
   void reset_counters() {
-    if (keep_time) {
+    if (params.keep_time()) {
       start_time = get_time_ns();
     }
   
 #ifdef HAVE_LIBPAPI
-    if (counters.size() != 0) {
-      PAPI_accum(event_set, &counters[0]);  // get deltas
-      for (size_t i=0; i < metric_names.size(); i++) {
+    if (counters.size()) {
+      PAPI_accum(event_set, &counters[0]);  // get deltas, but discard
+      for (size_t i=0; i < counters.size(); i++) {
         counters[i] = 0;
       }
     }
@@ -304,9 +294,25 @@ struct effort_module {
   }
 
 
-  inline void record_effort(size_t count, double *counter_values) {
-    for (size_t i=0; i < count; i++) {
-      record_metric(Callpath(), Callpath(), i, counter_values[i]);
+  void init_metrics(size_t metric_count, const char **metric_names) {
+    if (!metric_count) return;
+
+    ostringstream joined;
+    joined << metric_names[0];
+    for (size_t i=1; i < metric_count; i++) {
+      joined << "," << metric_names[i];
+    }
+
+    params.metrics = strdup(joined.str().c_str());
+    params.parse_metrics();
+    counters.resize(metric_count);
+  }
+
+
+  inline void record_effort(double *counter_values) {
+    const vector<Metric>& metrics = params.get_metrics();
+    for (size_t i=0; i < metrics.size(); i++) {
+      record_metric(Callpath(), Callpath(), metrics[i], counter_values[i]);
     }
   }
 
@@ -441,10 +447,6 @@ void effort_postinit() {
   module().postinit();  
 }
 
-string id_to_metric_name(int id) {  
-  return module().id_to_metric_name(id);  
-}
-
 void effort_do_stackwalk() {  
   module().do_stackwalk();  
 }
@@ -469,6 +471,10 @@ void effort_finalize() {
   module().finalize();  
 }
 
-void record_effort(size_t count, double *counter_values) {
-  module().record_effort(count, counter_values);
+void record_effort(double *counter_values) {
+  module().record_effort(counter_values);
+}
+
+void init_metrics(size_t metric_count, const char **metric_names) {
+  module().init_metrics(metric_count, metric_names);
 }

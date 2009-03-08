@@ -12,7 +12,7 @@
 #include <iostream>
 
 /// Comparator for string pointers
-struct dereference_lt {
+struct fid_dereference_lt {
   template <typename Tp>
   bool operator()(Tp lhs, Tp rhs) const {
     return *lhs < *rhs;
@@ -20,7 +20,7 @@ struct dereference_lt {
 };
 
 /// Set of unique string pointers for module ids.
-typedef std::set<const std::string*, dereference_lt> module_set;
+typedef std::set<const std::string*, fid_dereference_lt> module_set;
 
 ///
 /// Element type for callpaths.  Uniquely identifies an address within 
@@ -68,7 +68,6 @@ public:
 private:
   friend class Callpath;
   friend class CallpathRuntime;
-  friend class MPICallpath;
 
   static const std::string *module_for(const std::string& name);
 
