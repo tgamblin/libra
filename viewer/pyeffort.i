@@ -179,11 +179,6 @@ class FrameId {
 public:
   ~FrameId() { }
   FrameId(const FrameId& other);
-  void write_out(std::ostream& out) const;
-  static FrameId read_in(std::istream& in);
-  static FrameId create(const std::string& name, uintptr_t offset);
-
-  friend class Callpath;
 
 %pythoncode %{
   # Easy, slow hash function.  Make it faster later if needed.
@@ -237,7 +232,7 @@ public:
   }
 
   const std::string& module() {
-    return *self->module;
+    return self->module.str();
   }
 
   unsigned long long offset() {

@@ -106,7 +106,7 @@ public:
   }
 
   static Derived read_in(std::istream& in) {
-    size_t id_size = vl_read(in);
+    size_t id_size = wavelet::vl_read(in);
     char buf[id_size+1];
     in.read(buf, id_size);
     buf[id_size] = '\0';
@@ -122,8 +122,8 @@ public:
     return trans.find(id)->second;
   }
 
-  template<class Derived>
-  friend std::ostream& operator<<(std::ostream& out, UniqueId<Derived> uid);
+  template<class D>
+  friend std::ostream& operator<<(std::ostream& out, UniqueId<D> uid);
 
 #ifdef LIBRA_HAVE_MPI
   // ----------------------------------------------------------------------------------

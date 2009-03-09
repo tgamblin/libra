@@ -13,6 +13,7 @@ class Viewer(QMainWindow):
 
     def __init__(self):
         QMainWindow.__init__(self, None)
+        self.setUnifiedTitleAndToolBarOnMac(True)
         self.setWindowTitle("Libra")
         self.viewers = vtkutils.ViewerCollection()
         self.trees = []
@@ -20,7 +21,7 @@ class Viewer(QMainWindow):
 
         # Initial size/position
         self.resize(1024, 768)
-        self.move(50, 0)
+        self.move(50, 50)
         
         # Set up file-based view of effort regions.
         self.fileView = effort_tree.TreeView(self)
