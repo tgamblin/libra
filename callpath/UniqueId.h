@@ -25,13 +25,12 @@ struct dereference_lt {
 
 /// Class to represent internally-uniqued strings.  Much like symbols in ruby or lisp,
 /// this keeps an internal set of pointers to unique std::strings.
-/// Instances of the class contain unique pointers into this set, so they can be
-/// compared fast for equality, less than, etc.  Lookups into the map are done
-/// at construction.  Methods for serialization, etc are also provided here.
 ///
-/// Note: std::string class must be copyable (support copy constructor) and less-than comparable.
+/// Since instances of UniqueId contain unique pointers (looked up on creation), they
+/// can compared fast for equality, less than, etc.  
+/// Methods for serialization, etc are also provided here.
 ///
-/// To make your own unique id class using this template use CRTP:
+/// To make your own unique id class using UniqueId, use static polymorphism:
 /// 
 ///    class MyUniqueIdClass : public UniqueId<MyUniqueIdClass> {
 ///    public:

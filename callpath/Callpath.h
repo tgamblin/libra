@@ -14,8 +14,14 @@
 #include "FrameId.h"
 #include "ModuleId.h"
 
-/// This class represents a unique callpath, along with some extra info 
-/// for easy callpath lookup.
+/// Container for FrameIds, representing a callpath.
+/// Currently, Callpaths are created via StackwalkerAPI in CallpathRuntime.
+/// 
+/// Features:
+/// - Reading/writing to streams.
+/// - Send/receive via MPI.
+/// - Fast comparison and equality operators.
+///
 class Callpath {
 public:
 
@@ -25,7 +31,7 @@ public:
 
   ~Callpath() { }
    
-  /// Returns the null callpath.
+  /// Returns a null callpath.
   static inline Callpath null() {
     return Callpath(NULL);
   }
@@ -33,13 +39,10 @@ public:
   /// Assignment
   Callpath& operator=(const Callpath& other);
 
-
   /// Dumps all known paths to a file
   static void dump(std::ostream& out);
-    
 
   static Callpath create(const std::vector<FrameId>& path);
-
 
   /// Gets the ith element in the callpath.
   const FrameId& operator[](size_t i) const {
@@ -112,7 +115,9 @@ inline bool operator!=(const Callpath& lhs, const Callpath& rhs) {
 /// Outputs a simple string representation of this callpath.
 std::ostream& operator<<(std::ostream& out, const Callpath& path);
 
-/// Less-than comparator for arrays of frame ids.
+
+/// Heavyweight comparator for vectors of FrameIds.  Iterates over all FrameIds,
+/// calling LessThan on each of them.
 template <class LessThan>
 struct pathvector_lt {
   LessThan lt;
@@ -132,7 +137,9 @@ struct pathvector_lt {
   }
 };
 
-/// Functor for path_lt.
+/// Functor for enforcing a total ordering of callpaths across different processes.
+/// Compares frames using frameid_string_lt, which does a string compare on module
+/// names instead of the fast pointer compare.
 struct callpath_path_lt {
   pathvector_lt<frameid_string_lt> lt;
   bool operator()(const Callpath& lhs, const Callpath& rhs) {
