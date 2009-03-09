@@ -23,14 +23,16 @@ libeffort_la_SOURCES = effort_key.C \
                        effort_params.C \
 											 string_utils.C \
 											 Metric.C
+if HAVE_MPI
+libeffort_la_SOURCES += parallel_compressor.C \
+												synchronize_keys.C
+endif
 libeffort_la_LDFLAGS = -avoid-version
 
 #
 # Sources for both PMPI and PnMPI library
 #
 PMPI_EFFORT_SRCS=effort_module.C \
-								 parallel_compressor.C \
-						 		 synchronize_keys.C \
 								 env_config.C
 
 #

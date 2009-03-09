@@ -1,15 +1,21 @@
 #include <mpi.h>
+#include <sys/stat.h>
 #include <stdint.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
 using namespace std;
 
 #include "FrameId.h"
+#include "ModuleId.h"
+#include "Metric.h"
+#include "Timer.h"
+#include "io_utils.h"
+using namespace wavelet;
 
 #include "effort_data.h"
 #include "effort_params.h"
-#include "Metric.h"
-#include "Timer.h"
+#include "parallel_compressor.h"
 using namespace effort;
 
 #define MAX_PATH 20
@@ -25,9 +31,9 @@ struct dummy_callpath {
 extern dummy_callpath dummies[];
 
 
-void fill_pathvector(const string& module_name, const uintptr_t arr[], vector<FrameId>& vec) {
+void fill_pathvector(ModuleId module, const uintptr_t arr[], vector<FrameId>& vec) {
   for (const uintptr_t *off = arr; *off; off++) {
-    vec.push_back(FrameId(module_name, *off));
+    vec.push_back(FrameId(module, *off));
   }
 }
 
@@ -39,6 +45,13 @@ int main(int argc, char **argv) {
   PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
   PMPI_Comm_size(MPI_COMM_WORLD, &size);
 
+  if (!isPowerOf2(size)) {
+    if (rank == 0) {
+      cerr << "Error: Process count is not a power of 2!" << endl;
+    }
+    MPI_Abort(MPI_COMM_WORLD, 1);
+  }
+
   size_t timesteps = 1024;
 
   // load up an effort log with synthetic data
@@ -46,12 +59,12 @@ int main(int argc, char **argv) {
   size_t k=1;
   for (dummy_callpath *dummy = dummies; dummy->start[0]; dummy++) {
     // for now just use one module name, like bluegene.
-    string module_name("[unknown module]");
+    ModuleId module("[unknown module]");
 
     // two synthetic callpaths
     vector<FrameId> start, end;
-    fill_pathvector(module_name, dummy->start, start);
-    fill_pathvector(module_name, dummy->end, end);
+    fill_pathvector(module, dummy->start, start);
+    fill_pathvector(module, dummy->end, end);
 
     // construct identifier from callpaths
     effort_key key(Metric::time(), 0, Callpath::create(start), Callpath::create(end));
@@ -67,20 +80,33 @@ int main(int argc, char **argv) {
   effort_log.progress_count = timesteps;
   
   effort_params params;
-  /*
-  params.rows_per_process = ;
-  params.verify = ;
-  params.pass_limit = ;
-  params.encoding = ; // rle, huffman
-  */
+  parallel_compressor compressor(params);
   
-  
-  // # regions
-  // timesteps
-  // rows per process
-  // ezw passes
-  // entropy coding (or not)
+  for (int rows_per_process=4; rows_per_process < size; rows_per_process *= 2) {
+    // TODO: verify
+    // TODO: pass_limit
+    // TODO: entropy/no entropy
 
+    Timer timer;
+
+    ostringstream output_dir_name;
+    output_dir_name << "effort-" << size << "-" << rows_per_process << "rpp";
+    string output_dir = output_dir_name.str();
+    mkdir(output_dir.c_str(), 0750);  // create effort dir if it doesn't exist.
+    timer.record("Mkdirs");
+
+    compressor.set_output_dir(output_dir);
+    params.rows_per_process = rows_per_process;
+    compressor.compress(effort_log, MPI_COMM_WORLD);
+    timer += compressor.get_timer();
+
+    if (rank == 0) {
+      ostringstream tfname;
+      tfname << output_dir << "/times";
+      ofstream timefile(tfname.str().c_str());
+      timer.write(timefile);
+    }
+  }
 
   effort_log.clear();
   MPI_Finalize();

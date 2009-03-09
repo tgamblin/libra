@@ -35,13 +35,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@HAVE_MPI_TRUE@am__append_1 = parallel_compressor.C \
+@HAVE_MPI_TRUE@												synchronize_keys.C
+
 bin_PROGRAMS = $(am__EXEEXT_1) nrmse$(EXEEXT) $(am__EXEEXT_2)
-@HAVE_MPI_TRUE@am__append_1 = tuner
+@HAVE_MPI_TRUE@am__append_2 = tuner
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
 #
-@PMPI_EFFORT_TRUE@am__append_2 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
+@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -85,10 +88,9 @@ am__DEPENDENCIES_1 =
 @PNMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
 @PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PNMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__effort_la_SOURCES_DIST = effort_module.C parallel_compressor.C \
-	synchronize_keys.C env_config.C effort_wrapper.C
-am__objects_1 = effort_module.lo parallel_compressor.lo \
-	synchronize_keys.lo env_config.lo
+am__effort_la_SOURCES_DIST = effort_module.C env_config.C \
+	effort_wrapper.C
+am__objects_1 = effort_module.lo env_config.lo
 @PNMPI_EFFORT_TRUE@am_effort_la_OBJECTS = $(am__objects_1) \
 @PNMPI_EFFORT_TRUE@	effort_wrapper.lo
 effort_la_OBJECTS = $(am_effort_la_OBJECTS)
@@ -97,8 +99,14 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(effort_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_effort_la_rpath = -rpath $(pnmpidir)
 libeffort_la_LIBADD =
+am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
+	effort_data.C effort_params.C string_utils.C Metric.C \
+	parallel_compressor.C synchronize_keys.C
+@HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
+@HAVE_MPI_TRUE@	synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
-	effort_data.lo effort_params.lo string_utils.lo Metric.lo
+	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
+	$(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -107,8 +115,7 @@ libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__libmanual_effort_la_SOURCES_DIST = effort_module.C \
-	parallel_compressor.C synchronize_keys.C env_config.C
+am__libmanual_effort_la_SOURCES_DIST = effort_module.C env_config.C
 @PMPI_EFFORT_TRUE@am_libmanual_effort_la_OBJECTS = $(am__objects_1)
 libmanual_effort_la_OBJECTS = $(am_libmanual_effort_la_OBJECTS)
 libmanual_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -125,8 +132,7 @@ libpcontrol_counter_la_OBJECTS = $(am_libpcontrol_counter_la_OBJECTS)
 @PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
 @PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__libpmpi_effort_la_SOURCES_DIST = effort_module.C \
-	parallel_compressor.C synchronize_keys.C env_config.C \
+am__libpmpi_effort_la_SOURCES_DIST = effort_module.C env_config.C \
 	effort_wrapper.C
 @PMPI_EFFORT_TRUE@am_libpmpi_effort_la_OBJECTS = $(am__objects_1) \
 @PMPI_EFFORT_TRUE@	effort_wrapper.lo
@@ -188,7 +194,8 @@ SOURCES = $(effort_la_SOURCES) $(libeffort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) $(ef_SOURCES) \
 	$(nrmse_SOURCES) $(tuner_SOURCES)
-DIST_SOURCES = $(am__effort_la_SOURCES_DIST) $(libeffort_la_SOURCES) \
+DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
+	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
@@ -367,26 +374,19 @@ dist_noinst_HEADERS = \
 	synchronize_keys.h \
 	Metric.h
 
-lib_LTLIBRARIES = libeffort.la $(am__append_2)
+lib_LTLIBRARIES = libeffort.la $(am__append_3)
 
 #
 # This is used by 
 #
-libeffort_la_SOURCES = effort_key.C \
-						 		       effort_record.C \
-                       effort_data.C \
-                       effort_params.C \
-											 string_utils.C \
-											 Metric.C
-
+libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
+	effort_params.C string_utils.C Metric.C $(am__append_1)
 libeffort_la_LDFLAGS = -avoid-version
 
 #
 # Sources for both PMPI and PnMPI library
 #
 PMPI_EFFORT_SRCS = effort_module.C \
-								 parallel_compressor.C \
-						 		 synchronize_keys.C \
 								 env_config.C
 
 
