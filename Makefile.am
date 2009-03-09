@@ -13,7 +13,8 @@ dist_noinst_SCRIPTS = \
 	build/do_configure_atlas \
 	build/do_configure_bgl \
 	build/do_configure_bgl_fen \
-	build/do_configure_bgp
+	build/do_configure_bgp \
+	build/do_configure_bgp_fen
 
 EXTRA_DIST = LICENSE README
 

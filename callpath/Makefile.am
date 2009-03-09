@@ -36,7 +36,6 @@ callpath_la_LDFLAGS = -module -avoid-version
 callpath_la_LIBADD = libcallpath.la $(SW_LDFLAGS)
 include_HEADERS += callpath_module.h
 
-
 install-exec-hook:
 	$(PNMPI_PATCH) .libs/callpath.so .libs/callpath-patched.so
 	chmod u+x .libs/callpath-patched.so

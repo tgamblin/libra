@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# This is a sample configure script for the BGL front-end nodes.
+# 
+
+../configure \
+    CXX=g++ \
+    CXXFLAGS="-g3 -O3" \
+    --prefix=${HOME}/opt/libra/sles_9_ppc64 \
+    --with-dwarf=${HOME}/opt/dwarf-20080615 \
+    --with-paradyn=${HOME}/src/sw/ppc64_linux \
+    --with-boost=${HOME}/opt/boost
+
+
