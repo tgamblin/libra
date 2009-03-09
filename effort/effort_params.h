@@ -39,8 +39,8 @@ namespace effort {
         chop_libc(false),
         regions("effort"),
         sampling(1),
-        parsed(false),
-        have_time(false)
+        have_time(false),
+        parsed(false)
     { /* constructor just inits things. */ }
 
 

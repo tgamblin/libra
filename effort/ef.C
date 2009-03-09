@@ -50,28 +50,26 @@ ModuleId executable(UNKNOWN_MODULE);   /// Optionally supplied executable to loo
 
 /// Usage parameters
 void usage() {
-  cerr << "Usage: ef [-mwxfbo] [-e exe] [-p num] [-s fields] compresed_file [...]" << endl;
+  cerr << "Usage: ef [-hmwxrfo] [-e exe] [-p num] [-s fields] compresed_file [...]" << endl;
   cerr << "  By default, this tool simply prints out metadata from an effort file." << endl;
   cerr << "Other options:" << endl;
+  cerr << "  -h         Show this message." << endl;
   cerr << "  -m         Output metadata to a file." << endl;
   cerr << "  -w         Output wavelet data to a file." << endl;
   cerr << "  -x         Output full reconstruction to a file." << endl;
   cerr << "  -l num     Only apply <num> levels of inverse transform." << endl;
   cerr << "  -r         Output a reduced-size matrix for small level counts." << endl;
   cerr << "  -f         Look up and print out symbol names for addrs (With SymtabAPI only)." << endl;
-  cerr << "  -e [exe]   Use exe file to look up symbols. Use when Stackwalk can't figure out modules." << endl;
+  cerr << "  -e exe     Use exe file to look up symbols. Use when Stackwalk can't figure" << endl;
+  cerr << "             out modules." << endl;
   cerr << "  -o         Print all fields on one line, with no headings, separated by '|'" << endl;
   cerr << "  -s fields  Show only certain fields, where fields is any set of:" << endl;
-  cerr << "              m        Metric            M        Mean"     << endl;
-  cerr << "              t        Type              T        Thresh"   << endl;
-  cerr << "              a        Start             e        Enc"      << endl;
-  cerr << "              z        End               b        Blocks"   << endl;
-  cerr << "              s        Size              p        Passes"   << endl;
-  cerr << "              r        Rows              E        EZW_Size" << endl;
-  cerr << "              c        Cols              R        RLE_Size" << endl;
-  cerr << "              l        Level             Z        ENC_Size" << endl;
-  cerr << "              S        Scale"                               << endl;
-  cerr << "  -h         Show this message." << endl;
+  cerr << "              m    Metric      s    Size        b   Blocks"   << endl;
+  cerr << "              t    Type        l    Level       p   Passes"   << endl;
+  cerr << "              a    Start       S    Scale       E   EZW_Size" << endl;
+  cerr << "              z    End         M    Mean        R   RLE_Size" << endl;
+  cerr << "              r    Rows        T    Thresh      Z   ENC_Size" << endl;
+  cerr << "              c    Cols        e    Enc"                      << endl;
   exit(1);
 }
 
@@ -82,7 +80,7 @@ void get_args(int *argc, char ***argv) {
   char *err;
   ifstream vdata;
 
-  while ((c = getopt(*argc, *argv, "mwxl:rfe:hs:o")) != -1) {
+  while ((c = getopt(*argc, *argv, "mwxrfhos:e:l:")) != -1) {
     switch (c) {
     case 'm':
       stage |= metadata;

@@ -39,7 +39,12 @@ PMPI_EFFORT_SRCS=effort_module.C \
 if HAVE_SYMTAB
 SYMTAB_PROGS=ef
 endif
-bin_PROGRAMS= $(SYMTAB_PROGS) nrmse tuner
+
+bin_PROGRAMS = $(SYMTAB_PROGS) nrmse 
+if HAVE_MPI
+bin_PROGRAMS += tuner
+endif
+
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 ef_SOURCES=ef.C

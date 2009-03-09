@@ -35,12 +35,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = $(am__EXEEXT_1) nrmse$(EXEEXT) tuner$(EXEEXT)
+bin_PROGRAMS = $(am__EXEEXT_1) nrmse$(EXEEXT) $(am__EXEEXT_2)
+@HAVE_MPI_TRUE@am__append_1 = tuner
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
 #
-@PMPI_EFFORT_TRUE@am__append_1 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
+@PMPI_EFFORT_TRUE@am__append_2 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -153,6 +154,7 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
 @HAVE_SYMTAB_TRUE@am__EXEEXT_1 = ef$(EXEEXT)
+@HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_ef_OBJECTS = ef.$(OBJEXT)
@@ -365,7 +367,7 @@ dist_noinst_HEADERS = \
 	synchronize_keys.h \
 	Metric.h
 
-lib_LTLIBRARIES = libeffort.la $(am__append_1)
+lib_LTLIBRARIES = libeffort.la $(am__append_2)
 
 #
 # This is used by 

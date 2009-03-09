@@ -31,7 +31,7 @@ struct dereference_lt {
 ///
 /// Note: std::string class must be copyable (support copy constructor) and less-than comparable.
 ///
-/// To make your own unique id class out of this:
+/// To make your own unique id class using this template use CRTP:
 /// 
 ///    class MyUniqueIdClass : public UniqueId<MyUniqueIdClass> {
 ///    public:
@@ -223,7 +223,7 @@ public:
       PMPI_Unpack(buf, bufsize, position, &remote_addr, 1, MPI_UINTPTR_T, comm); 
       
       // unpack, look up, and add mapping for raw identifier from remote process.
-      dest.insert(id_map::value_type(remote_addr, Derived::unpack(buf, bufsize, position, comm)));
+      dest.insert(typename id_map::value_type(remote_addr, Derived::unpack(buf, bufsize, position, comm)));
     }
   }
   

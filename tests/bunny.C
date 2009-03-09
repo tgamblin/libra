@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
   init_metrics(4, metrics);
   
   double values[4];
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     double y = i * scale;
 
     // record effort every timestep so as to make a 3d bunny with

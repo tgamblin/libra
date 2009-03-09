@@ -1,7 +1,10 @@
 #include "effort_key.h"
 #include "Callpath.h"
 
+#ifdef LIBRA_HAVE_MPI
 #include "mpi_utils.h"
+#endif // LIBRA_HAVE_MPI
+
 #include "string_utils.h"
 using namespace stringutils;
 
@@ -69,7 +72,7 @@ namespace effort {
 
     return out;
   }
-
+#ifdef LIBRA_HAVE_MPI
   int effort_key::packed_size(MPI_Comm comm) const {
     int size = 0;
     size += metric.packed_size(comm);           // metric
@@ -97,6 +100,7 @@ namespace effort {
     return key;
   }
 
+#endif // LIBRA_HAVE_MPI
 
   bool effort_key_full_lt::operator()(const effort_key& lhs, const effort_key& rhs) {
     if (lhs.metric != rhs.metric) {

@@ -4,6 +4,9 @@
 #include "config.h"
 #endif //HAVE_CONFIG_H
 
+#include <cmath>
+using namespace std;
+
 
 #if defined(BLUEGENE_L)
 // -------------------------------------------------------- //
@@ -64,7 +67,7 @@ static inline unsigned long long timebase() {
 }
 
 timing_t get_time_ns() {
-  return BGP_NS_PER_CYCLE * timebase();
+  return llround(BGP_NS_PER_CYCLE * timebase());
 }
 
 
