@@ -12,7 +12,7 @@ using namespace std;
 #include "config.h"
 #endif // HAVE_CONFIG_H
 
-#include "Module.h"
+#include "ModuleId.h"
 #include "wavelet.h"
 #include "wt_direct.h"
 #include "ezw_decoder.h"
@@ -39,14 +39,14 @@ const decompression_stage wt_coeff    = 0x2;
 const decompression_stage reconstruct = 0x4;
 decompression_stage stage = none;
 
-const string UNKNOWN_MODULE("[unknown module]");
+ModuleId UNKNOWN_MODULE("[unknown module]");
 
 int iwt_level = -1;                    /// Deterines level of compression
 bool reduce = false;                   /// Output reduced size metrix for small levels
 bool translate = false;                /// Whether to translate symbol names as we find them.
 bool one_line = false;                 /// Whether to translate symbol names as we find them.
 string fields("mtazsrclSMTebpERZ");    /// Which fields to show. All if empty.
-string executable(UNKNOWN_MODULE); /// Optionally supplied executable to look up symbols in.
+ModuleId executable(UNKNOWN_MODULE);   /// Optionally supplied executable to look up symbols in.
 
 /// Usage parameters
 void usage() {
@@ -177,12 +177,12 @@ struct symtab_info {
   }
 };
 
-typedef map<Module, symtab_info> symtab_cache;
+typedef map<ModuleId, symtab_info> symtab_cache;
 static symtab_cache symtabs;
 
 
 /// Reads in a symbol table for the executable file; aborts on failure.
-symtab_info *getSymtabInfo(Module module) {
+symtab_info *getSymtabInfo(ModuleId module) {
   symtab_cache::iterator sti = symtabs.find(module);
   if (sti == symtabs.end()) {
     Symtab *symtab;
@@ -235,11 +235,8 @@ FrameInfo  get_symtab_frame_info(const FrameId& frame) {
 #else // HAVE_SYMTAB
   vector<LineNoTuple> lines;
 
-  const string *module = frame.module;
-  if (*frame.module == UNKNOWN_MODULE) {
-    // if module is unknown, use executable provided
-    module = &executable;
-  }
+  ModuleId module = frame.module;
+  if (module == UNKNOWN_MODULE) module = executable;
 
   symtab_info *stinfo = getSymtabInfo(module);
     
@@ -283,7 +280,7 @@ FrameInfo get_frame_info(const FrameId& frame) {
           cerr << "Invalid offset in viewer-data/symtab: " << parts[4] << endl;
           exit(1);
         }
-        FrameId key = FrameId::create(parts[3], offset);          
+        FrameId key = FrameId(parts[3], offset);          
         
         if (parts[0] == "?") {
           viewer_data[key] = FrameInfo();
@@ -323,12 +320,10 @@ void write_names_for_path(ostream& out, const Callpath& path) {
       out << get_frame_info(path[i]);
     }
 
-    const string *module = path[i].module;
-    if (*path[i].module == UNKNOWN_MODULE) {
-      module = &executable;
-    }
+    ModuleId module = path[i].module;
+    if (module == UNKNOWN_MODULE) module = executable;
 
-    out << *module << "(0x" << hex << path[i].offset << ")";
+    out << module << "(0x" << hex << path[i].offset << ")";
     if (!one_line) out << endl;
     out << dec; // revert output.
   }

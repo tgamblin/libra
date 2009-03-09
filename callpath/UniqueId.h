@@ -233,7 +233,7 @@ public:
 
 template<class Derived>
 std::ostream& operator<<(std::ostream& out, UniqueId<Derived> uid) {
-  out << uid.identifier;
+  out << *uid.identifier;
   return out;
 }
 

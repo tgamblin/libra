@@ -52,7 +52,7 @@ namespace effort {
     if (rank == encoder.get_root(comm)) {
       // open the encoded file stream on the root process
       ostringstream filename;
-      filename << output_dir << "/effort" << file_suffix;
+      filename << output_dir << "/effort" << file_suffix.str();
       encoded_stream.open(filename.str().c_str());
 
       // output the effort id (type, callpaths) first

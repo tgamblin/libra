@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
   size_t k=1;
   for (dummy_callpath *dummy = dummies; dummy->start[0]; dummy++) {
     // for now just use one module name, like bluegene.
-    string module_name("[unknown_module]");
+    string module_name("[unknown module]");
 
     // two synthetic callpaths
     vector<FrameId> start, end;
