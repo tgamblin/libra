@@ -5,6 +5,7 @@
 
 class ModuleId : public UniqueId<ModuleId> {
 public:
+  ModuleId();
   ModuleId(const std::string& id);
 };
 

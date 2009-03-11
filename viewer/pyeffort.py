@@ -97,6 +97,7 @@ class Callpath(_object):
     def write_out(*args): return _pyeffort.Callpath_write_out(*args)
     __swig_getmethods__["read_in"] = lambda x: _pyeffort.Callpath_read_in
     if _newclass:read_in = staticmethod(_pyeffort.Callpath_read_in)
+    def slice(*args): return _pyeffort.Callpath_slice(*args)
     # Support iteration over frames in a callpath
     def __iter__(self):
       for i in xrange(0,len(self)):
@@ -217,37 +218,55 @@ class FrameId(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, FrameId, name)
     __repr__ = _swig_repr
-    __swig_destroy__ = _pyeffort.delete_FrameId
-    __del__ = lambda self : None;
     def __init__(self, *args): 
         this = _pyeffort.new_FrameId(*args)
         try: self.this.append(this)
         except: self.this = this
+    __swig_destroy__ = _pyeffort.delete_FrameId
+    __del__ = lambda self : None;
     # Easy, slow hash function.  Make it faster later if needed.
     def __hash__(self):
       return hash(str(self))
 
     def file(self):
-      sym = source.getSymbol((self.module(), self.offset()))
+      sym = self.symbol()
       if sym: return sym.file
       return None
 
     def line(self):
-      sym = source.getSymbol((self.module(), self.offset()))
+      sym = self.symbol()
       if sym: return sym.line
       return None
 
     def fun(self):
-      sym = source.getSymbol((self.module(), self.offset()))
+      sym = self.symbol()
       if sym: return sym.fun
       return None
+
+    def module(self):
+      """Returning what's in the source map allows us to override modules
+         that are unknown at runtime with ones provided by the user post-mortem"""
+      sym = self.symbol()
+      if sym: return sym.module
+      return None
+
+    def offset(self):
+      sym = self.symbol()
+      if sym: return sym.offset
+      return None
+
+    def key(self):
+      return (self._module(), self._offset())
+
+    def symbol(self):
+      return source.getSymbol(self.key())
 
     def __str__(*args): return _pyeffort.FrameId___str__(*args)
     def __eq__(*args): return _pyeffort.FrameId___eq__(*args)
     def __lt__(*args): return _pyeffort.FrameId___lt__(*args)
     def __gt__(*args): return _pyeffort.FrameId___gt__(*args)
-    def module(*args): return _pyeffort.FrameId_module(*args)
-    def offset(*args): return _pyeffort.FrameId_offset(*args)
+    def _module(*args): return _pyeffort.FrameId__module(*args)
+    def _offset(*args): return _pyeffort.FrameId__offset(*args)
 FrameId_swigregister = _pyeffort.FrameId_swigregister
 FrameId_swigregister(FrameId)
 

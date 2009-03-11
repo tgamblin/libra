@@ -114,6 +114,19 @@ size_t Callpath::size() const {
 }
 
 
+Callpath Callpath::slice(size_t start, size_t end) {
+  vector<FrameId> new_slice;
+  for (size_t i=start; i < end; i++) {
+    new_slice.push_back((*path)[i]);
+  }
+  return create(new_slice);
+}
+
+Callpath Callpath::slice(size_t start) {
+  return slice(start, size());
+}
+
+
 void Callpath::write_out(ostream& out) {
   // build set of modules referenced in this particular callpath
   set<ModuleId> my_modules;

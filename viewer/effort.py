@@ -7,6 +7,14 @@ from vtkeffort import *
 from pyeffort import *
 import effort_tree, dendrogram, sys, os
 
+def trimCallpath(callpath):
+    i=0
+    for frame in callpath:
+        if frame.file() and frame.file() != "effort_wrapper.C":
+            break
+        i+= 1
+    foo = callpath.slice(i)
+    return foo
 
 class EffortRegion:
     def __init__(self):
@@ -16,12 +24,12 @@ class EffortRegion:
 
     def addData(self, data):
         if self._metrics:
-            assert self._start == data.getStart()
-            assert self._end   == data.getEnd()
+            assert self._start == trimCallpath(data.getStart())
+            assert self._end   == trimCallpath(data.getEnd())
             assert self._type  == data.getType()
         else:
-            self._start = data.getStart()
-            self._end   = data.getEnd()
+            self._start = trimCallpath(data.getStart())
+            self._end   = trimCallpath(data.getEnd())
             self._type  = data.getType()
         
         self._metrics[data.getMetric()] = data
@@ -87,7 +95,7 @@ class FrameViewWrapper:
         else: return self._frame.fun()
 
     def prettyModule(self, long=False):
-        if not self._frame or not self._frame.module():
+        if not self._frame or not self._frame.module(): 
             return None
 
         module = self._frame.module()
@@ -133,6 +141,7 @@ class DB:
 
                 data = EffortData(file)
                 data.setApproximationLevel(self.approximationLevel)
+
                 key = (data.getStart(), data.getEnd(), data.getType())
                 if not key in regions:
                     region = EffortRegion()

@@ -44,18 +44,6 @@ namespace wavelet {
   bool isPowerOf2(T num) { return !(num & (num-1)); }
 
   /// Returns least power of two greater than or equal to num
-  inline uint32_t gePowerOf2(uint32_t num) {
-    num--;
-    num |= (num >> 1);  // these fill with ones.
-    num |= (num >> 2);
-    num |= (num >> 4);
-    num |= (num >> 8);
-    num |= (num >> 16);
-    num++;
-    return num;
-  }
-
-  /// Returns least power of two greater than or equal to num
   inline uint64_t gePowerOf2(uint64_t num) {
     num--;
     num |= (num >> 1);  // these fill with ones.
@@ -66,17 +54,6 @@ namespace wavelet {
     num |= (num >> 32);
     num++;
     return num;
-  }
-
-
-  /// Returns greatest power of two less than or equal to num
-  inline uint32_t lePowerOf2(uint32_t num) {
-    num |= (num >> 1);  // these fill with ones.
-    num |= (num >> 2);
-    num |= (num >> 4);
-    num |= (num >> 8);
-    num |= (num >> 16);
-    return num - (num >> 1);
   }
 
 

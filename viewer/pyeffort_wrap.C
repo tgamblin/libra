@@ -2471,16 +2471,18 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIGTYPE_p_Callpath swig_types[0]
 #define SWIGTYPE_p_EffortData swig_types[1]
 #define SWIGTYPE_p_FrameId swig_types[2]
-#define SWIGTYPE_p_char swig_types[3]
-#define SWIGTYPE_p_encoding_t swig_types[4]
-#define SWIGTYPE_p_ezw_header swig_types[5]
-#define SWIGTYPE_p_quantized_t swig_types[6]
-#define SWIGTYPE_p_std__invalid_argument swig_types[7]
-#define SWIGTYPE_p_std__istream swig_types[8]
-#define SWIGTYPE_p_std__ostream swig_types[9]
-#define SWIGTYPE_p_swig__PySwigIterator swig_types[10]
-static swig_type_info *swig_types[12];
-static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
+#define SWIGTYPE_p_ModuleId swig_types[3]
+#define SWIGTYPE_p_char swig_types[4]
+#define SWIGTYPE_p_encoding_t swig_types[5]
+#define SWIGTYPE_p_ezw_header swig_types[6]
+#define SWIGTYPE_p_quantized_t swig_types[7]
+#define SWIGTYPE_p_std__invalid_argument swig_types[8]
+#define SWIGTYPE_p_std__istream swig_types[9]
+#define SWIGTYPE_p_std__ostream swig_types[10]
+#define SWIGTYPE_p_swig__PySwigIterator swig_types[11]
+#define SWIGTYPE_p_uintptr_t swig_types[12]
+static swig_type_info *swig_types[14];
+static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3261,10 +3263,10 @@ SWIGINTERN bool FrameId___gt__(FrameId *self,FrameId const *other){
       return self > other;
     }
   }
-SWIGINTERN std::string const &FrameId_module(FrameId *self){
+SWIGINTERN std::string const &FrameId__module(FrameId *self){
     return self->module.str();
   }
-SWIGINTERN unsigned long long FrameId_offset(FrameId *self){
+SWIGINTERN unsigned long long FrameId__offset(FrameId *self){
     return self->offset;
   }
 #ifdef __cplusplus
@@ -4294,6 +4296,130 @@ SWIGINTERN PyObject *_wrap_Callpath_read_in(PyObject *SWIGUNUSEDPARM(self), PyOb
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Callpath_slice__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Callpath *arg1 = (Callpath *) 0 ;
+  size_t arg2 ;
+  size_t arg3 ;
+  Callpath result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  size_t val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:Callpath_slice",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Callpath, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callpath_slice" "', argument " "1"" of type '" "Callpath *""'"); 
+  }
+  arg1 = reinterpret_cast< Callpath * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Callpath_slice" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  ecode3 = SWIG_AsVal_size_t(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Callpath_slice" "', argument " "3"" of type '" "size_t""'");
+  } 
+  arg3 = static_cast< size_t >(val3);
+  result = (arg1)->slice(arg2,arg3);
+  resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Callpath_slice__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Callpath *arg1 = (Callpath *) 0 ;
+  size_t arg2 ;
+  Callpath result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:Callpath_slice",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Callpath, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callpath_slice" "', argument " "1"" of type '" "Callpath *""'"); 
+  }
+  arg1 = reinterpret_cast< Callpath * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Callpath_slice" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  result = (arg1)->slice(arg2);
+  resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Callpath_slice(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Callpath, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_Callpath_slice__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Callpath, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Callpath_slice__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'Callpath_slice'.\n  Possible C/C++ prototypes are:\n    slice(size_t,size_t)\n    slice(size_t)\n");
   return NULL;
 }
 
@@ -6203,29 +6329,100 @@ SWIGINTERN PyObject *EffortData_swigregister(PyObject *SWIGUNUSEDPARM(self), PyO
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_delete_FrameId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  FrameId *arg1 = (FrameId *) 0 ;
-  void *argp1 = 0 ;
+  ModuleId arg1 ;
+  uintptr_t arg2 ;
+  FrameId *result = 0 ;
+  void *argp1 ;
   int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_FrameId",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_FrameId, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FrameId" "', argument " "1"" of type '" "FrameId *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_FrameId",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_ModuleId,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FrameId" "', argument " "1"" of type '" "ModuleId""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FrameId" "', argument " "1"" of type '" "ModuleId""'");
+    } else {
+      ModuleId * temp = reinterpret_cast< ModuleId * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< FrameId * >(argp1);
-  delete arg1;
-  
-  resultobj = SWIG_Py_Void();
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uintptr_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FrameId" "', argument " "2"" of type '" "uintptr_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FrameId" "', argument " "2"" of type '" "uintptr_t""'");
+    } else {
+      uintptr_t * temp = reinterpret_cast< uintptr_t * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (FrameId *)new FrameId(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_FrameId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::string *arg1 = 0 ;
+  uintptr_t arg2 ;
+  FrameId *result = 0 ;
+  int res1 = SWIG_OLDOBJ ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_FrameId",&obj0,&obj1)) SWIG_fail;
+  {
+    std::string *ptr = (std::string *)0;
+    res1 = SWIG_AsPtr_std_string(obj0, &ptr);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FrameId" "', argument " "1"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FrameId" "', argument " "1"" of type '" "std::string const &""'"); 
+    }
+    arg1 = ptr;
+  }
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uintptr_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FrameId" "', argument " "2"" of type '" "uintptr_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FrameId" "', argument " "2"" of type '" "uintptr_t""'");
+    } else {
+      uintptr_t * temp = reinterpret_cast< uintptr_t * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (FrameId *)new FrameId((std::string const &)*arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
+  if (SWIG_IsNewObj(res1)) delete arg1;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res1)) delete arg1;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FrameId *arg1 = 0 ;
   FrameId *result = 0 ;
@@ -6244,6 +6441,77 @@ SWIGINTERN PyObject *_wrap_new_FrameId(PyObject *SWIGUNUSEDPARM(self), PyObject 
   arg1 = reinterpret_cast< FrameId * >(argp1);
   result = (FrameId *)new FrameId((FrameId const &)*arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_FrameId(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_FrameId, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_FrameId__SWIG_2(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_ModuleId, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_uintptr_t, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_new_FrameId__SWIG_0(self, args);
+      }
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    int res = SWIG_AsPtr_std_string(argv[0], (std::string**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_uintptr_t, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_new_FrameId__SWIG_1(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_FrameId'.\n  Possible C/C++ prototypes are:\n    FrameId(ModuleId,uintptr_t)\n    FrameId(std::string const &,uintptr_t)\n    FrameId(FrameId const &)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_FrameId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FrameId *arg1 = (FrameId *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_FrameId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_FrameId, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FrameId" "', argument " "1"" of type '" "FrameId *""'"); 
+  }
+  arg1 = reinterpret_cast< FrameId * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -6365,7 +6633,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FrameId_module(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FrameId__module(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FrameId *arg1 = (FrameId *) 0 ;
   std::string *result = 0 ;
@@ -6373,14 +6641,14 @@ SWIGINTERN PyObject *_wrap_FrameId_module(PyObject *SWIGUNUSEDPARM(self), PyObje
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:FrameId_module",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:FrameId__module",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_FrameId, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId_module" "', argument " "1"" of type '" "FrameId *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId__module" "', argument " "1"" of type '" "FrameId *""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
   {
-    std::string const &_result_ref = FrameId_module(arg1);
+    std::string const &_result_ref = FrameId__module(arg1);
     result = (std::string *) &_result_ref;
   }
   resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
@@ -6390,7 +6658,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FrameId_offset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_FrameId__offset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   FrameId *arg1 = (FrameId *) 0 ;
   unsigned long long result;
@@ -6398,13 +6666,13 @@ SWIGINTERN PyObject *_wrap_FrameId_offset(PyObject *SWIGUNUSEDPARM(self), PyObje
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:FrameId_offset",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:FrameId__offset",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_FrameId, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId_offset" "', argument " "1"" of type '" "FrameId *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId__offset" "', argument " "1"" of type '" "FrameId *""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
-  result = (unsigned long long)FrameId_offset(arg1);
+  result = (unsigned long long)FrameId__offset(arg1);
   resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
   return resultobj;
 fail:
@@ -6444,6 +6712,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Callpath___len__", _wrap_Callpath___len__, METH_VARARGS, NULL},
 	 { (char *)"Callpath_write_out", _wrap_Callpath_write_out, METH_VARARGS, NULL},
 	 { (char *)"Callpath_read_in", _wrap_Callpath_read_in, METH_VARARGS, NULL},
+	 { (char *)"Callpath_slice", _wrap_Callpath_slice, METH_VARARGS, NULL},
 	 { (char *)"Callpath___str__", _wrap_Callpath___str__, METH_VARARGS, NULL},
 	 { (char *)"Callpath___eq__", _wrap_Callpath___eq__, METH_VARARGS, NULL},
 	 { (char *)"Callpath___lt__", _wrap_Callpath___lt__, METH_VARARGS, NULL},
@@ -6496,14 +6765,14 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"EffortData_wtrmse", _wrap_EffortData_wtrmse, METH_VARARGS, NULL},
 	 { (char *)"EffortData_getVTKEffortData", _wrap_EffortData_getVTKEffortData, METH_VARARGS, NULL},
 	 { (char *)"EffortData_swigregister", EffortData_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_FrameId", _wrap_delete_FrameId, METH_VARARGS, NULL},
 	 { (char *)"new_FrameId", _wrap_new_FrameId, METH_VARARGS, NULL},
+	 { (char *)"delete_FrameId", _wrap_delete_FrameId, METH_VARARGS, NULL},
 	 { (char *)"FrameId___str__", _wrap_FrameId___str__, METH_VARARGS, NULL},
 	 { (char *)"FrameId___eq__", _wrap_FrameId___eq__, METH_VARARGS, NULL},
 	 { (char *)"FrameId___lt__", _wrap_FrameId___lt__, METH_VARARGS, NULL},
 	 { (char *)"FrameId___gt__", _wrap_FrameId___gt__, METH_VARARGS, NULL},
-	 { (char *)"FrameId_module", _wrap_FrameId_module, METH_VARARGS, NULL},
-	 { (char *)"FrameId_offset", _wrap_FrameId_offset, METH_VARARGS, NULL},
+	 { (char *)"FrameId__module", _wrap_FrameId__module, METH_VARARGS, NULL},
+	 { (char *)"FrameId__offset", _wrap_FrameId__offset, METH_VARARGS, NULL},
 	 { (char *)"FrameId_swigregister", FrameId_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
@@ -6514,6 +6783,7 @@ static PyMethodDef SwigMethods[] = {
 static swig_type_info _swigt__p_Callpath = {"_p_Callpath", "Callpath *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_EffortData = {"_p_EffortData", "EffortData *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FrameId = {"_p_FrameId", "FrameId *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ModuleId = {"_p_ModuleId", "ModuleId *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_encoding_t = {"_p_encoding_t", "encoding_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ezw_header = {"_p_ezw_header", "ezw_header *", 0, 0, (void*)0, 0};
@@ -6522,11 +6792,13 @@ static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argume
 static swig_type_info _swigt__p_std__istream = {"_p_std__istream", "std::istream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__ostream = {"_p_std__ostream", "std::ostream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__PySwigIterator = {"_p_swig__PySwigIterator", "swig::PySwigIterator *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_uintptr_t = {"_p_uintptr_t", "uintptr_t *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_Callpath,
   &_swigt__p_EffortData,
   &_swigt__p_FrameId,
+  &_swigt__p_ModuleId,
   &_swigt__p_char,
   &_swigt__p_encoding_t,
   &_swigt__p_ezw_header,
@@ -6535,11 +6807,13 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_std__istream,
   &_swigt__p_std__ostream,
   &_swigt__p_swig__PySwigIterator,
+  &_swigt__p_uintptr_t,
 };
 
 static swig_cast_info _swigc__p_Callpath[] = {  {&_swigt__p_Callpath, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_EffortData[] = {  {&_swigt__p_EffortData, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FrameId[] = {  {&_swigt__p_FrameId, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ModuleId[] = {  {&_swigt__p_ModuleId, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_encoding_t[] = {  {&_swigt__p_encoding_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ezw_header[] = {  {&_swigt__p_ezw_header, 0, 0, 0},{0, 0, 0, 0}};
@@ -6548,11 +6822,13 @@ static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__in
 static swig_cast_info _swigc__p_std__istream[] = {  {&_swigt__p_std__istream, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__ostream[] = {  {&_swigt__p_std__ostream, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__PySwigIterator[] = {  {&_swigt__p_swig__PySwigIterator, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_uintptr_t[] = {  {&_swigt__p_uintptr_t, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_Callpath,
   _swigc__p_EffortData,
   _swigc__p_FrameId,
+  _swigc__p_ModuleId,
   _swigc__p_char,
   _swigc__p_encoding_t,
   _swigc__p_ezw_header,
@@ -6561,6 +6837,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_std__istream,
   _swigc__p_std__ostream,
   _swigc__p_swig__PySwigIterator,
+  _swigc__p_uintptr_t,
 };
 
 

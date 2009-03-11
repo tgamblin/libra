@@ -55,10 +55,17 @@ public:
   /// Number of elements in the callpath.
   size_t size() const;
 
-
   /// Writes this callpath out to a stream.
   void write_out(std::ostream& out);
 
+  /// Returns a new callpath containing a slice of this callpath: [start, end).
+  /// TODO: allow callpaths to be managed/unmanaged (at runtime it might make sense to
+  ///       unique things but here it really doesn't.)
+  Callpath slice(size_t start, size_t end);
+
+  /// Version of slice with end assumed to be size().
+  Callpath slice(size_t start);
+  
   /// Reads a callpath in from a stream.
   static Callpath read_in(std::istream& in);
 

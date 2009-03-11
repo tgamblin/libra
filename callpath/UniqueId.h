@@ -63,6 +63,9 @@ protected:
   /// Raw pointer constructor.  Used internally for serialization.
   UniqueId(const std::string *id) : identifier(id) { }
   
+  /// Construct a Null UniqueId.  Subclasses can choose to expose this or not.
+  UniqueId() : identifier(NULL) { }
+  
   /// Constructor takes a const std::string reference, gets a unique pointer to its value,
   /// and inits this uid with the pointer.
   UniqueId(const std::string& id) { 

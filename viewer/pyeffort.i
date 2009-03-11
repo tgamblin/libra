@@ -40,6 +40,8 @@ public:
   size_t size() const;
   void write_out(std::ostream& out);
   static Callpath read_in(std::istream& in);
+  Callpath slice(size_t start, size_t end);
+  Callpath slice(size_t start);
 
 %pythoncode %{
     # Support iteration over frames in a callpath
@@ -177,8 +179,10 @@ import source
 // --------------------------------------------------- //
 class FrameId {
 public:
-  ~FrameId() { }
+  FrameId(ModuleId m, uintptr_t offset);
+  FrameId(const std::string& modname, uintptr_t offset);
   FrameId(const FrameId& other);
+  ~FrameId() { }
 
 %pythoncode %{
   # Easy, slow hash function.  Make it faster later if needed.
@@ -186,19 +190,37 @@ public:
     return hash(str(self))
 
   def file(self):
-    sym = source.getSymbol((self.module(), self.offset()))
+    sym = self.symbol()
     if sym: return sym.file
     return None
 
   def line(self):
-    sym = source.getSymbol((self.module(), self.offset()))
+    sym = self.symbol()
     if sym: return sym.line
     return None
 
   def fun(self):
-    sym = source.getSymbol((self.module(), self.offset()))
+    sym = self.symbol()
     if sym: return sym.fun
     return None
+
+  def module(self):
+    """Returning what's in the source map allows us to override modules
+       that are unknown at runtime with ones provided by the user post-mortem"""
+    sym = self.symbol()
+    if sym: return sym.module
+    return None
+
+  def offset(self):
+    sym = self.symbol()
+    if sym: return sym.offset
+    return None
+
+  def key(self):
+    return (self._module(), self._offset())
+
+  def symbol(self):
+    return source.getSymbol(self.key())
 %}
 };
 
@@ -216,6 +238,7 @@ public:
       return self == other;
     }
   }
+
   bool __lt__(const FrameId *other) {
     if (self && other) {
       return (*self) < (*other);
@@ -223,6 +246,7 @@ public:
       return self < other;
     }
   }
+
   bool __gt__(const FrameId *other) {
     if (self && other) {
       return (*self) > (*other);
@@ -231,11 +255,13 @@ public:
     }
   }
 
-  const std::string& module() {
+  /// This is _module() so we can override it on the python side.
+  /// See above.
+  const std::string& _module() {
     return self->module.str();
   }
 
-  unsigned long long offset() {
+  unsigned long long _offset() {
     return self->offset;
   }
 }

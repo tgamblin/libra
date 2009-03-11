@@ -114,7 +114,8 @@ dist_icon_DATA = \
 	icons/libra_icon128.png \
 	icons/libra_logo64.png \
 	icons/libra_logo128.png \
-	icons/libra_logo256.png
+	icons/libra_logo256.png \
+	icons/terminal.png
 
 
 noinst_PROGRAMS=simtest

@@ -63,6 +63,10 @@ class Viewer(QMainWindow):
         self.newViewerAct.setShortcut("Ctrl+N")
         self.connect(self.newViewerAct, SIGNAL("triggered()"), self.newViewer)
         
+        self.newTerminalAct = QAction(icons.get("terminal"), "New &Terminal", self)
+        self.newTerminalAct.setShortcut("Ctrl+T")
+        self.connect(self.newViewerAct, SIGNAL("triggered()"), self.newTerminal)
+        
         self.openDirAct = QAction(icons.get("folder"), "&Open Effort Directory...", self)
         self.openDirAct.setShortcut("Ctrl+O")
         self.connect(self.openDirAct, SIGNAL("triggered()"), self.open)
@@ -88,6 +92,9 @@ class Viewer(QMainWindow):
         self.aboutAct.setShortcut("Ctrl+H")
         self.connect(self.aboutAct, SIGNAL("triggered()"), self.about)
 
+    def newTerminal(self):
+        pass
+
     def createMenus(self):
         """ Builds menu bars out of actions.
             PRE: createActions() has been called. """
@@ -96,6 +103,7 @@ class Viewer(QMainWindow):
         self.menuBar().addMenu(self.fileMenu);
 
         self.fileMenu.addAction(self.newViewerAct)
+        self.fileMenu.addAction(self.newTerminalAct)
         self.fileMenu.addAction(self.openDirAct)
         self.fileMenu.addSeparator()
         
@@ -146,8 +154,8 @@ class Viewer(QMainWindow):
            TODO: figure out some workable scheme for opening multiple experiments at once.
         """
         self.effortDB = effort.DB()
-        self.effortDB.loadDirectory(directory)
 
+        self.effortDB.loadDirectory(directory)
         model = effort_tree.EffortTreeModel(effort_tree.build_from(self.effortDB), self)
         self.fileView.setModel(model)
         self.fileView.expandFirstLevel()
