@@ -14,7 +14,7 @@ OptionParser.new do |opts|
   opts.on("-I", "--include DIR", "Add a directory to search for source files.") do |v|
     path.push(v)
   end
-  opts.on("-e", "--include FILE", "Use FILE for symbtab information (use when Stackwalker can't determine modules)") do |exe|
+  opts.on("-e", "--executable FILE", "Use FILE for symbtab information (use when Stackwalker can't determine modules)") do |exe|
     exefile = Pathname(exe).realpath
   end
 end.parse!
@@ -29,6 +29,7 @@ FileUtils::mkdir_p(src_dir)
 
 # Path map maps directories in path to sequential dir names
 i=0
+path.map! {|dir| Dir.glob("#{dir}/**/") }.flatten!
 path_map = Hash.new {|hash, dir| i+=1; hash[dir] = "#{src_dir}/%03d" % i}
 path.each do |dir| 
   FileUtils::mkdir_p(path_map[dir])
@@ -41,7 +42,9 @@ end
 in_path=false    # whether we're currently inside a callpath while parsing the output from ef.
 lines = Set.new
 opt = exefile ? "-e #{exefile}" : "-f"
-`ef #{opt} effort-*`.each do |line|
+
+pipe = IO.popen("ef #{opt} effort-*")
+pipe.each do |line|
   line.chomp!
   startend = line.sub!(/^(Start|End)/, "")
   line.lstrip!
@@ -57,7 +60,7 @@ opt = exefile ? "-e #{exefile}" : "-f"
       # parse this part of the callpath and dump a |-separated version into the lines set
       file, lnum, fun, lib, offset = parts[1..-1]
       lines.add(parts[1..-1].join("|"))
-      
+
       # Copy all the relevant source files into the src dir so we can look at them.
       path.each do |dir|
         source_file = "#{dir}/#{file}"

@@ -238,9 +238,12 @@ FrameInfo  get_symtab_frame_info(const FrameId& frame) {
 
   symtab_info *stinfo = getSymtabInfo(module);
     
-  if (stinfo->symtab->getSourceLines(lines, frame.offset)) {
+  // Subtract one from the offset here, to hackily
+  // convert return address to callsite
+  uintptr_t offset = frame.offset ? frame.offset - 1 : frame.offset;
+  if (stinfo->symtab->getSourceLines(lines, offset)) {
     string name;
-    stinfo->getName(frame.offset, name);
+    stinfo->getName(offset, name);
     return FrameInfo(lines[0].first, lines[0].second, name);
     
   } else {
