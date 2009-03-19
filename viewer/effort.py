@@ -118,10 +118,10 @@ class FrameViewWrapper:
 
 
 class DB:
-    def __init__(self):
+    def __init__(self, approx = -1):
         # Map of effort regions keyed by tuples of (start cp, end cp, type)
         self._regions = []
-        self.approximationLevel = -1
+        self.approximationLevel = approx
 
     #
     # Loads a directory full of effort files into the regions map.

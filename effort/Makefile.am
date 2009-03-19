@@ -38,11 +38,7 @@ PMPI_EFFORT_SRCS=effort_module.C \
 #
 # Effort utility programs
 #
-if HAVE_SYMTAB
-SYMTAB_PROGS=ef
-endif
-
-bin_PROGRAMS = $(SYMTAB_PROGS) nrmse 
+bin_PROGRAMS = ef nrmse 
 if HAVE_MPI
 bin_PROGRAMS += tuner
 endif

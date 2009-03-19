@@ -1,4 +1,5 @@
 #include "string_utils.h"
+#include <iostream>
 using namespace std;
 
 namespace stringutils {
@@ -18,6 +19,36 @@ namespace stringutils {
         parts.push_back(string(str, start, end-start));
       }
     }
+  }
+
+  void split_str(const string& str, const string& delim, vector<string>& parts) {
+    size_t start = 0;
+    size_t end = 0;
+    
+    while (start < str.size()) {
+      end = str.find(delim, start);
+      if (end == string::npos) end = str.size();
+
+      if (end-start != 0) {  // just ignore zero-length strings.
+        parts.push_back(string(str, start, end-start));
+      }
+      
+      start = end + delim.size();
+    }
+  }
+
+  string trim(const string& str, const string chars) {
+    size_t start = 0;
+    size_t end = str.size();
+    
+    while (start < str.size() && chars.find(str[start]) != string::npos) 
+      start++;
+    
+    while (end > 0 && chars.find(str[end-1]) != string::npos) {
+      end--;
+    }
+    
+    return string(str, start, end - start);
   }
 
 }  // namespace

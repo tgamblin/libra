@@ -209,21 +209,20 @@ struct FrameInfo {
   }
 
   FrameInfo() { }
-};
 
-ostream& operator<<(ostream& out, const FrameInfo& info) {
-  if (info.file == "" && translate) {
-    out << left << setw(28) << "[unknown]";
-    out << left << setw(24) << "[unknown]" << " ";
-  } else {
-    ostringstream file_line;
-    file_line << info.file + ":" + info.line_num;
-    out << left << setw(28) << file_line.str();
-    out << left << setw(24) << info.sym_name << " ";
+  void write(ostream& out, size_t file_line_width, size_t sym_width) {
+    if (file == "" && translate) {
+      out << left << setw(file_line_width) << "[unknown]";
+      out << left << setw(sym_width) << "[unknown]";
+    } else {
+      ostringstream file_line;
+      file_line << file + ":" + line_num;
+      out << left << setw(file_line_width) << file_line.str();
+      out << left << setw(sym_width) << sym_name;
+    }
   }
 
-  return out;
-}
+};
 
 
 FrameInfo  get_symtab_frame_info(const FrameId& frame) {
@@ -269,31 +268,61 @@ FrameInfo get_frame_info(const FrameId& frame) {
       return get_symtab_frame_info(frame);
       
     } else {
+      // some module names need to be substituted.
+      map<string, string> module_mappings;
+      
       // if we found the viewer data file build up the map.
       string line;
       while (getline(vd, line)) {
-        vector<string> parts;
-        split(line, "|", parts);
-
-        char *err;
-        uintptr_t offset = strtol(parts[4].c_str(), &err, 0);
-        if (*err) {
-          cerr << "Invalid offset in viewer-data/symtab: " << parts[4] << endl;
-          exit(1);
-        }
-        FrameId key = FrameId(parts[3], offset);          
-        
-        if (parts[0] == "?") {
-          viewer_data[key] = FrameInfo();
-
-        } else {
-          int line_num = strtol(parts[1].c_str(), &err, 10);
-          if (*err) {
-            cerr << "Invalid line number in viewer-data/symtab: " << parts[1] << endl;
+        if (line.find("=>") != string::npos) {
+          // this is a mapping from something like [unknown module] to an exe 
+          // provided at symbol generation time
+          vector<string> mapping;
+          split_str(line, "=>", mapping);
+          
+          if (mapping.size() != 2) {
+            cerr << "Invalid mapping in viewer-data/symbtab: " << endl;
+            cerr << "    " << line << endl;
+            cerr << mapping.size() << endl;
             exit(1);
           }
           
-          viewer_data[key] = FrameInfo(parts[0], line_num, parts[2]);
+          string orig = trim(mapping[1]);
+          string alias = trim(mapping[0]);
+          module_mappings[orig] = alias;
+
+        } else {
+          // this is file/line info for some (module, offset)
+          vector<string> parts;
+          split(line, "|", parts);
+
+          char *err;
+          uintptr_t offset = strtol(parts[4].c_str(), &err, 0);
+          if (*err) {
+            cerr << "Invalid offset in viewer-data/symtab: " << parts[4] << endl;
+            exit(1);
+          }
+          string module = parts[3];
+          FrameId key(module, offset);          
+          
+          if (parts[0] == "?") {
+            viewer_data[key] = FrameInfo();
+            
+          } else {
+            int line_num = strtol(parts[1].c_str(), &err, 10);
+            if (*err) {
+              cerr << "Invalid line number in viewer-data/symtab: " << parts[1] << endl;
+              exit(1);
+            }
+
+            FrameInfo info(parts[0], line_num, parts[2]);
+            viewer_data[key] = info;
+            
+            if (module_mappings.find(module) != module_mappings.end()) {
+              FrameId alias(module_mappings[module], offset);
+              viewer_data[alias] = info;
+            }
+          }
         }
       }
     }
@@ -313,12 +342,22 @@ void write_names_for_path(ostream& out, const Callpath& path) {
     return;
   }
   
+  size_t max_file = 0;
+  size_t max_line = 0;
+  size_t max_sym = 0;
+  for (int i=path.size()-1; i >= 0; i--) {
+    FrameInfo inf = get_frame_info(path[i]);
+    max_file = max(max_file, inf.file.size());
+    max_line = max(max_line, inf.line_num.size());
+    max_sym  = max(max_sym,  inf.sym_name.size());
+  }
+
   for (int i=path.size()-1; i >= 0; i--) {
     if (i != (int)path.size()-1) 
       out << (one_line ? " : " : "          ");
 
     if (translate && !one_line) {
-      out << get_frame_info(path[i]);
+      get_frame_info(path[i]).write(out, max_file+max_line + 3, max_sym + 2);
     }
 
     ModuleId module = path[i].module;
