@@ -79,6 +79,12 @@ end
 
 # Output all the unique addresses found in the callpaths to a file.
 output = File.open("#{data_dir}/symtab", "w")
+
+# Kuldge to map unknown modules to exe file.
+if exefile
+  output.puts "[unknown module] => #{exefile}"
+end
+
 lines.each do |l|
   output.puts l
 end
