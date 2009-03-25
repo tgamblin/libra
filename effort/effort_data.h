@@ -50,7 +50,8 @@ namespace effort {
     /// Loads an effort_log full of keys from a particular directory full of 
     /// effort files. 
     /// NOTE: This does not fill the log up with values. See parallel_decompressor.
-    static void load_keys(const std::string& dirname, effort_data& log, wavelet::ezw_header& header);
+    static void load_keys(const std::string& dirname, effort_data& log, 
+                          wavelet::ezw_header& header, std::map<effort_key, std::string> *filenames = NULL);
     
   private:
 

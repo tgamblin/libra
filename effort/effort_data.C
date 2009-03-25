@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <fstream>
+#include <sstream>
 using namespace std;
 
 #include "ezw.h"
@@ -27,21 +28,25 @@ namespace effort {
   }
 
   
-  void effort_data::load_keys(const string& dirname, effort_data& log, ezw_header& header) {
+  void effort_data::load_keys(const string& dirname, effort_data& log, 
+                              wavelet::ezw_header& header, map<effort_key, string> *filenames) {
     DIR *dirp = opendir(dirname.c_str());
     effort_key key;
     bool first = true;
     for (dirent *dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
       if (parse_filename(dp->d_name)) {
-        cerr << "reading " << dp->d_name << endl;
-
-        ifstream file(dp->d_name);
+        ostringstream fullpath;
+        fullpath << dirname << "/" << dp->d_name;
+        ifstream file(fullpath.str().c_str());
         
         effort_key::read_in(file, key);
         log[key] = effort_record();
+        
+        if (filenames) (*filenames)[key] = fullpath.str();
 
         if (first) {
           ezw_header::read_in(file, header);
+          cerr << header.cols << endl;
           first = false;
         }
       }

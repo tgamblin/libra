@@ -21,7 +21,7 @@ namespace wavelet {
     ezw_decoder();
 
     /// Destructor; just deallocates everything.
-    ~ezw_decoder();
+    virtual ~ezw_decoder();
 
     /// Takes an EZW-encoded input stream and reads it into the provided
     /// matrix.  Returns the level of the transform that was applied
@@ -46,7 +46,7 @@ namespace wavelet {
     
     size_t get_bytes_read();
     
-  private:
+  protected:
     wt_matrix *decoded;                 /// Pointer to the destination matrix
     quantized_t threshold;              /// Current threshold for the coder.
     std::vector<sub_elt> sub_list;      /// accumulated subordinate pass coefficients

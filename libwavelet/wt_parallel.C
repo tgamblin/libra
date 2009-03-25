@@ -151,6 +151,32 @@ namespace wavelet {
   }
 
 
+  void wt_parallel::distribute(wt_matrix& mat, vector<double>& local, int m, int set,
+                               vector<MPI_Request>& reqs, MPI_Comm comm) {
+    int rank;
+    MPI_Comm_rank(comm, &rank);
+
+    int base = (rank / m) * m;  // base rank of the set we're in
+
+    if (rank % m == set) {
+      for (int i=0; i < m; i++) {
+        if (i == set) continue;
+        reqs.push_back(MPI_REQUEST_NULL);
+        MPI_Isend(&mat(i,0), local.size(), MPI_DOUBLE, base+i, 0, comm, &reqs.back());
+      }
+
+      for (size_t i=0; i < local.size(); i++) {  // copy local data into matrix, too
+        local[i] = mat(set, i);
+      }
+
+    } else {
+      // send this process's data to the aggregating process
+      reqs.push_back(MPI_REQUEST_NULL);
+      MPI_Irecv(&local[0], local.size(), MPI_DOUBLE, base+set, 0, comm, &reqs.back());
+    }
+  }
+
+
   void wt_parallel::gather(wt_matrix& mat, wt_matrix& remote, MPI_Comm comm, int root) {
     int rank, size;
     MPI_Comm_rank(comm, &rank);
@@ -168,6 +194,26 @@ namespace wavelet {
                recvbuf,      remote.size1() * remote.size2(), MPI_DOUBLE, 
                root, comm);
   }
+
+
+  void wt_parallel::scatter(wt_matrix& mat, wt_matrix& remote, MPI_Comm comm, int root) {
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    void *recvbuf = NULL;
+    if (rank == root) {
+      // root needs space enough for all data
+      mat.resize(size * remote.size1(), remote.size2());
+      recvbuf = &mat(0,0);
+    } 
+
+    // gather remote matrices to root
+    MPI_Gather(&remote(0,0), remote.size1() * remote.size2(), MPI_DOUBLE,
+               recvbuf,      remote.size1() * remote.size2(), MPI_DOUBLE, 
+               root, comm);
+  }
+
 
 
   void wt_parallel::reassemble(wt_matrix& mat, int P, int level) {

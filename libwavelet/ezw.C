@@ -44,24 +44,27 @@ namespace wavelet {
     }
   }
 
-  std::ostream& operator<<(std::ostream& out, encoding_t enc_type) {
+  const char *encoding_to_str(encoding_t enc_type) {
     switch (enc_type) {
     case RLE:
-      out << "rle";
+      return "rle";
       break;
     case ARITHMETIC:
-      out << "arithmetic";
+      return "arithmetic";
       break;
     case HUFFMAN:
-      out << "huffman";
+      return "huffman";
       break;
     case NONE:
-      out << "none";
+      return "none";
       break;
     default:
       throw runtime_error("Bad encoding_t");
-    }
-    return out;
+    }    
+  }
+
+  std::ostream& operator<<(std::ostream& out, encoding_t enc_type) {
+    return out << encoding_to_str(enc_type);
   }  
   
 

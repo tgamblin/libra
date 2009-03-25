@@ -21,6 +21,7 @@ namespace wavelet {
 
   /// Helpful for input
   encoding_t str_to_encoding(const char *str);
+  const char *encoding_to_str(encoding_t enc_type);
   std::ostream& operator<<(std::ostream& out, encoding_t enc_type);  
   
   /// This is all the data needed by the decoder to parse the encoder's output.

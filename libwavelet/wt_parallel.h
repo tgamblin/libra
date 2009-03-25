@@ -61,9 +61,25 @@ namespace wavelet {
 			  std::vector<MPI_Request>& reqs, 
 			  MPI_Comm comm = MPI_COMM_WORLD);
     
+    /// Inverse of aggregate().
+    /// 
+    /// Given a matrix full of wavelet data:
+    /// PRE:  local size is a power of two, local.size() == mat.size2()
+    ///       system size is power of two
+    /// POST: Rows of matrix are distributed to all processors where
+    ///       (size % m == set)
+    static void distribute(wt_matrix& mat, std::vector<double>& local, 
+			  int m, int set, 
+			  std::vector<MPI_Request>& reqs, 
+			  MPI_Comm comm = MPI_COMM_WORLD);
+    
 
     /// Gathers all pieces of a distributed matrix together into a local matrix.
     static void gather(wt_matrix& dest, wt_matrix& mat, 
+		       MPI_Comm comm, int root = 0);
+
+    /// Scatters per-process chunks of a matrix out to all members of comm.
+    static void scatter(wt_matrix& dest, wt_matrix& mat, 
 		       MPI_Comm comm, int root = 0);
 
 

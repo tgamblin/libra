@@ -23,8 +23,8 @@ namespace wavelet {
     /// Useful note for using streams: only the stream on process size/2 will
     /// be written to.  So if using a file stream, ONLY open the stream on 
     /// process size/2.
-    virtual size_t encode(wt_matrix& mat, std::ostream& out, int level = -1, 
-			  MPI_Comm comm = MPI_COMM_WORLD);
+    size_t encode(wt_matrix& mat, std::ostream& out, int level = -1, 
+                  MPI_Comm comm = MPI_COMM_WORLD);
     
 
     /// Sets whether this uses a traversal ordering that's compatible with the 
