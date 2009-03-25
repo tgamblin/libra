@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <sys/stat.h>
 using namespace std;
 
 #ifdef HAVE_CONFIG_H
@@ -73,6 +74,11 @@ void usage() {
   exit(1);
 }
 
+
+bool exists(const char *filename) {
+  struct stat st;
+  return !stat(filename, &st);
+}
 
 /// Uses getopt to read in arguments.
 void get_args(int *argc, char ***argv) {
@@ -149,13 +155,27 @@ struct symbol_addr_gt {
   bool operator()(Symbol* lhs, uintptr_t rhs) { return lhs->getAddr() > rhs; }
 };
 
-struct symtab_info {
+class symtab_info {
   Symtab *symtab;
   vector<Symbol*> syms;
+
+public:
   symtab_info(Symtab *s) : symtab(s) { }
+  ~symtab_info() { }
+
+  bool getSourceLines(vector<LineNoTuple>& lines, uintptr_t offset) {
+    return !symtab ? false : symtab->getSourceLines(lines, offset);
+  }
 
   /// This gets a symbol name from an offset the same way stackwalker does it.
   void getName(uintptr_t offset, string& name) {
+    if (!symtab) {
+      ostringstream info;
+      info << "[unknown module](0x" << hex << offset << dec << ")" << endl;
+      name = info.str();
+      return;
+    }
+    
     if (!syms.size()) {
       if (!symtab->getAllSymbolsByType(syms, Symbol::ST_FUNCTION)) {
         cerr << "ERROR: couldn't read symbols from " << symtab->file() << endl;
@@ -184,9 +204,10 @@ symtab_info *getSymtabInfo(ModuleId module) {
   symtab_cache::iterator sti = symtabs.find(module);
   if (sti == symtabs.end()) {
     Symtab *symtab;
-    if (!Symtab::openFile(symtab, module.str())) {
-      cerr << "Error opening file: " << module.str() << endl;
-      exit(1);
+    string filename = module.str();
+
+    if (!exists(filename.c_str()) || !Symtab::openFile(symtab, filename)) {
+      symtab = NULL;
     }
     sti = symtabs.insert(symtab_cache::value_type(module, symtab_info(symtab))).first;
   }
@@ -240,7 +261,7 @@ FrameInfo  get_symtab_frame_info(const FrameId& frame) {
   // Subtract one from the offset here, to hackily
   // convert return address to callsite
   uintptr_t offset = frame.offset ? frame.offset - 1 : frame.offset;
-  if (stinfo->symtab->getSourceLines(lines, offset)) {
+  if (stinfo->getSourceLines(lines, offset)) {
     string name;
     stinfo->getName(offset, name);
     return FrameInfo(lines[0].first, lines[0].second, name);

@@ -1,5 +1,5 @@
-#ifndef PARALELL_COMPRESSOR_H
-#define PARALELL_COMPRESSOR_H
+#ifndef PARALLEL_COMPRESSOR_H
+#define PARALLEL_COMPRESSOR_H
 
 #include <string>
 #include "wavelet.h"

@@ -3,8 +3,10 @@
 
 #include <stdint.h>
 #include <map>
+#include <string>
 #include "effort_key.h"
 #include "effort_record.h"
+#include "ezw.h"
 
 namespace effort {
 
@@ -44,7 +46,12 @@ namespace effort {
       return emap.find(key) != emap.end();
     }
     void clear() { emap.clear(); }
-
+    
+    /// Loads an effort_log full of keys from a particular directory full of 
+    /// effort files. 
+    /// NOTE: This does not fill the log up with values. See parallel_decompressor.
+    static void load_keys(const std::string& dirname, effort_data& log, wavelet::ezw_header& header);
+    
   private:
 
     /// Functor for invoking commit on an effort record.

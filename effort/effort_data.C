@@ -1,8 +1,13 @@
 #include "effort_data.h"
 
+#include <dirent.h>
 #include <algorithm>
 #include <cassert>
+#include <fstream>
 using namespace std;
+
+#include "ezw.h"
+using namespace wavelet;
 
 namespace effort {
   
@@ -19,6 +24,28 @@ namespace effort {
     // commit all the effort for this timestep
     for_each(emap.begin(), emap.end(), committer(progress_count));
     progress_count++;
+  }
+
+  
+  void effort_data::load_keys(const string& dirname, effort_data& log, ezw_header& header) {
+    DIR *dirp = opendir(dirname.c_str());
+    effort_key key;
+    bool first = true;
+    for (dirent *dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
+      if (parse_filename(dp->d_name)) {
+        cerr << "reading " << dp->d_name << endl;
+
+        ifstream file(dp->d_name);
+        
+        effort_key::read_in(file, key);
+        log[key] = effort_record();
+
+        if (first) {
+          ezw_header::read_in(file, header);
+          first = false;
+        }
+      }
+    }
   }
   
 

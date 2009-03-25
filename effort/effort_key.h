@@ -83,7 +83,9 @@ namespace effort {
 
   /// Utility function to identify valid filenames output by the tool
   /// TODO : provide something to make a filename here too.
-  bool parse_filename(const std::string& filename, std::string *metric = NULL, int *type = NULL, int *number = NULL);
+  bool parse_filename(const std::string& filename, 
+                      std::string *metric = NULL, int *type = NULL, int *number = NULL);
+  
 
 } // namespace
 

@@ -7,6 +7,7 @@
 #include "env_config.h"
 #include "Metric.h"
 
+/// TODO: make it so char*'s in here don't leak.
 
 namespace effort {
 

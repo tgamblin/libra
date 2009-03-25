@@ -25,6 +25,7 @@ libeffort_la_SOURCES = effort_key.C \
 											 Metric.C
 if HAVE_MPI
 libeffort_la_SOURCES += parallel_compressor.C \
+												parallel_decompressor.C \
 												synchronize_keys.C
 endif
 libeffort_la_LDFLAGS = -avoid-version
@@ -40,7 +41,7 @@ PMPI_EFFORT_SRCS=effort_module.C \
 #
 bin_PROGRAMS = ef nrmse 
 if HAVE_MPI
-bin_PROGRAMS += tuner
+bin_PROGRAMS += tuner bin_test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
@@ -53,6 +54,9 @@ nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 tuner_SOURCES=tuner.C
 tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+
+bin_test_SOURCES=bin_test.C
+bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib

@@ -36,10 +36,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_MPI_TRUE@am__append_1 = parallel_compressor.C \
+@HAVE_MPI_TRUE@												parallel_decompressor.C \
 @HAVE_MPI_TRUE@												synchronize_keys.C
 
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_2 = tuner
+@HAVE_MPI_TRUE@am__append_2 = tuner bin_test
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
@@ -101,9 +102,10 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
-	parallel_compressor.C synchronize_keys.C
+	parallel_compressor.C parallel_decompressor.C \
+	synchronize_keys.C
 @HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
-@HAVE_MPI_TRUE@	synchronize_keys.lo
+@HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
 	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
 	$(am__objects_2)
@@ -159,9 +161,13 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
-@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT)
+@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
+am_bin_test_OBJECTS = bin_test.$(OBJEXT)
+bin_test_OBJECTS = $(am_bin_test_OBJECTS)
+bin_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
 ef_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
@@ -191,15 +197,17 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 SOURCES = $(effort_la_SOURCES) $(libeffort_la_SOURCES) \
 	$(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
-	$(libtiming_la_SOURCES) $(timing_la_SOURCES) $(ef_SOURCES) \
-	$(nrmse_SOURCES) $(tuner_SOURCES)
+	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
+	$(bin_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
+	$(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
-	$(ef_SOURCES) $(nrmse_SOURCES) $(tuner_SOURCES)
+	$(bin_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
+	$(tuner_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
@@ -395,6 +403,8 @@ nrmse_SOURCES = nrmse.C
 nrmse_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 tuner_SOURCES = tuner.C
 tuner_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+bin_test_SOURCES = bin_test.C
+bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
@@ -551,6 +561,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+bin_test$(EXEEXT): $(bin_test_OBJECTS) $(bin_test_DEPENDENCIES) 
+	@rm -f bin_test$(EXEEXT)
+	$(CXXLINK) $(bin_test_OBJECTS) $(bin_test_LDADD) $(LIBS)
 ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES) 
 	@rm -f ef$(EXEEXT)
 	$(CXXLINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
@@ -587,6 +600,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metric.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_key.Plo@am__quote@
@@ -597,6 +611,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env_config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pcontrol_counter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@
