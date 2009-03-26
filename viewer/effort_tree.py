@@ -19,6 +19,8 @@ class Node:
         self._name = str(name)
         if parent:
             parent.addChild(self)
+        else:
+            self._parent = None
 
     def addChild(self, child):
         assert not (child in self._children)
@@ -41,6 +43,12 @@ class Node:
     def child(self, index):
         return self._children[index]
 
+    def root(self):
+        if self._parent:
+            return self._parent
+        else:
+            return self
+
     def parent(self):
         return self._parent
 
@@ -52,8 +60,11 @@ class Node:
 
     def sort(self):
         # Sort children by name.
-        self._children.sort(key=lambda x:x.name())
+        self._children.sort(key=lambda x:x.sortKey())
 
+    def sortKey(self):
+        return self._name
+        
     def icon(self):
         return icons.get("folder")
 
@@ -69,17 +80,23 @@ class Node:
 # callframes of start and end paths.
 #
 class FrameNode(Node):
-    def __init__(self, start, end, index, parent=None):
+    def __init__(self, start, end, index, data, all_total, parent=None):
         Node.__init__(self, index, parent)
         self._start = effort.FrameViewWrapper.fromIndex(start, index)
         self._end = effort.FrameViewWrapper.fromIndex(end, index)
+        self._data = data
+        self._all_total = float(all_total)
 
     def data(self, index):
         return {
             0: self._start.prettyLocation(),
-            1: self._end.prettyLocation(),  
-            2: self._start.prettyModule(),  
-            3: self._end.prettyModule()
+            1: self._end.prettyLocation(),
+            2: self.total(),
+            3: self.meanVariance(),
+            4: self.meanRowSkew(),
+            5: self.meanRowKurtosis(),
+#            2: self._start.prettyModule(),  
+#            3: self._end.prettyModule()
             }.get(index)
 
     def tip(self, index):
@@ -87,6 +104,32 @@ class FrameNode(Node):
             2: self._start.prettyModule(True),
             3: self._end.prettyModule(True)
             }.get(index)
+    
+
+    def total(self):
+        if not self.parent():
+            total = self._data.total()
+            return "%g (%.2f%%)" % (total, (100.0 * total / self._all_total))
+        else:
+            return None
+    
+    def meanVariance(self):
+        if not self.parent():
+            return self._data.meanVariance()
+        else:
+            return None
+
+    def meanRowSkew(self):
+        if not self.parent():
+            return self._data.meanRowSkew()
+        else:
+            return None
+
+    def meanRowKurtosis(self):
+        if not self.parent():
+            return self._data.meanRowKurtosis()
+        else:
+            return None
 
     def getAllRegions(self):
         return []
@@ -121,17 +164,20 @@ class FrameNode(Node):
 # Select one of these to plot just the effort from that file.
 #
 class Region(Node):
-    def __init__(self, region, parent=None):
+    def __init__(self, region, all_total, parent=None):
         start = region.start()
         end = region.end()
-        self._firstFrame = FrameNode(start, end, 0)
         self._region = region
+        self._firstFrame = FrameNode(start, end, 0, self._region.dataFor("time"), all_total)
         Node.__init__(self, self._firstFrame.name(), parent)
 
         maxpath = max(len(start), len(end))
         for i in xrange(1, maxpath):
-            self.addChild(FrameNode(start, end, i))
+            self.addChild(FrameNode(start, end, i, self._region.dataFor("time"), 0))
         
+    def sortKey(self):
+        return -self.region().dataFor("time").total()
+
     def data(self, index):
         return self._firstFrame.data(index)
         
@@ -167,17 +213,24 @@ class Region(Node):
 # Builds a tree with effort regions at the leaves and internal
 # nodes for each phase of execution.
 #
-def build_from(regions):
+def build_from(regionsDB):
     root = Node("All")
     phases = {}
 
-    for region in regions:
+    # total cpu time (for all procs) in nanoseconds
+    all_total = float(regionsDB.totalTime * 1e9 * regionsDB.vprocs)
+
+    for region in regionsDB:
         id = str(region.type())
         if not id in phases:
             phases[id] = Node(id, root)
-        phases[id].addChild(Region(region))
+        phases[id].addChild(Region(region, all_total))
             
     root.sort()
+
+    for child in root.children():
+        child.sort()
+
     return root
 
 
@@ -185,7 +238,8 @@ def build_from(regions):
 # Model maps trees of Nodes and regions to something displayable by Qt.
 #
 class EffortTreeModel(QAbstractItemModel):
-    columns = ["Start", "End", "Start Module", "End Module"]
+#    columns = ["Start", "End", "Start Module", "End Module"]
+    columns = ["Start", "End", "TotalTime", "Variance", "MeanSkew", "MeanKurtosis"]
 
     # Set up  tree model with at least a root.  User can provide
     # Their own root, too.
@@ -309,7 +363,7 @@ class EffortTreeModel(QAbstractItemModel):
 #
 class TreeView(QTreeView):
     # TODO: do this better. This is hard coded for 1024-wide window.
-    widths = [375, 375, 125, 125]
+    widths = [375, 375, 170, 125, 125, 125]
 
     def __init__(self, parent=None):
         QTreeView.__init__(self, parent)

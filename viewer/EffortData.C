@@ -51,7 +51,7 @@ void EffortData::load_from_file() const {
     exit(1);
   }
 
-  // have to read in the metadata again to get to the data.
+  // have to read in the metadata again to get to the data, but we discard it here.
   effort_key key;
   ezw_header hdr;
   effort_key::read_in(in, key);
@@ -65,6 +65,9 @@ void EffortData::load_from_file() const {
   wt_direct dwt;
   mat = wt;
   dwt.iwt_2d(mat, level);
+
+  summary.set_matrix(mat);
+  loaded = true;
 }
 
 const wt_matrix& EffortData::getData() const {
@@ -114,3 +117,5 @@ std::string EffortData::getMetric() {
 void EffortData::setApproximationLevel(int level) {
   approximation_level = level;
 }
+
+

@@ -5,12 +5,14 @@
 #
 from vtkeffort import *
 from pyeffort import *
-import effort_tree, dendrogram, sys, os
+import effort_tree, dendrogram, sys, os, re
+
+wrapperfile = re.compile("^.*_wrapper.C$")
 
 def trimCallpath(callpath):
     i=0
     for frame in callpath:
-        if frame.file() and frame.file() != "effort_wrapper.C":
+        if frame.file() and not wrapperfile.match(frame.file()):
             break
         i+= 1
     foo = callpath.slice(i)
@@ -122,6 +124,7 @@ class DB:
         # Map of effort regions keyed by tuples of (start cp, end cp, type)
         self._regions = []
         self.approximationLevel = approx
+        self.totalTime = 0
 
     #
     # Loads a directory full of effort files into the regions map.
@@ -139,7 +142,12 @@ class DB:
                 if not len(parts) == 4:
                     continue
 
-                data = EffortData(file)
+                data = EffortData(file)   # TODO: need to prepend dir here.
+
+                self.steps = data.steps()
+                self.processes = data.processes()
+                self.vprocs = (self.processes >> data.getHeader().level << self.approximationLevel)
+
                 data.setApproximationLevel(self.approximationLevel)
 
                 key = (data.getStart(), data.getEnd(), data.getType())
@@ -148,6 +156,11 @@ class DB:
                     regions[key] = region
                     
                 regions[key].addData(data)
+
+            elif file == "times":
+                f = open(file)
+                self.totalTime = float(float(f.next().split()[1]))
+                f.close()
 
         # Dump map into list when done.
         self._regions = regions.values()

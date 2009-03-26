@@ -190,6 +190,8 @@ class EffortData(_object):
     def load(*args): return _pyeffort.EffortData_load(*args)
     def rows(*args): return _pyeffort.EffortData_rows(*args)
     def cols(*args): return _pyeffort.EffortData_cols(*args)
+    def steps(*args): return _pyeffort.EffortData_steps(*args)
+    def processes(*args): return _pyeffort.EffortData_processes(*args)
     def getValue(*args): return _pyeffort.EffortData_getValue(*args)
     def __init__(self, *args): 
         this = _pyeffort.new_EffortData(*args)
@@ -203,6 +205,20 @@ class EffortData(_object):
         return vtk.vtkObject(str(_pyeffort.EffortData_getVTKEffortData(*args)))
 
 
+    def mean(*args): return _pyeffort.EffortData_mean(*args)
+    def max(*args): return _pyeffort.EffortData_max(*args)
+    def min(*args): return _pyeffort.EffortData_min(*args)
+    def total(*args): return _pyeffort.EffortData_total(*args)
+    def count(*args): return _pyeffort.EffortData_count(*args)
+    def meanVariance(*args): return _pyeffort.EffortData_meanVariance(*args)
+    def maxVariance(*args): return _pyeffort.EffortData_maxVariance(*args)
+    def minVariance(*args): return _pyeffort.EffortData_minVariance(*args)
+    def meanRowSkew(*args): return _pyeffort.EffortData_meanRowSkew(*args)
+    def maxRowSkew(*args): return _pyeffort.EffortData_maxRowSkew(*args)
+    def minRowSkew(*args): return _pyeffort.EffortData_minRowSkew(*args)
+    def meanRowKurtosis(*args): return _pyeffort.EffortData_meanRowKurtosis(*args)
+    def maxRowKurtosis(*args): return _pyeffort.EffortData_maxRowKurtosis(*args)
+    def minRowKurtosis(*args): return _pyeffort.EffortData_minRowKurtosis(*args)
     def __getitem__(self, key):
       r,c = key
       return self.getValue(r,c)

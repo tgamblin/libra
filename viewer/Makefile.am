@@ -33,6 +33,7 @@ $(VTKEFFORT_PYTHON_SOURCES): $(VTKEFFORT_H_FILES)
 
 libvtkeffort_la_SOURCES = \
 	EffortData.C \
+	summary.C \
 	wavelet_ssim.C \
 	$(VTKEFFORT_CXX_SOURCES) \
 	$(VTKEFFORT_PYTHON_SOURCES)
@@ -71,6 +72,7 @@ pyeffort.py: _pyeffort.la
 
 include_HEADERS = \
 	EffortData.h \
+	summary.h \
 	wavelet_ssim.h \
 	$(VTKEFFORT_H_FILES)
 

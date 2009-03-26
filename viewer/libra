@@ -69,7 +69,7 @@ def main():
 
     app.connect(app, SIGNAL( 'lastWindowClosed()' ), finalize);
 
-    create_console()
+#    create_console()
 
     sys.exit(app.exec_())
 

@@ -90,7 +90,7 @@ am__objects_1 = vtkEffortData.lo vtkEffortSource.lo \
 	vtkZValueScalars.lo
 am__objects_2 = libvtkeffortPythonInit.lo vtkEffortDataPython.lo \
 	vtkEffortSourcePython.lo vtkZValueScalarsPython.lo
-am_libvtkeffort_la_OBJECTS = EffortData.lo wavelet_ssim.lo \
+am_libvtkeffort_la_OBJECTS = EffortData.lo summary.lo wavelet_ssim.lo \
 	$(am__objects_1) $(am__objects_2)
 libvtkeffort_la_OBJECTS = $(am_libvtkeffort_la_OBJECTS)
 libvtkeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -314,6 +314,7 @@ VTKEFFORT_PYTHON_SOURCES = \
 
 libvtkeffort_la_SOURCES = \
 	EffortData.C \
+	summary.C \
 	wavelet_ssim.C \
 	$(VTKEFFORT_CXX_SOURCES) \
 	$(VTKEFFORT_PYTHON_SOURCES)
@@ -349,6 +350,7 @@ _pyeffort_la_LIBADD = libvtkeffort.la \
 _pyeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
 include_HEADERS = \
 	EffortData.h \
+	summary.h \
 	wavelet_ssim.h \
 	$(VTKEFFORT_H_FILES)
 
@@ -507,6 +509,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvtkeffortPythonInit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pyeffort_wrap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/summary.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtkEffortData.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtkEffortDataPython.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vtkEffortSource.Plo@am__quote@

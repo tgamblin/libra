@@ -6,6 +6,7 @@
 #include "ezw.h"
 #include "effort_key.h"
 #include "Callpath.h"
+#include "summary.h"
 
 /// This class represents data and metadata from a particular effort
 /// region monitored at runtme.  Each effort region 
@@ -50,14 +51,24 @@ public:
   size_t cols() { 
     return mat.size2(); 
   }
-
+  
+  size_t steps() {
+    return header.cols;
+  }
+  
+  size_t processes() {
+    return header.rows;
+  }
+  
   double getValue(size_t row, size_t col) {
     return mat(row, col);
   }
 
   /// Forces data to load from file.
   void load() const {
-    if (!loaded) load_from_file();
+    if (!loaded) {
+      load_from_file(); // sets loaded to true.
+    }
   }
 
   /// This returns a raw SWIG-style mangled pointer to a VTK object.  Can be used 
@@ -75,20 +86,41 @@ public:
   /// Get coefficients matrix.  Lazily loads data from file.
   const wavelet::wt_matrix& getCoefficients() const;
 
+  // summary statistics
+  double mean()  const { load(); return summary.mean();  }
+  double max()   const { load(); return summary.max();   }
+  double min()   const { load(); return summary.min();   }
+  double total() const { load(); return summary.total(); }
+  double count() const { load(); return summary.count(); }
+
+  double meanVariance() const { load(); return summary.min(); }
+  double maxVariance()  const { load(); return summary.min(); }
+  double minVariance()  const { load(); return summary.min(); }
+
+  double meanRowSkew() const { load(); return summary.meanRowSkew(); }
+  double maxRowSkew()  const { load(); return summary.maxRowSkew();  }
+  double minRowSkew()  const { load(); return summary.minRowSkew();  }
+  
+  double meanRowKurtosis() const { load(); return summary.meanRowKurtosis(); }
+  double maxRowKurtosis()  const { load(); return summary.maxRowKurtosis();  }
+  double minRowKurtosis()  const { load(); return summary.minRowKurtosis();  }
+
+
 private:
   wavelet::ezw_header header;           /// Header data
   effort::effort_key id;                /// Metadata
   std::string filename;                 /// Name of file that data came from.
   int approximation_level;              /// Level of approx to expand to.
-
+  
   EffortData(const EffortData& other);            // not implemented
   EffortData& operator=(const EffortData& other); // not implemented
 
   void load_from_file() const;        /// Reads in matrix from file and does decompression
 
-  bool loaded;                        /// Whether matrices have been read in yet.
   mutable wavelet::wt_matrix mat;     /// Spatial data (lazily loaded)
   mutable wavelet::wt_matrix wt;      /// Wavelet coefficients from file (lazily loaded).
+  mutable bool loaded;                /// Whether matrices have been read in yet.
+  mutable Summary summary;
 };
 
 

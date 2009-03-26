@@ -153,7 +153,7 @@ class Viewer(QMainWindow):
            FileView is discarded.
            TODO: figure out some workable scheme for opening multiple experiments at once.
         """
-        self.effortDB = effort.DB()
+        self.effortDB = effort.DB(4)
 
         self.effortDB.loadDirectory(directory)
         model = effort_tree.EffortTreeModel(effort_tree.build_from(self.effortDB), self)

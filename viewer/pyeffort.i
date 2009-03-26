@@ -149,6 +149,8 @@ public:
 
   size_t rows();
   size_t cols();
+  size_t steps();
+  size_t processes();
   double getValue(size_t row, size_t col);
 
   EffortData(const std::string& filename);
@@ -157,6 +159,24 @@ public:
   double rmse(EffortData *other);
   double wtrmse(EffortData *other);
   std::string getVTKEffortData();
+
+  double mean() const;
+  double max() const;
+  double min() const;
+  double total() const;
+  double count() const;
+
+  double meanVariance() const;
+  double maxVariance() const;
+  double minVariance() const;
+
+  double meanRowSkew() const;
+  double maxRowSkew() const;
+  double minRowSkew() const;
+  
+  double meanRowKurtosis() const;
+  double maxRowKurtosis() const;
+  double minRowKurtosis() const;
 
 %pythoncode %{
   def __getitem__(self, key):
