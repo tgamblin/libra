@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# This runs make distcheck with configure args 
+# for a MacBook Pro and OpenMPI.
+# 
+
+make distcheck DISTCHECK_CONFIGURE_FLAGS="\
+    FC=gfortran-mp-4.4 \
+    CXX=mpicxx \
+    CPPFLAGS=\"-g3 -O3 -Wall -DVTK_EXCLUDE_STRSTREAM_HEADERS\" \
+    --with-boost=\"/opt/local\" \
+    --prefix=/Users/gamblin1/opt/libra \
+    --with-vtk=/opt/vtk-5.3 \
+    --with-vtk-version=5.3"

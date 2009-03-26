@@ -7,6 +7,7 @@ dist_noinst_HEADERS = \
 	effort_params.h \
 	effort_record.h \
 	parallel_compressor.h \
+	parallel_decompressor.h \
 	env_config.h \
 	string_utils.h \
 	synchronize_keys.h \

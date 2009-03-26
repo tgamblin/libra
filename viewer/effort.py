@@ -146,7 +146,7 @@ class DB:
 
                 self.steps = data.steps()
                 self.processes = data.processes()
-                self.vprocs = (self.processes >> data.getHeader().level << self.approximationLevel)
+                self.vprocs = data.rows()
 
                 data.setApproximationLevel(self.approximationLevel)
 

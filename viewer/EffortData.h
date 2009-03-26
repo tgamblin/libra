@@ -45,19 +45,23 @@ public:
   double wtrmse(EffortData *other);
 
   size_t rows() { 
-    return mat.size1(); 
+    return (approximation_level < 0) 
+      ? header.rows 
+      : (header.rows >> header.level << approximation_level);
   }
 
   size_t cols() { 
-    return mat.size2(); 
-  }
-  
-  size_t steps() {
-    return header.cols;
+    return (approximation_level < 0) 
+      ? header.cols
+      : (header.cols >> header.level << approximation_level);
   }
   
   size_t processes() {
     return header.rows;
+  }
+  
+  size_t steps() {
+    return header.cols;
   }
   
   double getValue(size_t row, size_t col) {
