@@ -102,13 +102,13 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
-	parallel_compressor.C parallel_decompressor.C \
+	ltqnorm.C parallel_compressor.C parallel_decompressor.C \
 	synchronize_keys.C
 @HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
 @HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
 	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
-	$(am__objects_2)
+	ltqnorm.lo $(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -388,7 +388,8 @@ lib_LTLIBRARIES = libeffort.la $(am__append_3)
 # This is used by 
 #
 libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
-	effort_params.C string_utils.C Metric.C $(am__append_1)
+	effort_params.C string_utils.C Metric.C ltqnorm.C \
+	$(am__append_1)
 libeffort_la_LDFLAGS = -avoid-version
 
 #
@@ -610,6 +611,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_record.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env_config.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ltqnorm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@

@@ -99,12 +99,11 @@ namespace effort {
 
     size_t progress_steps = 0;
     blocks = 0;
-    map<effort_key, string> file_for_key;
 
+    file_for_key.clear();
     if (rank == 0) {
       ezw_header header;
       effort_data::load_keys(input_dir, effort_log, header, &file_for_key);
-
       if (header.rows != size) {
         cerr << "Error: attempted to load " << header.rows << " rows to " << size << " processors." << endl;
         exit(1);
@@ -150,6 +149,13 @@ namespace effort {
       }
     }
     bcast_strings(filenames, comm_world);
+
+    // preserve key to filename mapping even after compression.
+    if (rank != 0) {
+      for (size_t i=0; i < sorted_keys.size(); i++) {
+        file_for_key[sorted_keys[i]] = filenames[i];
+      }
+    }
     
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
@@ -161,7 +167,9 @@ namespace effort {
         effort_record& record = effort_log[key];
 
         if (rank % m == set) {
-          do_decompression(mat, key, filenames[id], comm);
+          ostringstream fullpath;
+          fullpath << input_dir << "/" << filenames[id];
+          do_decompression(mat, key, fullpath.str(), comm);
         }
 
         // consolidate all data for the set onto its processors

@@ -2,6 +2,7 @@
 #define PARALLEL_COMPRESSOR_H
 
 #include <string>
+#include <map>
 #include "wavelet.h"
 #include "effort_params.h"
 #include "effort_data.h"
@@ -33,6 +34,22 @@ namespace effort {
       return timer;
     }
 
+    void set_file_map(const std::map<effort_key, std::string> *fm) {
+      file_map = fm;
+    }
+    
+    /// sets confidence interval for sample
+    /// confidence should be in (0, 1]
+    void set_confidence(double confidence);
+    
+    /// sets confidence interval for sample
+    /// error should be in [0. 1)
+    void set_error(double error);
+
+
+    MPI_Comm bin_ranks(effort_record& record, MPI_Comm comm);
+    
+
   private:
     /// Helper for distribute_work().  Actually does the work of compression on a subcommunicator
     void do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm);
@@ -40,8 +57,14 @@ namespace effort {
     const effort_params& params;
     std::string output_dir;
     std::string exact_dir;
-
+    const std::map<effort_key, std::string> *file_map;
     Timer timer;   // keeps stats on timings of compression phases
+
+    bool sample_topology;
+
+    double error;
+    double confidence;
+    
   };
 
 } //namespace

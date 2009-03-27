@@ -23,7 +23,8 @@ libeffort_la_SOURCES = effort_key.C \
                        effort_data.C \
                        effort_params.C \
 											 string_utils.C \
-											 Metric.C
+											 Metric.C \
+											 ltqnorm.C
 if HAVE_MPI
 libeffort_la_SOURCES += parallel_compressor.C \
 												parallel_decompressor.C \

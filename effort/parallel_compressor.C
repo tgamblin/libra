@@ -3,6 +3,7 @@
 #include <sstream>
 #include <algorithm>
 #include <fstream>
+#include <cmath>
 using namespace std;
 
 #include "wt_parallel.h"
@@ -12,24 +13,36 @@ using namespace wavelet;
 
 #include "synchronize_keys.h"
 #include "timing.h"
+#include "ltqnorm.h"
 
 namespace effort {
 
-  parallel_compressor::parallel_compressor(const effort_params& p) : params(p) { }
+  parallel_compressor::parallel_compressor(const effort_params& p) 
+    : params(p), file_map(NULL), confidence(0.9), error(0.3) { }
 
   void parallel_compressor::do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm) {
     int rank, size;
     PMPI_Comm_rank(comm, &rank);
     PMPI_Comm_size(comm, &size);
-  
-    ostringstream file_suffix;
-    file_suffix << "-" << key.metric << "-" << key.type << "-" << id;
+
+    ostringstream sfilename;
+    if (file_map) {
+      map<effort_key, string>::const_iterator i = file_map->find(key);
+      if (i == file_map->end()) {
+        sfilename << "unknown-" << key.metric << "-" << key.type << "-" << id;
+      } else {
+        sfilename << i->second;
+      }
+    } else {
+      sfilename << "effort-" << key.metric << "-" << key.type << "-" << id;
+    }
+    string effort_filename = sfilename.str();
 
     // if verify is on, then output exact data in a separate directory.
     if (params.verify) {
       // write out exact data to a file for verification later.
       ostringstream exact_file_name;
-      exact_file_name << exact_dir << "/exact" << file_suffix.str() << "-" << rank;
+      exact_file_name << exact_dir << "/exact-" << effort_filename << "-" << rank;
       ofstream exact_file(exact_file_name.str().c_str());
       output(mat, exact_file);
       exact_file.close();
@@ -52,7 +65,7 @@ namespace effort {
     if (rank == encoder.get_root(comm)) {
       // open the encoded file stream on the root process
       ostringstream filename;
-      filename << output_dir << "/effort" << file_suffix.str();
+      filename << output_dir << "/" << effort_filename;
       encoded_stream.open(filename.str().c_str());
 
       // output the effort id (type, callpaths) first
@@ -65,6 +78,58 @@ namespace effort {
     timer += encoder.get_timer();  // include ezw timings.
   }
 
+
+  /// sets confidence interval for sample
+  /// confidence should be in (0, 1]
+  void set_confidence(double confidence);
+  
+  /// sets confidence interval for sample
+  /// error should be in [0. 1)
+  void set_error(double error);
+
+
+  MPI_Comm parallel_compressor::bin_ranks(effort_record& record, MPI_Comm comm) {
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    // calculate local trace mean.
+    double total = 0;
+    for (size_t i=0; i < record.values.size(); i++) {
+      total += record.values[i];
+    }
+    double val = total / record.values.size();
+    double val2 = val * val;
+    
+    // calculate variance of the local trace means
+    double sum, sum2;
+    MPI_Reduce(&val, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+    MPI_Reduce(&val2, &sum2, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+    double mean = sum / size;
+    double variance = (sum2 - (sum * sum)/size) / size;
+
+    // calculate min sample size
+    double Za = computeConfidenceInterval(confidence);   // double-tailed norm conf. interval
+    double d = mean * error;                              // real error bound (error var is a %)
+    double stdDev = sqrt(variance);
+
+    double V = (d/(Za*stdDev));
+    double min_sample_size = size * 1/(1 + size * V*V);
+    
+    cerr << "comm: " << hex << comm 
+         << "   stdDev: " << stdDev 
+         << "   min_sample_size: " << min_sample_size << endl;
+    
+    // take random sample according to min size then bcast sample.
+    
+    
+    // bcast sample vector to nodes to get new order
+
+
+    // do another comm_split with color same for everyone but 
+    // rank = indexof(closest sample vector elt) * size + rank
+    // this should put things in bin order
+  }
 
 
   void parallel_compressor::compress(effort_data& effort_log, MPI_Comm comm_world) {
@@ -122,7 +187,7 @@ namespace effort {
     // We wait on communication and do all the transforms when all sets are full,
     // and we continue when all the effort has been transformed.
     const int m = min(params.rows_per_process, size);
-  
+
     // create separate wavelet transform communicators
     MPI_Comm comm;
     PMPI_Comm_split(comm_world, rank % m, 0, &comm);
@@ -151,6 +216,14 @@ namespace effort {
       for (set=0; set < m && id < sorted_keys.size(); set++, id++) {
         effort_key& key = sorted_keys[id];
         effort_record& record = effort_log[key];
+
+
+
+
+        // reorder
+        //bin_ranks(record, comm);
+
+
 
         // sanity check for values from all timesteps
         if (record.values.size() != effort_log.progress_count) {

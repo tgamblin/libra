@@ -42,7 +42,9 @@ namespace effort {
         effort_key::read_in(file, key);
         log[key] = effort_record();
         
-        if (filenames) (*filenames)[key] = fullpath.str();
+        if (filenames) {
+          (*filenames)[key] = string(dp->d_name);
+        }
 
         if (first) {
           ezw_header::read_in(file, header);

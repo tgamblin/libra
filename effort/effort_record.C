@@ -13,5 +13,6 @@ namespace effort {
   double& effort_record::operator[](int p) {
     return values[p];
   }
-  
+
 } // namespace
+

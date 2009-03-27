@@ -37,6 +37,11 @@ namespace effort {
     size_t get_blocks() {
       return blocks;
     }
+    
+    // key -> filename mapping for last decompression done.
+    const std::map<effort_key, std::string> *file_map() {
+      return &file_for_key;
+    }
 
   private:
     /// Helper for distribute_work().  Actually does the work of compression on a subcommunicator
@@ -44,6 +49,7 @@ namespace effort {
 
     size_t blocks;    // blocks used in last decoded file.
     std::string input_dir;
+    std::map<effort_key, std::string> file_for_key;
   };
 
 } //namespace

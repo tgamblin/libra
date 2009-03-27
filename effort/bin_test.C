@@ -49,8 +49,7 @@ int main(int argc, char **argv) {
   parallel_decompressor decompressor;
   decompressor.set_input_dir(input_dir);
   decompressor.decompress(effort_log, MPI_COMM_WORLD);
-
-
+  
   ostringstream soutput_dir;
   soutput_dir << input_dir << "/output";
   string output_dir = soutput_dir.str();
@@ -61,6 +60,7 @@ int main(int argc, char **argv) {
   parallel_compressor compressor(params);
   mkdir(output_dir.c_str(), 0750);
   compressor.set_output_dir(output_dir);
+  compressor.set_file_map(decompressor.file_map());
   
   compressor.compress(effort_log, MPI_COMM_WORLD);
 
