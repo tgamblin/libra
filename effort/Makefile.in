@@ -40,7 +40,7 @@ host_triplet = @host@
 @HAVE_MPI_TRUE@												synchronize_keys.C
 
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_2 = tuner bin_test
+@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample_test
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
@@ -102,13 +102,13 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
-	ltqnorm.C parallel_compressor.C parallel_decompressor.C \
+	effort_dataset.C parallel_compressor.C parallel_decompressor.C \
 	synchronize_keys.C
 @HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
 @HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
 	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
-	ltqnorm.lo $(am__objects_2)
+	effort_dataset.lo $(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -161,13 +161,18 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
-@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT)
+@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT) \
+@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample_test$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
 bin_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
+am_dataset_test_OBJECTS = dataset_test.$(OBJEXT)
+dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
+dataset_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1)
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
 ef_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
@@ -176,6 +181,11 @@ am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
+am_sample_test_OBJECTS = sample_test.$(OBJEXT)
+sample_test_OBJECTS = $(am_sample_test_OBJECTS)
+sample_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la ../cluster/libcluster.la \
+	$(am__DEPENDENCIES_1)
 am_tuner_OBJECTS = tuner.$(OBJEXT)
 tuner_OBJECTS = $(am_tuner_OBJECTS)
 tuner_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
@@ -198,16 +208,16 @@ SOURCES = $(effort_la_SOURCES) $(libeffort_la_SOURCES) \
 	$(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
-	$(bin_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(tuner_SOURCES)
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(nrmse_SOURCES) $(sample_test_SOURCES) $(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
-	$(bin_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(tuner_SOURCES)
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(nrmse_SOURCES) $(sample_test_SOURCES) $(tuner_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
@@ -380,7 +390,11 @@ dist_noinst_HEADERS = \
 	env_config.h \
 	string_utils.h \
 	synchronize_keys.h \
-	Metric.h
+	Metric.h \
+	random.h \
+	RNGenerator.h \
+	MersenneTwister.h \
+  effort_dataset.h
 
 lib_LTLIBRARIES = libeffort.la $(am__append_3)
 
@@ -388,7 +402,7 @@ lib_LTLIBRARIES = libeffort.la $(am__append_3)
 # This is used by 
 #
 libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
-	effort_params.C string_utils.C Metric.C ltqnorm.C \
+	effort_params.C string_utils.C Metric.C effort_dataset.C \
 	$(am__append_1)
 libeffort_la_LDFLAGS = -avoid-version
 
@@ -399,6 +413,14 @@ PMPI_EFFORT_SRCS = effort_module.C \
 								 env_config.C
 
 dist_bin_SCRIPTS = libra-build-viewer-data libra-reconstruct-exact
+sample_test_SOURCES = sample_test.C
+sample_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+
+dataset_test_SOURCES = dataset_test.C
+dataset_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
+                   $(SYMTAB_LDFLAGS) 
+
 ef_SOURCES = ef.C
 ef_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) 
 nrmse_SOURCES = nrmse.C 
@@ -432,7 +454,7 @@ CLEANFILES = effort_wrapper.C
 EXTRA_DIST = effort_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
 INCLUDES = $(PNMPI_CPPFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet \
- -I$(top_srcdir)/callpath $(PARADYN_CPPFLAGS) $(PAPI_CPPFLAGS) $(SW_CPPFLAGS)
+ -I$(top_srcdir)/callpath -I$(top_srcdir)/cluster $(PARADYN_CPPFLAGS) $(PAPI_CPPFLAGS) $(SW_CPPFLAGS)
 
 all: all-am
 
@@ -566,12 +588,18 @@ clean-binPROGRAMS:
 bin_test$(EXEEXT): $(bin_test_OBJECTS) $(bin_test_DEPENDENCIES) 
 	@rm -f bin_test$(EXEEXT)
 	$(CXXLINK) $(bin_test_OBJECTS) $(bin_test_LDADD) $(LIBS)
+dataset_test$(EXEEXT): $(dataset_test_OBJECTS) $(dataset_test_DEPENDENCIES) 
+	@rm -f dataset_test$(EXEEXT)
+	$(CXXLINK) $(dataset_test_OBJECTS) $(dataset_test_LDADD) $(LIBS)
 ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES) 
 	@rm -f ef$(EXEEXT)
 	$(CXXLINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
+sample_test$(EXEEXT): $(sample_test_OBJECTS) $(sample_test_DEPENDENCIES) 
+	@rm -f sample_test$(EXEEXT)
+	$(CXXLINK) $(sample_test_OBJECTS) $(sample_test_LDADD) $(LIBS)
 tuner$(EXEEXT): $(tuner_OBJECTS) $(tuner_DEPENDENCIES) 
 	@rm -f tuner$(EXEEXT)
 	$(CXXLINK) $(tuner_OBJECTS) $(tuner_LDADD) $(LIBS)
@@ -603,19 +631,21 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataset_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_dataset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_key.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_params.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_record.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env_config.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ltqnorm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pcontrol_counter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sample_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing_module.Plo@am__quote@

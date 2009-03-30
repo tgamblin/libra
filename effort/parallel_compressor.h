@@ -10,6 +10,7 @@
 
 namespace effort {
 
+
   class parallel_compressor {
   public:
     /// Construct a new parallel compressor
@@ -47,12 +48,17 @@ namespace effort {
     void set_error(double error);
 
 
-    MPI_Comm bin_ranks(effort_record& record, MPI_Comm comm);
+    MPI_Comm reorder_ranks_in_bins(effort_record& record, MPI_Comm comm);
     
 
   private:
     /// Helper for distribute_work().  Actually does the work of compression on a subcommunicator
     void do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm);
+    
+
+
+
+
 
     const effort_params& params;
     std::string output_dir;
@@ -64,7 +70,6 @@ namespace effort {
 
     double error;
     double confidence;
-    
   };
 
 } //namespace

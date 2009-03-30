@@ -43,12 +43,12 @@ namespace effort {
         log[key] = effort_record();
         
         if (filenames) {
-          (*filenames)[key] = string(dp->d_name);
+          pair<effort_key, string> entry(key, string(dp->d_name));
+          filenames->insert(entry);
         }
 
         if (first) {
           ezw_header::read_in(file, header);
-          cerr << header.cols << endl;
           first = false;
         }
       }

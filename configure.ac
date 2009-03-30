@@ -168,6 +168,7 @@ AC_CONFIG_FILES([Makefile \
                  libwavelet/Makefile \
                  callpath/Makefile \
                  effort/Makefile \
+                 cluster/Makefile \
                  hcluster/Makefile \
                  viewer/Makefile \
                  tests/Makefile])

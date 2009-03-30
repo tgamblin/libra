@@ -1,5 +1,5 @@
-#ifndef MATRIX_UTIL_H
-#define MATRIX_UTIL_H
+#ifndef MATRIX_UTILS_H
+#define MATRIX_UTILS_H
 
 #include <iostream>
 #include <iomanip>
@@ -11,28 +11,25 @@
 #include <stdint.h>
 #include <boost/numeric/ublas/matrix.hpp>
 
-/// The matrix we'll be using here 
-using boost::numeric::ublas::matrix;
-
 
 /// True if and only if n is divisible by 2 <level> times.
 bool isDivisibleBy2(size_t n, int level);
 
 
 template <typename T>
-bool in_bounds(const matrix<T>& mat, size_t row, size_t col) {
+bool in_bounds(const boost::numeric::ublas::matrix<T>& mat, size_t row, size_t col) {
   return (row < mat.size1()) && (col < mat.size2());
 }
 
 
-/// Reads the provided matrix in from the file. Assumes a file with 
+/// Reads the provided boost::numeric::ublas::matrix in from the file. Assumes a file with 
 /// one row per line, elements separated by whitespace.
 /// Returns 0 on success, 1 on error.
-bool read_matrix(const char *filename, matrix<double>& mat);
+bool read_matrix(const char *filename, boost::numeric::ublas::matrix<double>& mat);
 
 
 template <typename T>
-void output(const matrix<T>& mat, std::ostream& out = std::cout) {
+void output(const boost::numeric::ublas::matrix<T>& mat, std::ostream& out = std::cout) {
   for (size_t i=0; i < mat.size1(); i++) {
     for (size_t j=0; j < mat.size2(); j++) {
       out << std::setw(12) << mat(i,j);
@@ -58,7 +55,7 @@ struct ms_summary {
 
 
 template <typename T>
-ms_summary get_summary(const matrix<T>& orig, const matrix<T>& repro) {
+ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -83,7 +80,7 @@ ms_summary get_summary(const matrix<T>& orig, const matrix<T>& repro) {
 
 
 template <typename T>
-double rmse(const matrix<T>& orig, const matrix<T>& repro) {
+double rmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -93,7 +90,7 @@ double rmse(const matrix<T>& orig, const matrix<T>& repro) {
 
 /// Normalized rms error
 template <typename T>
-double nrmse(const matrix<T>& orig, const matrix<T>& repro) {
+double nrmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -105,7 +102,7 @@ double nrmse(const matrix<T>& orig, const matrix<T>& repro) {
 
 /// Peak Signal to Noise Ratio
 template <typename T>
-double psnr(const matrix<T>& orig, const matrix<T>& repro) {
+double psnr(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -117,7 +114,7 @@ double psnr(const matrix<T>& orig, const matrix<T>& repro) {
 
 /// Similarity (NRMSE defined to be symmetric, with max and min taken from both matrices)
 template <typename T>
-double similarity(const matrix<T>& orig, const matrix<T>& repro) {
+double similarity(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -147,7 +144,7 @@ template<typename T> T abs_val(T num) {
 
 
 template <typename T>
-T sum(const matrix<T>& mat,
+T sum(const boost::numeric::ublas::matrix<T>& mat,
       size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
       size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
@@ -165,7 +162,7 @@ T sum(const matrix<T>& mat,
 
 
 template <typename T>
-double mean_val(const matrix<T>& mat,
+double mean_val(const boost::numeric::ublas::matrix<T>& mat,
                 size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
                 size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
@@ -180,7 +177,7 @@ double mean_val(const matrix<T>& mat,
 
 
 template <typename T>
-T max_val(const matrix<T>& mat,
+T max_val(const boost::numeric::ublas::matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -199,7 +196,7 @@ T max_val(const matrix<T>& mat,
 
 
 template <typename T>
-T min_val(const matrix<T>& mat,
+T min_val(const boost::numeric::ublas::matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -217,7 +214,7 @@ T min_val(const matrix<T>& mat,
 }
 
 template <typename T>
-T abs_max_val(const matrix<T>& mat,
+T abs_max_val(const boost::numeric::ublas::matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -235,7 +232,7 @@ T abs_max_val(const matrix<T>& mat,
 }
 
 template <typename T, typename V>
-void set_all(const matrix<T>& mat, V value,
+void set_all(const boost::numeric::ublas::matrix<T>& mat, V value,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -250,11 +247,11 @@ void set_all(const matrix<T>& mat, V value,
 }
 
 
-/// Interpolates a value for point (x,y) based on values in the matrix.
+/// Interpolates a value for point (x,y) based on values in the boost::numeric::ublas::matrix.
 /// Finds the nearest values by taking floor and ceil of x and y, then
 /// uses bilinear interpolation to estimate the value at (x,y).
 template <typename T>
-double interp_bilinear(const matrix<T>& mat, double x, double y) {
+double interp_bilinear(const boost::numeric::ublas::matrix<T>& mat, double x, double y) {
   if (x < 0) {
     x = 0;
   } else if (x > (mat.size1() - 1)) {
@@ -299,4 +296,4 @@ double interp_bilinear(const matrix<T>& mat, double x, double y) {
   return value;
 }
 
-#endif // MATRIX_UTIL_H
+#endif // MATRIX_UTILS_H

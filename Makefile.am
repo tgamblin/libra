@@ -19,5 +19,5 @@ dist_noinst_SCRIPTS = \
 
 EXTRA_DIST = LICENSE README
 
-SUBDIRS=libwavelet callpath effort $(VIEWER_DIRS) tests
+SUBDIRS=libwavelet callpath cluster effort $(VIEWER_DIRS) tests
 

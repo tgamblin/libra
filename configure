@@ -25822,7 +25822,7 @@ echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
 echo "========================================================"
 echo
 
-ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile hcluster/Makefile viewer/Makefile tests/Makefile"
+ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile cluster/Makefile hcluster/Makefile viewer/Makefile tests/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -26507,6 +26507,7 @@ do
     "libwavelet/Makefile") CONFIG_FILES="$CONFIG_FILES libwavelet/Makefile" ;;
     "callpath/Makefile") CONFIG_FILES="$CONFIG_FILES callpath/Makefile" ;;
     "effort/Makefile") CONFIG_FILES="$CONFIG_FILES effort/Makefile" ;;
+    "cluster/Makefile") CONFIG_FILES="$CONFIG_FILES cluster/Makefile" ;;
     "hcluster/Makefile") CONFIG_FILES="$CONFIG_FILES hcluster/Makefile" ;;
     "viewer/Makefile") CONFIG_FILES="$CONFIG_FILES viewer/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
