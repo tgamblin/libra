@@ -19,7 +19,6 @@ namespace stringutils {
   /// Trims any characters in <chars> off both ends of a string and returns the result.
   std::string trim(const std::string& str, const std::string chars = " ");
 
-
 } // namespace
 
 #endif //STRING_UTILS_H

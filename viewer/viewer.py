@@ -11,13 +11,15 @@ class Viewer(QMainWindow):
     numClusterings = 0
     numViewers = 0
 
-    def __init__(self):
+    def __init__(self, level, pass_limit):
         QMainWindow.__init__(self, None)
         self.setUnifiedTitleAndToolBarOnMac(True)
-        self.setWindowTitle("Libra")
+        self.setWindowTitle("Libra (%d)" % level)
         self.viewers = vtkutils.ViewerCollection()
         self.trees = []
         self.regions = None
+        self.approximation_level = int(level)
+        self.pass_limit = int(pass_limit)
 
         # Initial size/position
         self.resize(1024, 768)
@@ -153,7 +155,9 @@ class Viewer(QMainWindow):
            FileView is discarded.
            TODO: figure out some workable scheme for opening multiple experiments at once.
         """
-        self.effortDB = effort.DB(4)
+
+        print "loading with approx level %d"% self.approximation_level
+        self.effortDB = effort.DB(self.approximation_level, self.pass_limit)
 
         self.effortDB.loadDirectory(directory)
         model = effort_tree.EffortTreeModel(effort_tree.build_from(self.effortDB), self)

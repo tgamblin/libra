@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.4
+#!/usr/bin/env python
 usage_string = \
 '''Usage: wrap.py [-fg] [-i pmpi_init] [-c mpicc_name] [-o file] wrapper.w [...]
  Python script for creating PMPI wrappers. Roughly follows the syntax of 

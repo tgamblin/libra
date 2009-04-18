@@ -59,13 +59,17 @@ void EffortData::load_from_file() const {
 
   // here we read in wavelet coefficients from the ezw stream.
   ezw_decoder decoder;
+  decoder.set_pass_limit(pass_limit);
   int level = decoder.decode(in, wt, approximation_level, &hdr);
 
   // now inverse-transform
   wt_direct dwt;
   mat = wt;
   dwt.iwt_2d(mat, level);
-
+  
+  // scale up based on approximation level
+  mat *= (1<<(header.level - approximation_level));
+  
   summary.set_matrix(mat);
   loaded = true;
 }
@@ -116,6 +120,10 @@ std::string EffortData::getMetric() {
 
 void EffortData::setApproximationLevel(int level) {
   approximation_level = level;
+}
+
+void EffortData::setPassLimit(size_t limit) {
+  pass_limit = limit;
 }
 
 

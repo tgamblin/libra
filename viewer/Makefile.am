@@ -127,6 +127,6 @@ simtest_LDADD=libvtkeffort.la ../libwavelet/libwavelet.la
 INCLUDES=$(BOOST_CPPFLAGS) $(VTK_CPPFLAGS) -I$(top_srcdir)/libwavelet \
 -I$(top_srcdir)/callpath -I$(top_srcdir)/effort $(PYTHON_CPPFLAGS)
 
-CLEANFILES=$(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt
+CLEANFILES=$(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc
 
 

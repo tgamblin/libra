@@ -38,6 +38,8 @@ public:
   /// a larger, but more precise approximation of the original data.
   void setApproximationLevel(int level);
 
+  void setPassLimit(size_t limit);
+
   /// Calculates rms error between two load functions
   double rmse(EffortData *other);
 
@@ -97,9 +99,13 @@ public:
   double total() const { load(); return summary.total(); }
   double count() const { load(); return summary.count(); }
 
-  double meanVariance() const { load(); return summary.min(); }
-  double maxVariance()  const { load(); return summary.min(); }
-  double minVariance()  const { load(); return summary.min(); }
+  double meanRowDeviation() const { load(); return summary.meanRowDeviation(); }
+  double maxRowDeviation() const  { load(); return summary.maxRowDeviation();  }
+  double minRowDeviation() const  { load(); return summary.minRowDeviation();  }
+
+  double meanRowVariance() const { load(); return summary.meanRowVariance(); }
+  double maxRowVariance()  const { load(); return summary.maxRowVariance(); }
+  double minRowVariance()  const { load(); return summary.minRowVariance(); }
 
   double meanRowSkew() const { load(); return summary.meanRowSkew(); }
   double maxRowSkew()  const { load(); return summary.maxRowSkew();  }
@@ -115,6 +121,7 @@ private:
   effort::effort_key id;                /// Metadata
   std::string filename;                 /// Name of file that data came from.
   int approximation_level;              /// Level of approx to expand to.
+  size_t pass_limit;                    /// Max # EZW passes to expand
   
   EffortData(const EffortData& other);            // not implemented
   EffortData& operator=(const EffortData& other); // not implemented

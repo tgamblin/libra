@@ -13,7 +13,7 @@
 namespace effort {
 
   struct region {
-    region(const std::string& filename, int approximation_level = -1);
+    region(const std::string& filename, int approximation_level=-1, size_t pass_limit=0);
     ~region();
     
     effort_key key;
@@ -32,27 +32,34 @@ namespace effort {
 
   class effort_dataset {
   public:
-    effort_dataset(const std::string& directory, int approximation_level);
-    ~effort_dataset();
+    effort_dataset(const std::string& directory, 
+                   int approximation_level=-1, size_t pass_limit=0);
 
+    effort_dataset(const effort_dataset& other);
+    ~effort_dataset();
+    
+    // subtracts out mean and divides by stddev for all data in this dataset 
+    void standardize();
+
+    // splits matrices up into per-process matrices for clustering.
     void transpose(std::vector<proc_data*>& trans);
 
     size_t rows() { return mRows; }
     size_t cols() { return mCols; }
     size_t size() { return regions.size(); }
 
-    size_t num_procs() { return mRows; }
-    size_t num_steps() { return mCols; }
-    size_t num_regions() { return regions.size(); }
+    size_t procs() { return mRows >> approximation_level << header.level; }
+    size_t steps() { return mCols >> approximation_level << header.level; }
+    
+    effort_dataset& operator=(const effort_dataset& other);
   private:
-    const int approximation_level;
-    const std::string directory;
+    std::string directory;
+    int approximation_level;
     std::map<effort_key, region*> regions;
     wavelet::ezw_header header;
     size_t mRows;
     size_t mCols;
   }; // effort_dataset
-  
   
 }
 

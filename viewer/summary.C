@@ -97,4 +97,8 @@ void Summary::compute() {
   mMeanRowVariance = totalRowVariance / rows;
   mMeanRowSkew     = totalRowSkew     / rows;
   mMeanRowKurtosis = totalRowKurtosis / rows;
+
+  mMeanRowDeviation = sqrt(mMeanRowVariance);
+  mMinRowDeviation  = sqrt(mMinRowVariance);
+  mMaxRowDeviation  = sqrt(mMaxRowVariance);
 }

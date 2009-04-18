@@ -19,7 +19,9 @@ using namespace wavelet;
 namespace effort {
 
   parallel_compressor::parallel_compressor(const effort_params& p) 
-    : params(p), file_map(NULL), confidence(0.9), error(0.3) { }
+    : params(p), file_map(NULL)
+      //, confidence(0.9), error(0.3) 
+  { }
 
   void parallel_compressor::do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm) {
     int rank, size;

@@ -1,30 +1,25 @@
 #!/usr/bin/env ruby
 # -*- ruby -*-
 
-def rank(str) 
-  str.sub(/^exact_([0-9]+)_([0-9]+)_/, '').to_i
-end
+exact_filename = /^(exact-\w+-[0-9]+-[0-9]+)-([0-9]+)/
 
-files = `ls`
-tocat = {}
+files = Dir.new(".").entries.grep(exact_filename)
 
-files.each do |filename|
-  filename.chomp!
-  
-  if matches = /^exact_([0-9]+)_([0-9]+)_([0-9]+)/.match(filename)
-    key = "exact_#{matches[1]}_#{matches[2]}"
-    unless tocat[key]
-      tocat[key] = []
-    end
-    tocat[key].push(filename)
-  end
+tocat = Hash.new {|hash,key| hash[key] = [] }
+files.each do |file|
+  file.chomp!
+  outfile, rank = exact_filename.match(file).captures
+  tocat[outfile][rank.to_i] = file
 end
 
 tocat.each do |key, list|
-  list.sort! {|a,b| rank(a) <=> rank(b)}
+  if list.include?(nil)
+    puts "Error: Missing files for '#{key}'"
+    exit(1)
+  end
   cat_cmd = "cat #{list.join(" ")} > #{key}"
   rm_cmd = "rm  #{list.join(" ")}"
+
   system cat_cmd
   system rm_cmd
 end
-

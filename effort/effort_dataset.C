@@ -16,7 +16,7 @@ namespace effort {
   // ---------------------------------------------------------------------- //
   // region
   // ---------------------------------------------------------------------- //
-  region::region(const string& filename, int approximation_level) {
+  region::region(const string& filename, int approximation_level, size_t pass_limit) {
     ifstream in(filename.c_str());
     if (in.fail()) {
       cerr << "Couldn't open file: " << filename << endl;
@@ -29,6 +29,7 @@ namespace effort {
     
     // here we read in wavelet coefficients from the ezw stream.
     ezw_decoder decoder;
+    decoder.set_pass_limit(pass_limit);
     int level = decoder.decode(in, mat, approximation_level, &header);
     
     // now inverse-transform
@@ -49,10 +50,14 @@ namespace effort {
   // ---------------------------------------------------------------------- //
   // effort_dataset
   // ---------------------------------------------------------------------- //
-  effort_dataset::effort_dataset(const string& dir, int level) 
+  effort_dataset::effort_dataset(const string& dir, int level, size_t pass_limit) 
     : directory(dir), approximation_level(level) 
   { 
     DIR *dirp = opendir(directory.c_str());
+    if (!dirp) {
+      cerr << "Error opening directory: '" << directory << "'" << endl;
+      exit(1);
+    }
     
     effort_key key;
     bool first = true;
@@ -62,12 +67,17 @@ namespace effort {
         sfullpath << directory << "/" << dp->d_name;
         string fullpath = sfullpath.str();
         
-        region *r = new region(fullpath, level);
+        region *r = new region(fullpath, level, pass_limit);
         regions[r->key] = r;
         
         if (first) {
           header = r->header;
-          if (level > r->header.level) {
+
+          if (approximation_level < 0) {
+            approximation_level = header.level;
+          }
+
+          if ((size_t)approximation_level > r->header.level) {
             cerr << "Can't expand to approx level " << level 
                  << " when actual level is " << header.level << endl;
             exit(1);
@@ -79,9 +89,32 @@ namespace effort {
       }
     }
   }
+  
+  effort_dataset::effort_dataset(const effort_dataset& other) 
+    :directory(other.directory), approximation_level(other.approximation_level),
+     regions(other.regions), header(other.header), mRows(other.mRows), mCols(other.mCols)
+  { }
 
 
   effort_dataset::~effort_dataset() { }
+
+
+  effort_dataset& effort_dataset::operator=(const effort_dataset& other) {
+    directory = other.directory;
+    approximation_level = other.approximation_level;
+    regions = other.regions;
+    header = other.header;
+    mRows = other.mRows;
+    mCols = other.mCols;
+    return *this;
+  }
+
+  
+  void effort_dataset::standardize() {
+    for (map<effort_key, region*>::iterator i=regions.begin(); i != regions.end(); i++) {
+      ::standardize(i->second->mat);
+    }
+  }
 
 
   void effort_dataset::transpose(vector<proc_data*>& trans) {

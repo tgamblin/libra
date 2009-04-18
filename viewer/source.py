@@ -16,9 +16,9 @@ def flushCache():
 class SymData:
     def __init__(self, file, line, fun, module, offset):
         self.module = module
-        self.offset = int(offset, 16)
+        self.offset = offset
         self.file = file
-        self.line = int(line)
+        self.line = line
         self.fun = fun
 
     def undefined(self):

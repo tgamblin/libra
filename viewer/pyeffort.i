@@ -145,6 +145,7 @@ public:
   int getType();
   std::string getMetric();
   void setApproximationLevel(int level);
+  void setPassLimit(size_t limit);
   void load() const;
 
   size_t rows();
@@ -166,9 +167,13 @@ public:
   double total() const;
   double count() const;
 
-  double meanVariance() const;
-  double maxVariance() const;
-  double minVariance() const;
+  double meanRowDeviation() const;
+  double maxRowDeviation() const;
+  double minRowDeviation() const;
+
+  double meanRowVariance() const;
+  double maxRowVariance() const;
+  double minRowVariance() const;
 
   double meanRowSkew() const;
   double maxRowSkew() const;

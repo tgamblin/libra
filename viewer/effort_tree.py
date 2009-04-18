@@ -92,7 +92,7 @@ class FrameNode(Node):
             0: self._start.prettyLocation(),
             1: self._end.prettyLocation(),
             2: self.total(),
-            3: self.meanVariance(),
+            3: self.meanRowDeviation(),
             4: self.meanRowSkew(),
             5: self.meanRowKurtosis(),
 #            2: self._start.prettyModule(),  
@@ -113,9 +113,15 @@ class FrameNode(Node):
         else:
             return None
     
-    def meanVariance(self):
+    def meanRowDeviation(self):
         if not self.parent():
-            return self._data.meanVariance()
+            return self._data.meanRowDeviation()
+        else:
+            return None
+
+    def meanRowVariance(self):
+        if not self.parent():
+            return self._data.meanRowVariance()
         else:
             return None
 
@@ -239,7 +245,7 @@ def build_from(regionsDB):
 #
 class EffortTreeModel(QAbstractItemModel):
 #    columns = ["Start", "End", "Start Module", "End Module"]
-    columns = ["Start", "End", "TotalTime", "Variance", "MeanSkew", "MeanKurtosis"]
+    columns = ["Start", "End", "TotalTime", "Deviation", "MeanSkew", "MeanKurtosis"]
 
     # Set up  tree model with at least a root.  User can provide
     # Their own root, too.

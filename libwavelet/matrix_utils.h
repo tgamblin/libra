@@ -55,14 +55,19 @@ struct ms_summary {
 
 
 template <typename T>
-ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
+ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+                       size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
+                       size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
+  if (row_end > orig.size1()) row_end = orig.size1();
+  if (col_end > orig.size2()) col_end = orig.size2();
+
   ms_summary summary(0, DBL_MIN, DBL_MAX);
 
-  for (size_t i=0; i < orig.size1(); i++) {
-    for (size_t j=0; j < orig.size2(); j++) { 
+  for (size_t i=row_start; i < row_end; i++) {
+    for (size_t j=col_start; j < col_end; j++) { 
       double diff = repro(i,j) - orig(i,j);
       summary.sum_squares += diff*diff;
 
@@ -80,23 +85,38 @@ ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost
 
 
 template <typename T>
-double rmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
+double rmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+             size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
+             size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
-  ms_summary summary = get_summary(orig, repro);
-  return sqrt(summary.sum_squares / (orig.size1() * orig.size2()));
+  if (row_end > orig.size1()) row_end = orig.size1();
+  if (col_end > orig.size2()) col_end = orig.size2();
+
+  ms_summary summary = get_summary(orig, repro, row_start, row_end, col_start, col_end);
+  size_t rows = (row_end - row_start);
+  size_t cols = (col_end - col_start);
+  return sqrt(summary.sum_squares / (rows * cols));
 }
+
 
 /// Normalized rms error
 template <typename T>
-double nrmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
+double nrmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+             size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
+             size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
-  ms_summary summary = get_summary(orig, repro);
+  if (row_end > orig.size1()) row_end = orig.size1();
+  if (col_end > orig.size2()) col_end = orig.size2();
+
+  ms_summary summary = get_summary(orig, repro, row_start, row_end, col_start, col_end);
   double range = summary.orig_max - summary.orig_min;
-  return sqrt(summary.sum_squares / (orig.size1() * orig.size2())) / range;
+  size_t rows = (row_end - row_start);
+  size_t cols = (col_end - col_start);
+  return sqrt(summary.sum_squares / (rows * cols)) / range;
 }
 
 
@@ -121,6 +141,28 @@ double similarity(const boost::numeric::ublas::matrix<T>& orig, const boost::num
   ms_summary summary = get_summary(orig, repro);
   double range = summary.both_max - summary.both_min;
   return sqrt(summary.sum_squares / (orig.size1() * orig.size2())) / range;
+}
+
+
+template <typename T>
+void standardize(boost::numeric::ublas::matrix<T>& mat) {
+  size_t n = mat.size1() * mat.size2();
+  double sum = 0;
+  double sum2 = 0;
+  for (size_t i=0; i < mat.size1(); i++) {
+    for (size_t j=0; j < mat.size2(); j++) {
+      sum += mat(i,j);
+      sum2 += mat(i,j) * mat(i,j);
+    }
+  }
+  double mean = sum / n;
+  double stdDevInv = 1/sqrt(sum2/n - mean*mean);
+  
+  for (size_t i=0; i < mat.size1(); i++) {
+    for (size_t j=0; j < mat.size2(); j++) {
+      mat(i,j) = (mat(i,j) - mean) * stdDevInv;
+    }
+  }
 }
 
 

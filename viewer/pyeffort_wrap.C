@@ -6082,6 +6082,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_EffortData_setPassLimit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EffortData *arg1 = (EffortData *) 0 ;
+  size_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:EffortData_setPassLimit",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_setPassLimit" "', argument " "1"" of type '" "EffortData *""'"); 
+  }
+  arg1 = reinterpret_cast< EffortData * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EffortData_setPassLimit" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  (arg1)->setPassLimit(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_EffortData_load(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EffortData *arg1 = (EffortData *) 0 ;
@@ -6476,7 +6506,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_EffortData_meanVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_EffortData_meanRowDeviation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EffortData *arg1 = (EffortData *) 0 ;
   double result;
@@ -6484,13 +6514,13 @@ SWIGINTERN PyObject *_wrap_EffortData_meanVariance(PyObject *SWIGUNUSEDPARM(self
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanVariance",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->meanVariance();
+  result = (double)((EffortData const *)arg1)->meanRowDeviation();
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6498,7 +6528,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_EffortData_maxVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_EffortData_maxRowDeviation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EffortData *arg1 = (EffortData *) 0 ;
   double result;
@@ -6506,13 +6536,13 @@ SWIGINTERN PyObject *_wrap_EffortData_maxVariance(PyObject *SWIGUNUSEDPARM(self)
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxVariance",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->maxVariance();
+  result = (double)((EffortData const *)arg1)->maxRowDeviation();
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6520,7 +6550,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_EffortData_minVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_EffortData_minRowDeviation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EffortData *arg1 = (EffortData *) 0 ;
   double result;
@@ -6528,13 +6558,79 @@ SWIGINTERN PyObject *_wrap_EffortData_minVariance(PyObject *SWIGUNUSEDPARM(self)
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minVariance",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->minVariance();
+  result = (double)((EffortData const *)arg1)->minRowDeviation();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EffortData_meanRowVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EffortData *arg1 = (EffortData *) 0 ;
+  double result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowVariance",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+  }
+  arg1 = reinterpret_cast< EffortData * >(argp1);
+  result = (double)((EffortData const *)arg1)->meanRowVariance();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EffortData_maxRowVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EffortData *arg1 = (EffortData *) 0 ;
+  double result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowVariance",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+  }
+  arg1 = reinterpret_cast< EffortData * >(argp1);
+  result = (double)((EffortData const *)arg1)->maxRowVariance();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EffortData_minRowVariance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EffortData *arg1 = (EffortData *) 0 ;
+  double result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowVariance",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+  }
+  arg1 = reinterpret_cast< EffortData * >(argp1);
+  result = (double)((EffortData const *)arg1)->minRowVariance();
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -7107,6 +7203,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"EffortData_getType", _wrap_EffortData_getType, METH_VARARGS, NULL},
 	 { (char *)"EffortData_getMetric", _wrap_EffortData_getMetric, METH_VARARGS, NULL},
 	 { (char *)"EffortData_setApproximationLevel", _wrap_EffortData_setApproximationLevel, METH_VARARGS, NULL},
+	 { (char *)"EffortData_setPassLimit", _wrap_EffortData_setPassLimit, METH_VARARGS, NULL},
 	 { (char *)"EffortData_load", _wrap_EffortData_load, METH_VARARGS, NULL},
 	 { (char *)"EffortData_rows", _wrap_EffortData_rows, METH_VARARGS, NULL},
 	 { (char *)"EffortData_cols", _wrap_EffortData_cols, METH_VARARGS, NULL},
@@ -7123,9 +7220,12 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"EffortData_min", _wrap_EffortData_min, METH_VARARGS, NULL},
 	 { (char *)"EffortData_total", _wrap_EffortData_total, METH_VARARGS, NULL},
 	 { (char *)"EffortData_count", _wrap_EffortData_count, METH_VARARGS, NULL},
-	 { (char *)"EffortData_meanVariance", _wrap_EffortData_meanVariance, METH_VARARGS, NULL},
-	 { (char *)"EffortData_maxVariance", _wrap_EffortData_maxVariance, METH_VARARGS, NULL},
-	 { (char *)"EffortData_minVariance", _wrap_EffortData_minVariance, METH_VARARGS, NULL},
+	 { (char *)"EffortData_meanRowDeviation", _wrap_EffortData_meanRowDeviation, METH_VARARGS, NULL},
+	 { (char *)"EffortData_maxRowDeviation", _wrap_EffortData_maxRowDeviation, METH_VARARGS, NULL},
+	 { (char *)"EffortData_minRowDeviation", _wrap_EffortData_minRowDeviation, METH_VARARGS, NULL},
+	 { (char *)"EffortData_meanRowVariance", _wrap_EffortData_meanRowVariance, METH_VARARGS, NULL},
+	 { (char *)"EffortData_maxRowVariance", _wrap_EffortData_maxRowVariance, METH_VARARGS, NULL},
+	 { (char *)"EffortData_minRowVariance", _wrap_EffortData_minRowVariance, METH_VARARGS, NULL},
 	 { (char *)"EffortData_meanRowSkew", _wrap_EffortData_meanRowSkew, METH_VARARGS, NULL},
 	 { (char *)"EffortData_maxRowSkew", _wrap_EffortData_maxRowSkew, METH_VARARGS, NULL},
 	 { (char *)"EffortData_minRowSkew", _wrap_EffortData_minRowSkew, METH_VARARGS, NULL},

@@ -35,6 +35,8 @@ namespace wavelet {
     /// header        Provide the header if it has already been read in.
     /// Return:
     ///     level of inverse transform to apply to decoded data.
+    /// 
+    /// TODO: move approx level to a setter for consistency
     int decode(std::istream& in, wt_matrix& mat, int level = -1, 
                const ezw_header *header = NULL);
     

@@ -26,29 +26,89 @@ using namespace effort;
 #include "KMedoids.h"
 #include "ltqnorm.h"
 
-string dirname;
-int level;
-size_t freq;
-double confidence = 0;
-double error = 0;
+string dirname;           // effort directory
+int level;                // approximation level for data set
+size_t pass_limit;        // pass limit for data set
+size_t frequency;         // sample scheme update interval
+size_t strata;            // # clusters
+double confidence = 0;    // confidence % for sampling  (bt/w 0 and 1)
+double error = 0;         // error bound for sampling (bt/w 0 and 1... probably closer to 0)
+
+double scale;             // scale factor calculated from approximation level.
 
 
 void usage() {
-  cerr << "Usage: sample_replay <dir> <level> <freq> <conf> <err>" << endl;
+  cerr << "Usage: sample-test <dir> <level> <pass_limit> <freq> <strata> <conf> <err>" << endl;
   cerr << "Args: " << endl;
-  cerr << "  dir     A directory full of effort files." << endl;
-  cerr << "  level   Approximation level for data analysis." << endl;
-  cerr << "  freq    Sample frequency (in timesteps)" << endl;
-  cerr << "  conf    Confidence bound." << endl;
-  cerr << "  err     Error bound (percent)" << endl;
+  cerr << "  dir         A directory full of effort files." << endl;
+  cerr << "  level       Approximation level for data analysis." << endl;
+  cerr << "  pass_limit  Number of EZW passes to decompress" << endl;
+  cerr << "  freq        Update frequency (in approx timesteps)" << endl;
+  cerr << "  strata      Number of strata (per update)." << endl;
+  cerr << "  conf        Confidence bound." << endl;
+  cerr << "  err         Error bound (percent)" << endl;
+  exit(1);
 }
 
 
+void get_args(int& argc, char**& argv) {
+  if (argc != 8) usage();
+  char *err;
+  size_t arg = 1;
 
-struct nrmse_distance : public Dissimilarity<proc_data*> {
-    virtual double getDissimilarity(proc_data* left, proc_data* right) const {
-        return nrmse(left->data, right->data);
+  dirname = string(argv[arg++]);
+
+  level = strtol(argv[arg++], &err, 0);
+  if (*err) usage();
+
+  pass_limit = strtol(argv[arg++], &err, 0);
+  if (*err) usage();
+
+  frequency = strtol(argv[arg++], &err, 0);
+  if (*err) usage();
+
+  strata = strtol(argv[arg++], &err, 0);
+  if (*err) usage();
+
+  confidence = strtod(argv[arg++], &err);
+  if (*err) usage();
+
+  error = strtod(argv[arg++], &err);
+  if (*err) usage();
+
+  cout << "Directory: "  << dirname    << endl
+       << "Level: "  << level      << endl
+       << "Passes: " << level      << endl
+       << "Freq: "   << frequency  << endl
+       << "Strata: " << strata     << endl
+       << "Conf: "   << confidence << endl
+       << "Err: "    << error      << endl;
+}
+
+struct distance_fun : public Dissimilarity<proc_data*> {
+  size_t start_col, end_col;
+
+  distance_fun(size_t start, size_t end) : start_col(start), end_col(end) { }
+  
+  /// Calculates mean of all rows (mean over time per region)
+  /// Then takes euclidean distance bt/w the vectors of row means.
+  virtual double getDissimilarity(proc_data* left, proc_data* right) const {
+    size_t rows = left->data.size1();
+    size_t cols = end_col - start_col;
+
+    double euclid_sum = 0;
+    for (size_t i=0; i < rows; i++) {
+      double lsum = 0;
+      double rsum = 0;
+      for (size_t j=start_col; j < end_col; j++) {
+        lsum += left->data(i,j);
+        rsum += right->data(i,j);
+      }
+      double diff = (lsum/cols) - (rsum/cols);
+      euclid_sum += diff*diff;
     }
+    return sqrt(euclid_sum);
+  }
 };
 
 
@@ -70,7 +130,7 @@ struct summary {
     for (size_t i=0; i < numbers.size(); i++) {
       sum  += numbers[i];
     }
-    min = numbers[0];
+    min = numbers[0] ? numbers[0] : 1;
     max = numbers[numbers.size() - 1];
     double quartile_size = numbers.size() / 4.0;
     top_quartile = numbers[(size_t)floor(numbers.size() - quartile_size)];
@@ -81,8 +141,9 @@ struct summary {
 };
 
 ostream& operator<<(ostream& out, const summary& ss) {
-  const int w=10;
-  out << setw(w) << ss.min
+  const int w=13;
+  out << setprecision(5)
+      << setw(w) << ss.min
       << setw(w) << ss.bottom_quartile
       << setw(w) << ss.mean
       << setw(w) << ss.top_quartile
@@ -92,84 +153,141 @@ ostream& operator<<(ostream& out, const summary& ss) {
 }
 
 
+struct sample_desc {
+  size_t min_sample_size;
+  double variance;
+  sample_desc(size_t mss, double v) : min_sample_size(mss), variance(v) { }
+  ~sample_desc() { }
+};
 
 
-size_t get_sample_size(vector<proc_data*>& procs, size_t region, size_t step, KMedoids::cluster *sample = NULL) {
+sample_desc get_sample(const vector<proc_data*>& procs, size_t region, size_t step, 
+                       const KMedoids::cluster *sample = NULL) {
   double sum = 0;
   double sum2 = 0;
-
-  size_t size = sample ? sample->size() : procs.size();
+  size_t n = (sample ? sample->size() : procs.size());   // sample size (for sample variance)
 
   if (!sample) {
     for (size_t p=0; p < procs.size(); p++) {
-      double value = procs[p]->data(region, step);
-      sum  += value;
-      sum2 += value * value;
+      double val = procs[p]->data(region, step);
+      sum += val;
+      sum2 += val * val;
     }
   } else {
     for (KMedoids::cluster::iterator p = sample->begin(); p != sample->end(); p++) {
-      double value = procs[*p]->data(region, step);
-      sum  += value;
-      sum2 += value * value;
+      double val = procs[*p]->data(region, step);
+      sum += val;
+      sum2 += val * val;
     }
   }
-  
-  double mean = sum / size;
-  double variance = (sum2 - (sum * sum)/size) / size;
 
+  double mean = sum / n;                               // sample mean
+  double variance = (sum2/n - (mean*mean));       // estimate w/sample mean
+  double stdDev = sqrt(variance);
+  
   // calculate min sample size
   double Za = computeConfidenceInterval(confidence);   // double-tailed norm conf. interval
-  double d = mean * error;                              // real error bound (error var is a %)
-  double stdDev = sqrt(variance);
-      
+  double d = mean * error;                             // real error bound (error var is a %)
   double V = (d/(Za*stdDev));
-  size_t min_sample_size = llround(size * 1/(1 + size * V*V));
 
-  return min_sample_size;
+  size_t N = (size_t)floor(n * scale);                 // population size
+  size_t min_sample_size = llround(N / (1 + N * V*V));
+
+  return sample_desc(min_sample_size, variance);
 }
 
 
 
-int main(int argc, char **argv) {
-  if (argc != 6) usage();
-  char *err;
+int main(int argc, char **argv) {  
+  get_args(argc, argv);
 
-  dirname = string(argv[1]);
-
-  level = strtol(argv[2], &err, 0);
-  if (*err) usage();
-
-  freq = strtol(argv[3], &err, 0);
-  if (*err) usage();
-
-  confidence = strtod(argv[4], &err);
-  if (*err) usage();
-
-  error = strtod(argv[5], &err);
-  if (*err) usage();
-
-  cout << "Directory: " << dirname
-       << "Level: "    << level 
-       << "    Freq: " << freq
-       << "    Conf: " << confidence
-       << "    Err: " << error
-       << endl;
-  
-  effort_dataset dataset(dirname, level);
+  effort_dataset dataset(dirname, level, pass_limit);
+  scale = dataset.procs() / dataset.rows();
 
   vector<proc_data*> procs;
+
+  //effort_dataset standardized_data(dataset);
+  //standardized_data.standardize();
+  //standardized_data.transpose(procs);
+
   dataset.transpose(procs);
-  ClusterDataSet *cluster_data = ClusterDataSet::buildFromObjects(procs, nrmse_distance());
-  
+
+
+  // init kmedoids with only one cluster and everything in a straight line for simplicity
+  auto_ptr<ClusterDataSet> cluster_data(ClusterDataSet::line(procs));
+  auto_ptr<KMedoids> kmedoids(new KMedoids(*cluster_data, 1)); 
+  kmedoids->findClusters();
+  auto_ptr<KMedoids::clusterList> clusters(kmedoids->getClustering());
   
   // simulated time steps thru data.
-  for (size_t step=0; step < dataset.num_steps(); step++) {
-    vector<double> sizes;
-    for (size_t region=0; region < dataset.num_regions(); region++) {
-      sizes.push_back(get_sample_size(procs, region, step));
+  size_t num_good = 0;
+  for (size_t step=0; step < dataset.cols(); step++) {
+    if (step % frequency == frequency-1) {
+      //
+      // create distance matrix and cluster here.
+      //
+      cluster_data.reset(
+        ClusterDataSet::buildFromObjects(procs, distance_fun(step - frequency, step))
+      );
+
+      kmedoids.reset(new KMedoids(*cluster_data, strata));
+      kmedoids->findClusters();
+      clusters.reset(kmedoids->getClustering());
     }
-    cout << left << setw(10) << step << summary(sizes) << endl;
+
+    vector<double> all_sizes;
+    vector<double> all_variances;
+    vector<double> sum_sizes;
+
+    vector<double> cluster_sizes[strata];
+    vector<double> cluster_variances[strata];
+
+
+    for (size_t region=0; region < dataset.size(); region++) {
+      size_t sample_size = 0;
+      
+      size_t stratum=0;
+      for (KMedoids::clusterList::iterator i=clusters->begin(); i != clusters->end(); stratum++, i++) {
+        sample_desc sample = get_sample(procs, region, step, &(*i));
+        cluster_sizes[stratum].push_back(sample.min_sample_size);
+        cluster_variances[stratum].push_back(sample.variance);
+
+        sample_size += sample.min_sample_size;
+      }
+      
+      sample_desc all_sample = get_sample(procs, region, step);
+      all_sizes.push_back(all_sample.min_sample_size);
+      all_variances.push_back(all_sample.variance);
+      sum_sizes.push_back(sample_size);
+    }
+
+    double all_size = summary(all_sizes).mean;
+    double sum_size = summary(sum_sizes).mean;
+
+    bool good = (sum_size < all_size);
+    if (good) num_good++;
+
+    cout << left  << setw(10) << step
+         << right << setw(12) << all_size
+         << right << setw(15) << sum_size
+         << right << setw(15) << summary(all_variances).mean 
+         << right << setw(15) << (good ? "GOOD" : "")
+         << endl;
+
+    for (size_t i=0; i < strata; i++) {
+      if (cluster_sizes[i].size()) {
+        cout << right << setw(10) << ""
+             << left  << setw(12) << i
+             << right << setw(15) << summary(cluster_sizes[i]).mean
+             << right << setw(15) << summary(cluster_variances[i]).mean 
+             << endl;
+      }
+    }
+    cout << endl;
   }
   
+  double percent = (double)num_good / dataset.cols() * 100;
+  cout << num_good << "/" << dataset.cols()
+       << " (" << setprecision(3) << percent << "%) good" << endl;
 }
 

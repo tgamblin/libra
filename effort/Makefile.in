@@ -40,7 +40,7 @@ host_triplet = @host@
 @HAVE_MPI_TRUE@												synchronize_keys.C
 
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample_test
+@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample-test
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
@@ -102,13 +102,13 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
-	effort_dataset.C parallel_compressor.C parallel_decompressor.C \
-	synchronize_keys.C
+	FrameDB.C FrameInfo.C effort_dataset.C parallel_compressor.C \
+	parallel_decompressor.C synchronize_keys.C
 @HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
 @HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
 	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
-	effort_dataset.lo $(am__objects_2)
+	FrameDB.lo FrameInfo.lo effort_dataset.lo $(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -162,7 +162,7 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
 @HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT) \
-@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample_test$(EXEEXT)
+@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample-test$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
@@ -391,10 +391,9 @@ dist_noinst_HEADERS = \
 	string_utils.h \
 	synchronize_keys.h \
 	Metric.h \
-	random.h \
-	RNGenerator.h \
-	MersenneTwister.h \
-  effort_dataset.h
+  effort_dataset.h \
+	FrameDB.h \
+	FrameInfo.h
 
 lib_LTLIBRARIES = libeffort.la $(am__append_3)
 
@@ -402,8 +401,8 @@ lib_LTLIBRARIES = libeffort.la $(am__append_3)
 # This is used by 
 #
 libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
-	effort_params.C string_utils.C Metric.C effort_dataset.C \
-	$(am__append_1)
+	effort_params.C string_utils.C Metric.C FrameDB.C FrameInfo.C \
+	effort_dataset.C $(am__append_1)
 libeffort_la_LDFLAGS = -avoid-version
 
 #
@@ -597,8 +596,8 @@ ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
-sample_test$(EXEEXT): $(sample_test_OBJECTS) $(sample_test_DEPENDENCIES) 
-	@rm -f sample_test$(EXEEXT)
+sample-test$(EXEEXT): $(sample_test_OBJECTS) $(sample_test_DEPENDENCIES) 
+	@rm -f sample-test$(EXEEXT)
 	$(CXXLINK) $(sample_test_OBJECTS) $(sample_test_LDADD) $(LIBS)
 tuner$(EXEEXT): $(tuner_OBJECTS) $(tuner_DEPENDENCIES) 
 	@rm -f tuner$(EXEEXT)
@@ -629,6 +628,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameDB.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataset_test.Po@am__quote@

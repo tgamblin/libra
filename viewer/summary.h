@@ -12,9 +12,13 @@ public:
   double total() { check_compute(); return mTotal; }
   double count() { check_compute(); return mCount; }
 
-  double meanVariance() { check_compute(); return mMin; }
-  double maxVariance()  { check_compute(); return mMin; }
-  double minVariance()  { check_compute(); return mMin; }
+  double meanRowDeviation() { check_compute(); return mMeanRowDeviation; }
+  double maxRowDeviation()  { check_compute(); return mMaxRowDeviation;  }
+  double minRowDeviation() { check_compute(); return mMinRowDeviation;  }
+
+  double meanRowVariance() { check_compute(); return mMeanRowVariance; }
+  double maxRowVariance()  { check_compute(); return mMaxRowVariance; }
+  double minRowVariance()  { check_compute(); return mMinRowVariance; }
 
   double meanRowSkew() { check_compute(); return mMeanRowSkew; }
   double maxRowSkew()  { check_compute(); return mMaxRowSkew;  }
@@ -62,6 +66,10 @@ private:
   double mTotal;
   size_t mCount;
   
+  double mMeanRowDeviation;
+  double mMaxRowDeviation;
+  double mMinRowDeviation;
+
   double mMeanRowVariance;
   double mMaxRowVariance;
   double mMinRowVariance;

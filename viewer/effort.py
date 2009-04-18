@@ -63,6 +63,13 @@ class EffortRegion:
         else:
             return self._metrics.keys()[0]
 
+    def __getattr__(self, attr):
+        if attr in self._metrics:
+            return self._metrics[attr]
+        else:
+            raise AttributeError, self.__class__.__name__ + \
+                  " has no attribute named " + attr
+
 
 #
 # Wrapper to display data in a GUI from a particular frame in a callpath.
@@ -120,10 +127,11 @@ class FrameViewWrapper:
 
 
 class DB:
-    def __init__(self, approx = -1):
+    def __init__(self, approx = -1, passes = 0):
         # Map of effort regions keyed by tuples of (start cp, end cp, type)
         self._regions = []
         self.approximationLevel = approx
+        self.passLimit = passes
         self.totalTime = 0
 
     #
@@ -149,6 +157,7 @@ class DB:
                 self.vprocs = data.rows()
 
                 data.setApproximationLevel(self.approximationLevel)
+                data.setPassLimit(self.passLimit)
 
                 key = (data.getStart(), data.getEnd(), data.getType())
                 if not key in regions:

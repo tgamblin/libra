@@ -104,7 +104,7 @@ namespace effort {
     if (rank == 0) {
       ezw_header header;
       effort_data::load_keys(input_dir, effort_log, header, &file_for_key);
-      if (header.rows != size) {
+      if (header.rows != (size_t)size) {
         cerr << "Error: attempted to load " << header.rows << " rows to " << size << " processors." << endl;
         exit(1);
       }

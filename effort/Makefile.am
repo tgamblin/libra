@@ -12,10 +12,9 @@ dist_noinst_HEADERS = \
 	string_utils.h \
 	synchronize_keys.h \
 	Metric.h \
-	random.h \
-	RNGenerator.h \
-	MersenneTwister.h \
-  effort_dataset.h
+  effort_dataset.h \
+	FrameDB.h \
+	FrameInfo.h
 
 lib_LTLIBRARIES = libeffort.la
 
@@ -28,6 +27,8 @@ libeffort_la_SOURCES = effort_key.C \
                        effort_params.C \
 											 string_utils.C \
 											 Metric.C \
+											 FrameDB.C \
+											 FrameInfo.C \
 											 effort_dataset.C
 
 if HAVE_MPI
@@ -48,7 +49,7 @@ PMPI_EFFORT_SRCS=effort_module.C \
 #
 bin_PROGRAMS = ef nrmse 
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test sample_test
+bin_PROGRAMS += tuner bin_test dataset_test sample-test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
