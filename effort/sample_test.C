@@ -22,8 +22,8 @@ using namespace wavelet;
 #include "parallel_decompressor.h"
 using namespace effort;
 
-#include "Dissimilarity.h"
-#include "KMedoids.h"
+#include "kmedoids.h"
+using namespace cluster;
 #include "ltqnorm.h"
 
 string dirname;           // effort directory
@@ -85,14 +85,14 @@ void get_args(int& argc, char**& argv) {
        << "Err: "    << error      << endl;
 }
 
-struct distance_fun : public Dissimilarity<proc_data*> {
+struct distance_fun {
   size_t start_col, end_col;
 
   distance_fun(size_t start, size_t end) : start_col(start), end_col(end) { }
   
   /// Calculates mean of all rows (mean over time per region)
   /// Then takes euclidean distance bt/w the vectors of row means.
-  virtual double getDissimilarity(proc_data* left, proc_data* right) const {
+  double operator()(proc_data* left, proc_data* right) {
     size_t rows = left->data.size1();
     size_t cols = end_col - start_col;
 
@@ -162,7 +162,7 @@ struct sample_desc {
 
 
 sample_desc get_sample(const vector<proc_data*>& procs, size_t region, size_t step, 
-                       const KMedoids::cluster *sample = NULL) {
+                       const cset *sample = NULL) {
   double sum = 0;
   double sum2 = 0;
   size_t n = (sample ? sample->size() : procs.size());   // sample size (for sample variance)
@@ -174,7 +174,7 @@ sample_desc get_sample(const vector<proc_data*>& procs, size_t region, size_t st
       sum2 += val * val;
     }
   } else {
-    for (KMedoids::cluster::iterator p = sample->begin(); p != sample->end(); p++) {
+    for (cset::iterator p = sample->begin(); p != sample->end(); p++) {
       double val = procs[*p]->data(region, step);
       sum += val;
       sum2 += val * val;
@@ -212,27 +212,21 @@ int main(int argc, char **argv) {
 
   dataset.transpose(procs);
 
-
   // init kmedoids with only one cluster and everything in a straight line for simplicity
-  auto_ptr<ClusterDataSet> cluster_data(ClusterDataSet::line(procs));
-  auto_ptr<KMedoids> kmedoids(new KMedoids(*cluster_data, 1)); 
-  kmedoids->findClusters();
-  auto_ptr<KMedoids::clusterList> clusters(kmedoids->getClustering());
+  kmedoids km(procs.size());
+  cluster_list clusters;
+  km.to_cluster_list(clusters);
   
   // simulated time steps thru data.
   size_t num_good = 0;
   for (size_t step=0; step < dataset.cols(); step++) {
     if (step % frequency == frequency-1) {
-      //
-      // create distance matrix and cluster here.
-      //
-      cluster_data.reset(
-        ClusterDataSet::buildFromObjects(procs, distance_fun(step - frequency, step))
-      );
-
-      kmedoids.reset(new KMedoids(*cluster_data, strata));
-      kmedoids->findClusters();
-      clusters.reset(kmedoids->getClustering());
+      dissimilarity_matrix mat;
+      build_dissimilarity_matrix(procs, 
+                                 distance_fun(step - frequency, step), 
+                                 mat);
+      km.pam(mat, strata);
+      km.to_cluster_list(clusters);
     }
 
     vector<double> all_sizes;
@@ -246,11 +240,11 @@ int main(int argc, char **argv) {
     for (size_t region=0; region < dataset.size(); region++) {
       size_t sample_size = 0;
       
-      size_t stratum=0;
-      for (KMedoids::clusterList::iterator i=clusters->begin(); i != clusters->end(); stratum++, i++) {
-        sample_desc sample = get_sample(procs, region, step, &(*i));
-        cluster_sizes[stratum].push_back(sample.min_sample_size);
-        cluster_variances[stratum].push_back(sample.variance);
+      // iterate over each stratum
+      for (size_t i=0; i < clusters.size(); i++) {
+        sample_desc sample = get_sample(procs, region, step, &clusters[i]);
+        cluster_sizes[i].push_back(sample.min_sample_size);
+        cluster_variances[i].push_back(sample.variance);
 
         sample_size += sample.min_sample_size;
       }

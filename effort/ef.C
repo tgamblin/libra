@@ -225,7 +225,7 @@ FrameInfo  get_symtab_frame_info(const FrameId& frame) {
   if (stinfo->getSourceLines(lines, offset)) {
     string name;
     stinfo->getName(offset, name);
-    return FrameInfo(lines[0].first, lines[0].second, name);
+    return FrameInfo(module, offset, lines[0].first, lines[0].second, name);
     
   }
 #endif // HAVE_SYMTAB
