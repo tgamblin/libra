@@ -7,7 +7,7 @@
 using namespace std;
 
 
-Timer::Timer() : start(get_time_ns()), last(start) { }
+Timer::Timer(bool pt) : print_total(pt), start(get_time_ns()), last(start) { }
 
 Timer::~Timer() { }
 
@@ -62,7 +62,7 @@ void Timer::write(std::ostream& out) const {
     out << left << setw(width) << name.str() << (get(order[i]) / 1e9) << endl;
   }
   
-  out << left << setw(width) << total << ((now - start) / 1e9) << endl;
+  if (print_total) out << left << setw(width) << total << ((now - start) / 1e9) << endl;
 }
 
 

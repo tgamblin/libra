@@ -49,10 +49,14 @@ PMPI_EFFORT_SRCS=effort_module.C \
 #
 bin_PROGRAMS = ef nrmse 
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test sample-test
+bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
+
+approx_timer_SOURCES = approx_timer.C
+approx_timer_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
 
 sample_test_SOURCES = sample_test.C
 sample_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \

@@ -40,7 +40,7 @@ host_triplet = @host@
 @HAVE_MPI_TRUE@												synchronize_keys.C
 
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample-test
+@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample-test approx-timer
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
@@ -162,9 +162,15 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
 @HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT) \
-@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample-test$(EXEEXT)
+@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample-test$(EXEEXT) \
+@HAVE_MPI_TRUE@	approx-timer$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
+am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
+approx_timer_OBJECTS = $(am_approx_timer_OBJECTS)
+approx_timer_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la ../cluster/libcluster.la \
+	$(am__DEPENDENCIES_1)
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
 bin_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
@@ -208,16 +214,18 @@ SOURCES = $(effort_la_SOURCES) $(libeffort_la_SOURCES) \
 	$(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
-	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
-	$(nrmse_SOURCES) $(sample_test_SOURCES) $(tuner_SOURCES)
+	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
+	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
+	$(sample_test_SOURCES) $(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
-	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
-	$(nrmse_SOURCES) $(sample_test_SOURCES) $(tuner_SOURCES)
+	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
+	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
+	$(sample_test_SOURCES) $(tuner_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
@@ -412,6 +420,10 @@ PMPI_EFFORT_SRCS = effort_module.C \
 								 env_config.C
 
 dist_bin_SCRIPTS = libra-build-viewer-data libra-reconstruct-exact
+approx_timer_SOURCES = approx_timer.C
+approx_timer_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+
 sample_test_SOURCES = sample_test.C
 sample_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
                    ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
@@ -584,6 +596,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+approx-timer$(EXEEXT): $(approx_timer_OBJECTS) $(approx_timer_DEPENDENCIES) 
+	@rm -f approx-timer$(EXEEXT)
+	$(CXXLINK) $(approx_timer_OBJECTS) $(approx_timer_LDADD) $(LIBS)
 bin_test$(EXEEXT): $(bin_test_OBJECTS) $(bin_test_DEPENDENCIES) 
 	@rm -f bin_test$(EXEEXT)
 	$(CXXLINK) $(bin_test_OBJECTS) $(bin_test_LDADD) $(LIBS)
@@ -631,6 +646,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameDB.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metric.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/approx_timer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataset_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@

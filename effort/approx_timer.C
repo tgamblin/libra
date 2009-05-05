@@ -35,12 +35,10 @@ double confidence = 0.90;    // confidence % for sampling  (bt/w 0 and 1)
 double error = 0.08;         // error bound for sampling (bt/w 0 and 1... probably closer to 0)
 size_t iterations = 0;       // number of times to cluster.
 
-double scale;                // scale factor calculated from approximation level.
-int scale_levels;            // scale factor calculated from approximation level.
 
 
 void usage() {
-  cerr << "Usage: sample-test [options] dir" << endl;
+  cerr << "Usage: approx-timer [options] dir" << endl;
   cerr << "Parameters:" << endl;
   cerr << "  dir         A directory full of effort files." << endl;
   cerr << "Options: " << endl;
@@ -219,6 +217,15 @@ sample_desc get_sample(const vector<proc_data*>& procs, size_t region, size_t st
 }
 
 
+void get_procs(vector<proc_data*>& procs, Timer& timer, string dirname, size_t pass_limit) {
+  effort_dataset dataset(dirname, level, pass_limit);
+  timer.record("Load data set");
+  timer.dump();
+  dataset.transpose(procs);
+  timer.record("Transpose");
+  timer.dump();
+}
+
 
 int main(int argc, char **argv) {  
   get_args(argc, argv);
@@ -238,154 +245,14 @@ int main(int argc, char **argv) {
   Timer timer;
   
 
-  effort_dataset xdataset(dirname, -1, pass_limit);
-  timer.record("Load exhaustive data");
-  timer.dump();
-
-  effort_dataset dataset(dirname, level, pass_limit);
-  timer.record("Load data set");
-  timer.dump();
-
-  scale = dataset.procs() / dataset.rows();
-  scale_levels = log2pow2(scale);
-  cout << "Scale:         " << scale << endl;
-  cout << "scale_levels:  " << scale_levels << endl;
-
-
-  if (frequency != (frequency / scale)*scale) {
-    cerr << "error: frequency must evenly divisible by scale." << endl;
-    exit(1);
-  }
-    
-  vector<proc_data*> xprocs;
-  xdataset.transpose(xprocs);
-  timer.record("Exhaustive Transpose");
-
   vector<proc_data*> procs;
-  dataset.transpose(procs);
-  timer.record("Transpose");
-  timer.dump();
-
+  get_procs(procs, timer, dirname, pass_limit);
 
   // init kmedoids with only one cluster and everything in a straight line for simplicity
-  kmedoids xkm(xprocs.size());
-  kmedoids km(procs.size());
-
-  cluster_list xclusters;
-  xkm.to_cluster_list(xclusters);
-
-  cluster_list clusters;
-  km.to_cluster_list(clusters);
-
-  timer.record("Initial cluster");
+  kmedoids km;
+  timer.record("construct km");
+  km.clara(procs, distance_fun(0, frequency), strata);
+  timer.record("clustering");
   timer.dump();
-
-  // simulated time steps thru data.
-  size_t num_good = 0;
-  size_t updates = 0;
-  size_t step;
-  for (step=0; step < dataset.steps(); step++) {
-    if (step && (step % frequency == 0)) {
-      timer.clear();
-
-      int xstart = step - frequency;
-      if (xstart < 0) xstart = 0;
-      int start = xstart / scale;
-
-      cerr << "xstart: " << xstart << "     step: " << step<< endl;
-      cerr << "start: " << start << "  ministep: " << step/scale<< endl;
-
-      distance_fun xdist(xstart, step);
-      xkm.clara(xprocs, xdist, strata);
-      timer.record("Exhaustive CLARA Cluster");
-      timer.dump();
-
-      distance_fun dist(start, step/scale);
-      km.clara(procs, dist, strata);
-      timer.record("CLARA Cluster");
-      timer.dump();
-
-      cout << "tolisting" << endl;
-      xkm.to_cluster_list(xclusters);
-      km.to_cluster_list(clusters);  // need to expand this to xclusters level.
-      cout << "done." << endl;
-
-      cout << "expanding by " << scale_levels << endl;
-      cout << "clusters sizes:" << endl;
-      for (size_t i=0; i < clusters.size(); i++) cout << clusters[i].size() << " ";
-      cout << endl;
-      expand(clusters, scale_levels);
-      for (size_t i=0; i < clusters.size(); i++) cout << clusters[i].size() << " ";
-      cout << endl;
-      cout << "done" << endl;
-
-      timer.record("Convert + expand");
-      timer.dump();
-
-      // print out mirkin distance
-      cout << "Mirkin distance: " << mirkin_distance(xclusters, clusters) << endl;
-
-      updates++;
-      if (updates == iterations) break;
-    }
-
-    vector<double> all_sizes;
-    vector<double> all_variances;
-    vector<double> sum_sizes;
-
-    vector<double> cluster_sizes[strata];
-    vector<double> cluster_variances[strata];
-
-
-    for (size_t region=0; region < dataset.size(); region++) {
-      size_t sample_size = 0;
-      
-      // iterate over each stratum
-      for (size_t i=0; i < clusters.size(); i++) {
-        //sample_desc sample = get_sample(procs, region, step, &clusters[i]);
-        
-        // expanded clusters points into xprocs.
-        sample_desc sample = get_sample(xprocs, region, step, &clusters[i]);  
-
-        cluster_sizes[i].push_back(sample.min_sample_size);
-        cluster_variances[i].push_back(sample.variance);
-
-        sample_size += sample.min_sample_size;
-      }
-      
-      sample_desc all_sample = get_sample(xprocs, region, step);
-      all_sizes.push_back(all_sample.min_sample_size);
-      all_variances.push_back(all_sample.variance);
-      sum_sizes.push_back(sample_size);
-    }
-
-    double all_size = summary(all_sizes).mean;
-    double sum_size = summary(sum_sizes).mean;
-
-    bool good = (sum_size < all_size);
-    if (good) num_good++;
-
-    cout << left  << setw(10) << "Iter " << step
-         << right << setw(12) << all_size
-         << right << setw(15) << sum_size
-         << right << setw(15) << summary(all_variances).mean 
-         << right << setw(15) << (good ? "GOOD" : "")
-         << endl;
-
-    for (size_t i=0; i < strata; i++) {
-      if (cluster_sizes[i].size()) {
-        cout << right << setw(10) << ""
-             << left  << setw(12) << i
-             << right << setw(15) << summary(cluster_sizes[i]).mean
-             << right << setw(15) << summary(cluster_variances[i]).mean 
-             << endl;
-      }
-    }
-    cout << endl;
-  }
-  
-  double percent = (double)num_good / step * 100;
-  cout << num_good << "/" << step
-       << " (" << setprecision(3) << percent << "%) good" << endl;
 }
 
