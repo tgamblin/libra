@@ -7,10 +7,9 @@
 FLAGS="-g3 -O3 -Wall"
 
 ./configure \
-    CXX=mpicxx \
+    CXX=g++ \
     CXXFLAGS="$FLAGS -DMPICH_IGNORE_CXX_SEEK" \
     --prefix=${HOME}/opt/libra \
-    --with-pmpi \
-    --with-vtk=${HOME}/opt/vtk \
-    --with-vtk-version=5.3 \
-    --with-python=/usr/apps/python/2.5.2
+    --with-vtk=${HOME}/opt/vtk-5.4 \
+    --with-vtk-version=5.4
+

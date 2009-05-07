@@ -1,5 +1,5 @@
 #include "FrameDB.h"
-
+#include <memory>
 #include <vector>
 #include <fstream>
 using namespace std;
