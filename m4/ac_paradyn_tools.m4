@@ -28,6 +28,7 @@ AC_DEFUN([AC_PARADYN_TOOLS],
 
      if [[ -d "$paradyn_include" ]]; then
        if [[ "x$paradyn_platform" != "xppc32_bgcompute" ]]; then
+         AC_LIB_ELF([$paradyn_lib])
          AC_LIB_DWARF([$paradyn_lib])
          AC_LIB_XML2([$paradyn_lib])
        fi

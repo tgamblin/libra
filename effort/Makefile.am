@@ -82,13 +82,17 @@ bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.
 # Build a regular PMPI module and install in $(prefix)/lib
 #
 if PMPI_EFFORT
-lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
+lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la
 
 libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
 libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
 libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
 libpmpi_effort_la_LDFLAGS = -avoid-version 
+
+libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
+libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+libcomm_effort_la_LDFLAGS = -avoid-version 
 
 libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
 libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
@@ -120,11 +124,16 @@ install-exec-hook:
 	mv -f .libs/effort-patched.so .libs/effort.so
 endif
 
-CLEANFILES=effort_wrapper.C
-EXTRA_DIST=effort_wrapper.w
+CLEANFILES = effort_wrapper.C comm_wrapper.C
+EXTRA_DIST = effort_wrapper.w comm_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
+
 effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
+
+comm_wrapper.C: comm_wrapper.w
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
+
 
 INCLUDES= $(PNMPI_CPPFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet \
  -I$(top_srcdir)/callpath -I$(top_srcdir)/cluster $(PARADYN_CPPFLAGS) $(PAPI_CPPFLAGS) $(SW_CPPFLAGS)

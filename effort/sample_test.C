@@ -35,7 +35,7 @@ double confidence = 0.90;    // confidence % for sampling  (bt/w 0 and 1)
 double error = 0.08;         // error bound for sampling (bt/w 0 and 1... probably closer to 0)
 size_t iterations = 0;       // number of times to cluster.
 
-double scale;                // scale factor calculated from approximation level.
+size_t scale;                // scale factor calculated from approximation level.
 int scale_levels;            // scale factor calculated from approximation level.
 
 

@@ -30,7 +30,6 @@ using namespace wavelet;
 
 #include "Callpath.h"
 #include "CallpathRuntime.h"
-#include "callpath_module.h"
 
 #include "effort_data.h"
 #include "effort_params.h"

@@ -44,6 +44,7 @@ extern "C" {
 size_t RLE_Compress( unsigned char *in, unsigned char *out, size_t insize );
 size_t RLE_Uncompress( unsigned char *in, unsigned char *out, size_t insize );
 
+
 /* Added by Todd Gamblin, Nov 6, 2007 */
 size_t RLE_Merge(unsigned char **bufs, size_t *sizes, size_t num_bufs, unsigned char *out);
 

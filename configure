@@ -974,8 +974,8 @@ with_vtk_version
 with_python_version
 with_python
 with_paradyn
-with_dwarf
 with_elf
+with_dwarf
 with_xml2
 with_papi
 with_pnmpi
@@ -1661,8 +1661,8 @@ Optional Packages:
                           or a path to a Mac OS X .framework directory.
   --with-paradyn=<dir>    Path to the platform-specific installation directory
                           of ParaDyn tools. Includes, etc. are inferred.
-  --with-dwarf=<dir>      Path to the installation directory of libdwarf.
   --with-elf=<dir>        Path to the installation directory of libelf.
+  --with-dwarf=<dir>      Path to the installation directory of libdwarf.
   --with-xml2=<dir>       Path to the installation directory of libxml2.
   --with-papi=<dir>       Path to the installation directory of PAPI.
 # Help string
@@ -23156,235 +23156,6 @@ if test "${with_paradyn+set}" = set; then
        if [ "x$paradyn_platform" != "xppc32_bgcompute" ]; then
 
 
-# Check whether --with-dwarf was given.
-if test "${with_dwarf+set}" = set; then
-  withval=$with_dwarf;
-
-# Check whether --with-elf was given.
-if test "${with_elf+set}" = set; then
-  withval=$with_elf; elf_home="$withval/lib"
-else
-  elf_home="$withval/lib"
-fi
-
-
-
-  if test "x$elf_home" != x; then
-    ELF_LDFLAGS="-L$elf_home"
-  else
-    ELF_LDFLAGS=""
-  fi
-
-  if test "x-lelf" != "x"; then
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  else
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  fi
-
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for elf_end in -lelf" >&5
-$as_echo_n "checking for elf_end in -lelf... " >&6; }
-if test "${ac_cv_lib_elf_elf_end+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lelf  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char elf_end ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return elf_end ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_elf_elf_end=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_elf_elf_end=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_elf_elf_end" >&5
-$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
-if test "x$ac_cv_lib_elf_elf_end" = x""yes; then
-  have_elf=yes
-else
-  { $as_echo "$as_me:$LINENO: Couldn't find libelf." >&5
-$as_echo "$as_me: Couldn't find libelf." >&6;}
-                     ELF_LDFLAGS=""
-                     have_elf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-  if test "x$withval/lib" != x; then
-    DWARF_LDFLAGS="-L$withval/lib"
-  else
-    DWARF_LDFLAGS=""
-  fi
-
-  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
-  else
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
-  fi
-
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for dwarf_attr in -ldwarf" >&5
-$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
-if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldwarf  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char dwarf_attr ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return dwarf_attr ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_dwarf_dwarf_attr=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_dwarf_dwarf_attr=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
-$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
-if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then
-  have_dwarf=yes
-else
-  { $as_echo "$as_me:$LINENO: Couldn't find libdwarf." >&5
-$as_echo "$as_me: Couldn't find libdwarf." >&6;}
-                     DWARF_LDFLAGS=""
-                     have_dwarf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-else
-
-
 # Check whether --with-elf was given.
 if test "${with_elf+set}" = set; then
   withval=$with_elf; elf_home="$withval/lib"
@@ -23500,6 +23271,117 @@ fi
   LDFLAGS="$OLD_LDFLAGS"
 
 
+
+
+# Check whether --with-dwarf was given.
+if test "${with_dwarf+set}" = set; then
+  withval=$with_dwarf;
+  if test "x$withval/lib" != x; then
+    DWARF_LDFLAGS="-L$withval/lib"
+  else
+    DWARF_LDFLAGS=""
+  fi
+
+  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
+  else
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
+  fi
+
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:$LINENO: checking for dwarf_attr in -ldwarf" >&5
+$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
+if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldwarf  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char dwarf_attr ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return dwarf_attr ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_dwarf_dwarf_attr=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_dwarf_dwarf_attr=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
+$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
+if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then
+  have_dwarf=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find libdwarf." >&5
+$as_echo "$as_me: Couldn't find libdwarf." >&6;}
+                     DWARF_LDFLAGS=""
+                     have_dwarf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+else
 
   if test "x$paradyn_lib" != x; then
     DWARF_LDFLAGS="-L$paradyn_lib"
@@ -25805,7 +25687,7 @@ echo "  VTK ............................................ $have_vtk"
 echo "  PAPI ........................................... $have_papi"
 echo "  ParaDyn - Common ............................... $have_common"
 echo "  ParaDyn - SymtabAPI ............................ $have_symtabAPI"
-echo "  ParaDyn - Stakcwalker .......................... $have_stackwalk"
+echo "  ParaDyn - Stackwalker .......................... $have_stackwalk"
 echo
 echo "Python Support:"
 echo "  Python Interpreter ............................. $have_python"

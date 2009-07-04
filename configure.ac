@@ -147,7 +147,7 @@ echo "  VTK ............................................ $have_vtk"
 echo "  PAPI ........................................... $have_papi"
 echo "  ParaDyn - Common ............................... $have_common"
 echo "  ParaDyn - SymtabAPI ............................ $have_symtabAPI"
-echo "  ParaDyn - Stakcwalker .......................... $have_stackwalk"
+echo "  ParaDyn - Stackwalker .......................... $have_stackwalk"
 echo
 echo "Python Support:"
 echo "  Python Interpreter ............................. $have_python"

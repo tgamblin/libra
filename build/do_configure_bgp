@@ -7,7 +7,7 @@
     CXX=mpicxx \
     FC=mpif90 \
     CPPFLAGS="-DMPICH_IGNORE_CXX_SEEK" \
-    CXXFLAGS="-g -O2 -Wall -fno-omit-frame-pointer" \
+    CXXFLAGS=" -Werror -g -O2 -Wall -fno-omit-frame-pointer" \
     LDFLAGS="-dynamic" \
     --host=powerpc-bgp-linux-gnu \
     --prefix=${HOME}/opt/libra/bgp_cnk \
