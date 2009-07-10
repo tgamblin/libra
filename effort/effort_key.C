@@ -19,7 +19,6 @@ namespace effort {
     : metric(met), type(t), start_path(start), end_path(end) 
   { }
 
-
   bool effort_key::isComm() const {
     return (start_path == Callpath::null()) && (end_path == Callpath::null());
   }

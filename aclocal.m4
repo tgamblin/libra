@@ -7523,6 +7523,7 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([m4/ac_ampl.m4])
 m4_include([m4/ac_detect_bluegene.m4])
 m4_include([m4/ac_inc_subst.m4])
 m4_include([m4/ac_lib_dwarf.m4])

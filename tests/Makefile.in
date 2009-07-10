@@ -46,7 +46,8 @@ TESTS = seqtest$(EXEEXT) ezwtest$(EXEEXT) insert_bits_test$(EXEEXT) \
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_ampl.m4 \
+	$(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
@@ -156,6 +157,8 @@ CTAGS = ctags
 @HAVE_MPI_TRUE@am__EXEEXT_5 = parezwtest$(EXEEXT) partest$(EXEEXT)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+AMPL_CPPFLAGS = @AMPL_CPPFLAGS@
+AMPL_LDFLAGS = @AMPL_LDFLAGS@
 AMTAR = @AMTAR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
@@ -343,9 +346,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  tests/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  tests/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  tests/Makefile
+	  $(AUTOMAKE) --gnu  tests/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

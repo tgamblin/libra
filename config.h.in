@@ -13,6 +13,9 @@
 /* Define if F77 and FC dummy `main' functions are identical. */
 #undef FC_DUMMY_MAIN_EQ_F77
 
+/* Defined if we have the AMPL sampling library. */
+#undef HAVE_AMPL
+
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 

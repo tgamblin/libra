@@ -18,7 +18,9 @@ namespace effort {
     out << "   sequential         = " << params.sequential        << endl;
     out << "   chop_libc          = " << params.chop_libc         << endl;
     out << "   regions            = " << params.regions           << endl;
-    out << "   sampling           = " << params.sampling << endl;
+    out << "   sampling           = " << params.sampling          << endl;
+    out << "   ampl               = " << params.ampl              << endl;
+    out << "   topo               = " << params.topo              << endl;
     return out;
   }
 
@@ -35,6 +37,8 @@ namespace effort {
       config_desc("chop_libc",         &this->chop_libc),
       config_desc("regions",           &this->regions),
       config_desc("sampling",          &this->sampling),
+      config_desc("ampl",              &this->ampl),
+      config_desc("topo",              &this->topo),
       config_desc()
     };
     return args;
@@ -48,6 +52,7 @@ namespace effort {
 
     for (size_t i=0; i < metric_names.size(); i++) {
       Metric m(metric_names[i]);
+      metric_to_index[m] = i;
       if (m == Metric::time()) {
         have_time = true;
       } else {

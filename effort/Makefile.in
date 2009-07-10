@@ -45,13 +45,14 @@ bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
 #
 # Build a regular PMPI module and install in $(prefix)/lib
 #
-@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la
+@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_ampl.m4 \
+	$(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
@@ -99,6 +100,19 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(effort_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_effort_la_rpath = -rpath $(pnmpidir)
+@PMPI_EFFORT_TRUE@libcomm_effort_la_DEPENDENCIES = libeffort.la \
+@PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
+@PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__libcomm_effort_la_SOURCES_DIST = effort_module.C env_config.C \
+	comm_wrapper.C
+@PMPI_EFFORT_TRUE@am_libcomm_effort_la_OBJECTS = $(am__objects_1) \
+@PMPI_EFFORT_TRUE@	comm_wrapper.lo
+libcomm_effort_la_OBJECTS = $(am_libcomm_effort_la_OBJECTS)
+libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libcomm_effort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@am_libcomm_effort_la_rpath = -rpath $(libdir)
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
@@ -116,7 +130,8 @@ libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @PMPI_EFFORT_TRUE@libmanual_effort_la_DEPENDENCIES = libeffort.la \
 @PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
-@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1)
 am__libmanual_effort_la_SOURCES_DIST = effort_module.C env_config.C
 @PMPI_EFFORT_TRUE@am_libmanual_effort_la_OBJECTS = $(am__objects_1)
 libmanual_effort_la_OBJECTS = $(am_libmanual_effort_la_OBJECTS)
@@ -133,7 +148,8 @@ libpcontrol_counter_la_OBJECTS = $(am_libpcontrol_counter_la_OBJECTS)
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_DEPENDENCIES = libeffort.la \
 @PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
 @PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
-@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1)
 am__libpmpi_effort_la_SOURCES_DIST = effort_module.C env_config.C \
 	effort_wrapper.C
 @PMPI_EFFORT_TRUE@am_libpmpi_effort_la_OBJECTS = $(am__objects_1) \
@@ -210,14 +226,15 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(effort_la_SOURCES) $(libeffort_la_SOURCES) \
-	$(libmanual_effort_la_SOURCES) \
+SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
+	$(libeffort_la_SOURCES) $(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
 	$(sample_test_SOURCES) $(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
+	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
@@ -232,6 +249,8 @@ ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+AMPL_CPPFLAGS = @AMPL_CPPFLAGS@
+AMPL_LDFLAGS = @AMPL_LDFLAGS@
 AMTAR = @AMTAR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
@@ -442,10 +461,13 @@ bin_test_SOURCES = bin_test.C
 bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-@PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+@PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(AMPL_LDFLAGS)
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LDFLAGS = -avoid-version 
+@PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
+@PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+@PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
-@PMPI_EFFORT_TRUE@libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+@PMPI_EFFORT_TRUE@libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(AMPL_LDFLAGS)
 @PMPI_EFFORT_TRUE@libmanual_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libtiming_la_SOURCES = timing_module.C
 @PMPI_EFFORT_TRUE@libtiming_la_LDFLAGS = -avoid-version
@@ -461,11 +483,18 @@ bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavele
 @PNMPI_EFFORT_TRUE@effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
 @PNMPI_EFFORT_TRUE@effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
 @PNMPI_EFFORT_TRUE@effort_la_LDFLAGS = -avoid-version -module
-CLEANFILES = effort_wrapper.C
-EXTRA_DIST = effort_wrapper.w
+CLEANFILES = effort_wrapper.C comm_wrapper.C
+EXTRA_DIST = effort_wrapper.w comm_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
-INCLUDES = $(PNMPI_CPPFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet \
- -I$(top_srcdir)/callpath -I$(top_srcdir)/cluster $(PARADYN_CPPFLAGS) $(PAPI_CPPFLAGS) $(SW_CPPFLAGS)
+INCLUDES = -I$(top_srcdir)/libwavelet \
+          -I$(top_srcdir)/callpath \
+          -I$(top_srcdir)/cluster \
+          $(PNMPI_CPPFLAGS) \
+          $(BOOST_CPPFLAGS) \
+          $(PARADYN_CPPFLAGS) \
+          $(PAPI_CPPFLAGS) \
+          $(SW_CPPFLAGS) \
+          $(AMPL_CPPFLAGS)
 
 all: all-am
 
@@ -556,6 +585,8 @@ clean-pnmpiLTLIBRARIES:
 	done
 effort.la: $(effort_la_OBJECTS) $(effort_la_DEPENDENCIES) 
 	$(effort_la_LINK) $(am_effort_la_rpath) $(effort_la_OBJECTS) $(effort_la_LIBADD) $(LIBS)
+libcomm-effort.la: $(libcomm_effort_la_OBJECTS) $(libcomm_effort_la_DEPENDENCIES) 
+	$(libcomm_effort_la_LINK) $(am_libcomm_effort_la_rpath) $(libcomm_effort_la_OBJECTS) $(libcomm_effort_la_LIBADD) $(LIBS)
 libeffort.la: $(libeffort_la_OBJECTS) $(libeffort_la_DEPENDENCIES) 
 	$(libeffort_la_LINK) -rpath $(libdir) $(libeffort_la_OBJECTS) $(libeffort_la_LIBADD) $(LIBS)
 libmanual-effort.la: $(libmanual_effort_la_OBJECTS) $(libmanual_effort_la_DEPENDENCIES) 
@@ -648,6 +679,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/approx_timer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/comm_wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataset_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_data.Plo@am__quote@
@@ -911,7 +943,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 @PNMPI_EFFORT_TRUE@	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
 @PNMPI_EFFORT_TRUE@	chmod u+x .libs/effort-patched.so
 @PNMPI_EFFORT_TRUE@	mv -f .libs/effort-patched.so .libs/effort.so
+
 effort_wrapper.C: effort_wrapper.w
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
+
+comm_wrapper.C: comm_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -845,6 +845,8 @@ HAVE_MPI_FALSE
 HAVE_MPI_TRUE
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
+AMPL_CPPFLAGS
+AMPL_LDFLAGS
 PMPI_INIT
 FCLIBS
 ac_ct_FC
@@ -967,6 +969,7 @@ with_gnu_ld
 enable_libtool_lock
 with_pic
 with_tags
+with_ampl
 with_boost
 with_boost_libdir
 with_vtk
@@ -1641,6 +1644,8 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-tags[=TAGS]      include additional configurations [automatic]
+  --with-ampl=<dir>       Path to the installation directory of AMPL sampling
+                          library.
   --with-boost[=DIR]      use boost (default is yes) - it is possible to
                           specify the root directory for boost (optional)
   --with-boost-libdir=LIB_DIR
@@ -5083,7 +5088,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5086 "configure"' > conftest.$ac_ext
+  echo '#line 5091 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7683,11 +7688,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7686: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7691: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7690: \$? = $ac_status" >&5
+   echo "$as_me:7695: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7973,11 +7978,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7976: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7981: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7980: \$? = $ac_status" >&5
+   echo "$as_me:7985: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8077,11 +8082,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8080: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8085: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8084: \$? = $ac_status" >&5
+   echo "$as_me:8089: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10477,7 +10482,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10480 "configure"
+#line 10485 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10577,7 +10582,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10580 "configure"
+#line 10585 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12986,11 +12991,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12989: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12994: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12993: \$? = $ac_status" >&5
+   echo "$as_me:12998: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13090,11 +13095,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13093: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13098: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13097: \$? = $ac_status" >&5
+   echo "$as_me:13102: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14673,11 +14678,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14676: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14681: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14680: \$? = $ac_status" >&5
+   echo "$as_me:14685: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14777,11 +14782,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14780: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14785: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14784: \$? = $ac_status" >&5
+   echo "$as_me:14789: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16992,11 +16997,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16995: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17000: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16999: \$? = $ac_status" >&5
+   echo "$as_me:17004: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17282,11 +17287,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17285: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17290: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17289: \$? = $ac_status" >&5
+   echo "$as_me:17294: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17386,11 +17391,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17389: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17394: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17393: \$? = $ac_status" >&5
+   echo "$as_me:17398: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -21259,6 +21264,531 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+# AMPL Support
+
+
+# Check whether --with-ampl was given.
+if test "${with_ampl+set}" = set; then
+  withval=$with_ampl;
+  if test "x$withval/lib" != x; then
+    AMPL_LDFLAGS="-L$withval/lib"
+  else
+    AMPL_LDFLAGS=""
+  fi
+
+  if test "x" != "x"; then
+    AMPL_LDFLAGS="$AMPL_LDFLAGS "
+  else
+    AMPL_LDFLAGS="$AMPL_LDFLAGS -lampl"
+  fi
+
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$AMPL_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:$LINENO: checking for ampl_init in -lampl" >&5
+$as_echo_n "checking for ampl_init in -lampl... " >&6; }
+if test "${ac_cv_lib_ampl_ampl_init+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lampl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ampl_init ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return ampl_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_ampl_ampl_init=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_ampl_ampl_init=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_ampl_ampl_init" >&5
+$as_echo "$ac_cv_lib_ampl_ampl_init" >&6; }
+if test "x$ac_cv_lib_ampl_ampl_init" = x""yes; then
+  have_ampl=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find libampl." >&5
+$as_echo "$as_me: Couldn't find libampl." >&6;}
+                     AMPL_LDFLAGS=""
+                     have_ampl=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+               if [ "x$have_ampl" != xno ]; then
+
+  AMPL_CPPFLAGS="-I $withval/include"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$AMPL_CPPFLAGS $CPPFLAGS"
+
+  if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  { $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
+$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
+if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
+$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h usability" >&5
+$as_echo_n "checking ampl/interface/AMPLInterface.h usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <ampl/interface/AMPLInterface.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h presence" >&5
+$as_echo_n "checking ampl/interface/AMPLInterface.h presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ampl/interface/AMPLInterface.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&2;}
+
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
+$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
+if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_header_ampl_interface_AMPLInterface_h=$ac_header_preproc
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
+$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+
+fi
+if test "x$ac_cv_header_ampl_interface_AMPLInterface_h" = x""yes; then
+  have_ampl=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find ampl/interface/AMPLInterface.h." >&5
+$as_echo "$as_me: Couldn't find ampl/interface/AMPLInterface.h." >&6;}
+                   have_ampl=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+               fi
+
+else
+
+  if test "x/lib" != x; then
+    AMPL_LDFLAGS="-L/lib"
+  else
+    AMPL_LDFLAGS=""
+  fi
+
+  if test "x" != "x"; then
+    AMPL_LDFLAGS="$AMPL_LDFLAGS "
+  else
+    AMPL_LDFLAGS="$AMPL_LDFLAGS -lampl"
+  fi
+
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$AMPL_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:$LINENO: checking for ampl_init in -lampl" >&5
+$as_echo_n "checking for ampl_init in -lampl... " >&6; }
+if test "${ac_cv_lib_ampl_ampl_init+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lampl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ampl_init ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return ampl_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_ampl_ampl_init=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_ampl_ampl_init=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_ampl_ampl_init" >&5
+$as_echo "$ac_cv_lib_ampl_ampl_init" >&6; }
+if test "x$ac_cv_lib_ampl_ampl_init" = x""yes; then
+  have_ampl=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find libampl." >&5
+$as_echo "$as_me: Couldn't find libampl." >&6;}
+                     AMPL_LDFLAGS=""
+                     have_ampl=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+               if [ "x$have_ampl" != xno ]; then
+
+  AMPL_CPPFLAGS="-I /include"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$AMPL_CPPFLAGS $CPPFLAGS"
+
+  if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  { $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
+$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
+if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
+$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h usability" >&5
+$as_echo_n "checking ampl/interface/AMPLInterface.h usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <ampl/interface/AMPLInterface.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h presence" >&5
+$as_echo_n "checking ampl/interface/AMPLInterface.h presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ampl/interface/AMPLInterface.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&2;}
+
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
+$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
+if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_header_ampl_interface_AMPLInterface_h=$ac_header_preproc
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
+$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+
+fi
+if test "x$ac_cv_header_ampl_interface_AMPLInterface_h" = x""yes; then
+  have_ampl=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find ampl/interface/AMPLInterface.h." >&5
+$as_echo "$as_me: Couldn't find ampl/interface/AMPLInterface.h." >&6;}
+                   have_ampl=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+               fi
+
+
+fi
+
+
+if [ "x$have_ampl" = xyes ]; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_AMPL 1
+_ACEOF
+
+fi
+
+
 # We need the boost matrix class to build this library.
 
 
@@ -23850,7 +24380,7 @@ $as_echo "$ac_cv_header_walker_h" >&6; }
 
 fi
 if test "x$ac_cv_header_walker_h" = x""yes; then
-  :
+  have_stackwalk=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find walker.h." >&5
 $as_echo "$as_me: Couldn't find walker.h." >&6;}
@@ -23994,7 +24524,7 @@ $as_echo "$ac_cv_header_Symtab_h" >&6; }
 
 fi
 if test "x$ac_cv_header_Symtab_h" = x""yes; then
-  :
+  have_symtabAPI=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find Symtab.h." >&5
 $as_echo "$as_me: Couldn't find Symtab.h." >&6;}
@@ -24138,7 +24668,7 @@ $as_echo "$ac_cv_header_dyntypes_h" >&6; }
 
 fi
 if test "x$ac_cv_header_dyntypes_h" = x""yes; then
-  :
+  have_common=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find dyntypes.h." >&5
 $as_echo "$as_me: Couldn't find dyntypes.h." >&6;}
@@ -24898,7 +25428,7 @@ $as_echo "$ac_cv_header_papi_h" >&6; }
 
 fi
 if test "x$ac_cv_header_papi_h" = x""yes; then
-  :
+  have_papi=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find papi.h." >&5
 $as_echo "$as_me: Couldn't find papi.h." >&6;}
@@ -25155,7 +25685,7 @@ $as_echo "$ac_cv_header_papi_h" >&6; }
 
 fi
 if test "x$ac_cv_header_papi_h" = x""yes; then
-  :
+  have_papi=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find papi.h." >&5
 $as_echo "$as_me: Couldn't find papi.h." >&6;}
@@ -25472,7 +26002,7 @@ $as_echo "$ac_cv_header_pnmpi_h" >&6; }
 
 fi
 if test "x$ac_cv_header_pnmpi_h" = x""yes; then
-  :
+  have_pnmpi=yes
 else
   { $as_echo "$as_me:$LINENO: Couldn't find pnmpi.h." >&5
 $as_echo "$as_me: Couldn't find pnmpi.h." >&6;}
@@ -25701,6 +26231,7 @@ echo "  Libra Viewer ................................... $build_viewer"
 echo "  PMPI Effort Library ............................ $pmpi_effort"
 echo "  PnMPI Effort Library ........................... $have_pnmpi"
 echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
+echo "  AMPL Support ................................... $have_ampl"
 echo "========================================================"
 echo
 

@@ -14,7 +14,7 @@ AC_DEFUN([AC_HEADER_SUBST],
   CPPFLAGS="$$3_CPPFLAGS $CPPFLAGS"
 
   AC_CHECK_HEADER([$2],
-                  [],
+                  [have_$1=yes],
                   [AC_MSG_NOTICE([Couldn't find $2.])
                    have_$1=no])
   AC_SUBST($3_CPPFLAGS)

@@ -14,6 +14,10 @@
 #include <algorithm>
 using namespace std;
 
+#ifdef HAVE_AMPL
+#include "ampl/interface/AMPLInterface.h"
+#endif // HAVE_AMPL
+
 #ifdef HAVE_LIBPAPI
 #include <papi.h>
 #endif //HAVE_LIBPAPI
@@ -94,6 +98,11 @@ struct effort_module {
   vector<long long> counters;   /// HW counter value storage for PAPI
   int event_set;                /// PAPI event set.
 
+  // AMPL support
+  ofstream ampl_trace_file;     /// AMPL trace file stream
+  string ampl_trace_filename;   /// Name of AMPL trace file, for opening and closing.
+
+
   // global initializers
   effort_module() 
     : cur_effort_type(0)
@@ -112,6 +121,44 @@ struct effort_module {
     regions = str_to_regions(params.regions);
     sample_count = params.sampling;
   }
+
+
+#ifndef HAVE_AMPL
+  void ampl_setup() { }
+#else // HAVE_AMPL
+
+  string ampl_log_filename;
+  ofstream ampl_log_file;
+  
+  void ampl_setup() {
+    int size, rank;
+    PMPI_Comm_size(MPI_COMM_WORLD, &size);
+    PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    // TODO: time handling is REALLY ANNOYING.  Unify this.
+    const vector<Metric>& metrics = params.get_metrics();
+    vector<const char*> metric_names;
+    if (params.keep_time()) {
+      metric_names.push_back(Metric::time().c_str());
+    }
+    
+    for (size_t i=0; i < metrics.size(); i++) {
+      metric_names.push_back(metrics[i].c_str());
+    }
+
+    ampl_init(params.num_metrics(), &metric_names[0]);
+    
+    // make ampl log dir
+    setup_effort_directories();
+    ostringstream ampl_dir;
+    ampl_dir << effort_dir << "/ampl";
+    mkdir(ampl_dir.str().c_str(), 0750);  // create ampl dir
+
+    ampl_dir << "/log." << rank;
+    ampl_trace_filename = ampl_dir.str();
+  }
+#endif // HAVE_AMPL    
+
 
   void postinit() {
     int size, rank;
@@ -133,6 +180,8 @@ struct effort_module {
 
     metric_setup();  
     start_time = get_time_ns();
+
+    if (params.ampl) ampl_setup();
 
     if (rank == 0) {
       cerr << "========================================================" << endl;
@@ -225,9 +274,18 @@ struct effort_module {
   /// Does the work of inserting the effort key for the current region into the map.
   /// Records time, current effort type, and whatever counters are enabled.
   inline void record_region(const Callpath& start, const Callpath& end) {
+#ifdef HAVE_AMPL
+    double metrics[params.num_metrics()];
+    size_t mx = 0;
+#endif
+
     if (params.keep_time()) {
       double cur_time = get_time_ns();
-      record_metric(start, end, Metric::time(), cur_time - start_time);
+      double elapsed_time = cur_time = start_time;
+      record_metric(start, end, Metric::time(), elapsed_time);
+#ifdef HAVE_AMPL
+      metrics[mx++] = elapsed_time;
+#endif
       start_time = cur_time;
     }
 
@@ -238,10 +296,19 @@ struct effort_module {
       const vector<Metric>& metrics = params.get_metrics();
       for (size_t i=0; i < metrics.size(); i++) {
         record_metric(start, end, metrics[i], counters[i]);
+#ifdef HAVE_AMPL
+        metrics[mx++] = counters[i];;
+#endif
         counters[i] = 0;
       }
     }
 #endif // HAVE_LIBPAPI
+
+#ifdef HAVE_AMPL
+    long long path[AMPL_MAX_CALLPATH];
+    get_ampl_callpath(start, end, path);
+    ampl::ampl_sample(path, metrics);
+#endif
   }
 
 
@@ -283,9 +350,49 @@ struct effort_module {
   }
 
 
+  void get_ampl_callpath(const Callpath& start, const Callpath& end, long long *cp) {
+    ampl::initPath(cp);
+
+    size_t i=0;
+    cp[i++] = cur_effort_type;   // effort type
+
+    const size_t max_start = (AMPL_MAX_CALLPATH-1) / 2;
+    for (size_t j=0; j < max_start && j < start.size(); j++) {  // start
+      cp[i++] = start[j].offset;
+    }
+    
+    cp[i++] = 0; // delimiter
+
+    for (size_t j=0; j < end.size() && j < AMPL_MAX_CALLPATH; j++) {  // end
+      cp[i++] = end[j].offset;
+    }
+  }
+
+  
+
   void progress_step() {
     sample_count--;
     if (sample_count == 0) {
+      if (params.ampl) {
+
+        if (ampl_is_enabled()) {
+          // open trace file for writing if needed.
+          if (!ampl_trace_file.is_open()) {
+            ampl_trace_file.open(ampl_trace_filename.c_str(), ios::app);
+          }
+
+          // write current step to trace
+          effort_log.write_current_step(ampl_trace_file);
+        }       
+
+        ampl_epoch();
+
+        // close trace file if needed
+        if (!ampl_is_enabled() && ampl_trace_file.is_open()) {
+          ampl_trace_file.close();
+        }
+      }
+
       // commit all effort recorded this iteration and advance to next iteration.
       effort_log.progress_step();
       sample_count = params.sampling;
@@ -410,20 +517,26 @@ struct effort_module {
     setup_effort_directories();
     timer.record("Mkdirs");
 
-    // distribute and do compression.
-    parallel_compressor compressor(params);
-    compressor.set_output_dir(effort_dir);
-    compressor.set_exact_dir(exact_dir);
-    compressor.compress(effort_log, MPI_COMM_WORLD);
-
-    // dump times on rank 0.
-    if (rank == 0) {
-      ostringstream filename;
-      filename << effort_dir << "/times";
-      ofstream time_file(filename.str().c_str());
-
-      timer += compressor.get_timer();
-      timer.write(time_file);
+    if (params.ampl) {
+      if (ampl_trace_file.is_open()) ampl_trace_file.close();
+      ampl_destroy();
+      
+    } else {
+      // distribute and do compression.
+      parallel_compressor compressor(params);
+      compressor.set_output_dir(effort_dir);
+      compressor.set_exact_dir(exact_dir);
+      compressor.compress(effort_log, MPI_COMM_WORLD);
+      
+      // dump times on rank 0.
+      if (rank == 0) {
+        ostringstream filename;
+        filename << effort_dir << "/times";
+        ofstream time_file(filename.str().c_str());
+        
+        timer += compressor.get_timer();
+        timer.write(time_file);
+      }
     }
   }
 };

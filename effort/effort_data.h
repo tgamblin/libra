@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <map>
 #include <string>
+#include <ostream>
 #include "effort_key.h"
 #include "effort_record.h"
 #include "ezw.h"
@@ -47,13 +48,16 @@ namespace effort {
     }
     void clear() { emap.clear(); }
     
+    /// Writes keys and values for current progress step
+    void write_current_step(std::ostream& out);
+
     /// Loads an effort_log full of keys from a particular directory full of 
     /// effort files. 
     /// NOTE: This does not fill the log up with values. See parallel_decompressor.
     static void load_keys(const std::string& dirname, effort_data& log, 
                           wavelet::ezw_header& header, 
                           std::map<effort_key, std::string> *filenames = NULL);
-    
+
   private:
 
     /// Functor for invoking commit on an effort record.
@@ -64,6 +68,19 @@ namespace effort {
         p.second.commit(count);
       }
     };
+
+
+    /// Functor for writing out current step from effort_map
+    struct write_current {
+      std::ostream& out;
+      std::string indent;
+
+      write_current(std::ostream& o, std::string i="") : out(o), indent(i) { }
+      void operator()(effort_map::value_type& p) {
+        out << indent << "[" << p.first << "]" << p.second.current << std::endl;
+      }
+    };
+    
   };
 
 } // namespace
