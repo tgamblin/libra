@@ -5,6 +5,7 @@
 #
 AC_DEFUN([AC_AMPL],
 [
+  AC_LANG_PUSH([C++])
   AC_ARG_WITH([ampl],
               AS_HELP_STRING([--with-ampl=<dir>],
                              [Path to the installation directory of AMPL sampling library.]),
@@ -19,5 +20,6 @@ AC_DEFUN([AC_AMPL],
                fi
               ]
   )
+  AC_LANG_POP
 ])
 

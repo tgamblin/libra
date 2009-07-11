@@ -41,6 +41,10 @@ extern "C" {
   /// This is defined if we are using PNMPI_EFFORT (no PnMPI)
   void effort_do_stackwalk();
 
+  /// temporary addition for topo experiment
+  void effort_set_dims(size_t x, size_t y, size_t z);
+  
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

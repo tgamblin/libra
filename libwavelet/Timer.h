@@ -26,7 +26,7 @@ class Timer {
   
 public:
   Timer(bool print_total = false);
-
+  Timer(const Timer& other);
   ~Timer();
 
   /// Empties out all recorded timings so far AND sets last_time to now.
@@ -55,6 +55,8 @@ public:
   timing_t operator[](const std::string& name) const { 
     return get(name); 
   }
+
+  Timer& operator=(const Timer& other);
 };
 
 /// Syntactic sugar; calls write on the timer and passes the ostream.

@@ -39,8 +39,9 @@ host_triplet = @host@
 @HAVE_MPI_TRUE@												parallel_decompressor.C \
 @HAVE_MPI_TRUE@												synchronize_keys.C
 
-bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) $(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample-test approx-timer
+bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
+	$(am__EXEEXT_1)
+@HAVE_MPI_TRUE@am__append_2 = tuner bin_test dataset_test sample-test approx-timer 
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
@@ -116,13 +117,15 @@ libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_LIBADD =
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
-	FrameDB.C FrameInfo.C effort_dataset.C parallel_compressor.C \
-	parallel_decompressor.C synchronize_keys.C
+	FrameDB.C FrameInfo.C effort_dataset.C s3d_topology.C \
+	parallel_compressor.C parallel_decompressor.C \
+	synchronize_keys.C
 @HAVE_MPI_TRUE@am__objects_2 = parallel_compressor.lo \
 @HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
 	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
-	FrameDB.lo FrameInfo.lo effort_dataset.lo $(am__objects_2)
+	FrameDB.lo FrameInfo.lo effort_dataset.lo s3d_topology.lo \
+	$(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -203,6 +206,10 @@ am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
+am_s3d_topo_test_OBJECTS = s3d_topo_test.$(OBJEXT)
+s3d_topo_test_OBJECTS = $(am_s3d_topo_test_OBJECTS)
+s3d_topo_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 am_sample_test_OBJECTS = sample_test.$(OBJEXT)
 sample_test_OBJECTS = $(am_sample_test_OBJECTS)
 sample_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
@@ -232,7 +239,8 @@ SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(sample_test_SOURCES) $(tuner_SOURCES)
+	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
+	$(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
@@ -242,7 +250,8 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(sample_test_SOURCES) $(tuner_SOURCES)
+	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
+	$(tuner_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
@@ -429,7 +438,7 @@ lib_LTLIBRARIES = libeffort.la $(am__append_3)
 #
 libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
 	effort_params.C string_utils.C Metric.C FrameDB.C FrameInfo.C \
-	effort_dataset.C $(am__append_1)
+	effort_dataset.C s3d_topology.C $(am__append_1)
 libeffort_la_LDFLAGS = -avoid-version
 
 #
@@ -459,6 +468,8 @@ tuner_SOURCES = tuner.C
 tuner_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 bin_test_SOURCES = bin_test.C
 bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+s3d_topo_test_SOURCES = s3d_topo_test.C
+s3d_topo_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(AMPL_LDFLAGS)
@@ -642,6 +653,9 @@ ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
+s3d-topo-test$(EXEEXT): $(s3d_topo_test_OBJECTS) $(s3d_topo_test_DEPENDENCIES) 
+	@rm -f s3d-topo-test$(EXEEXT)
+	$(CXXLINK) $(s3d_topo_test_OBJECTS) $(s3d_topo_test_LDADD) $(LIBS)
 sample-test$(EXEEXT): $(sample_test_OBJECTS) $(sample_test_DEPENDENCIES) 
 	@rm -f sample-test$(EXEEXT)
 	$(CXXLINK) $(sample_test_OBJECTS) $(sample_test_LDADD) $(LIBS)
@@ -694,6 +708,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pcontrol_counter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topo_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topology.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sample_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@

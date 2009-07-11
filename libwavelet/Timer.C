@@ -9,6 +9,26 @@ using namespace std;
 
 Timer::Timer(bool pt) : print_total(pt), start(get_time_ns()), last(start) { }
 
+
+Timer::Timer(const Timer& other): 
+  print_total(other.print_total),
+  timings(other.timings),
+  order(other.order),
+  start(other.start),
+  last(other.last) 
+{ }
+
+
+Timer& Timer::operator=(const Timer& other) {
+  print_total = other.print_total;
+  timings = other.timings;
+  order = other.order;
+  start = other.start;
+  last = other.last;
+  return *this;
+}
+
+
 Timer::~Timer() { }
 
 

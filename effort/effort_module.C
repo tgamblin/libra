@@ -36,9 +36,16 @@ using namespace wavelet;
 #include "CallpathRuntime.h"
 
 #include "effort_data.h"
+#include "s3d_topology.h"
 #include "effort_params.h"
 #include "parallel_compressor.h"
 using namespace effort;
+
+
+static int npx = 0;
+static int npy = 0;
+static int npz = 0;
+
 
 typedef enum {
   REGIONS_EFFORT, REGIONS_COMM, REGIONS_BOTH, REGIONS_INVALID
@@ -84,8 +91,6 @@ struct effort_module {
   Callpath pmpi_only_callpath;  /// Storage for callpath if no PnMPI -- initially empty.
 
   string working_dir;           /// Application's working directory, assessed at registration.
-  string effort_dir;            /// Location of effort data output, inited in MPI_Finalize().
-  string exact_dir;             /// Location of exact (verification) data, inited in MPI_Finalize().
 
   Timer timer;                  /// Timing for various phases of the code.
 
@@ -149,7 +154,8 @@ struct effort_module {
     ampl_init(params.num_metrics(), &metric_names[0]);
     
     // make ampl log dir
-    setup_effort_directories();
+    string effort_dir, exact_dir;
+    setup_effort_directories(effort_dir, exact_dir);
     ostringstream ampl_dir;
     ampl_dir << effort_dir << "/ampl";
     mkdir(ampl_dir.str().c_str(), 0750);  // create ampl dir
@@ -443,14 +449,14 @@ struct effort_module {
   ///
   /// Creates directories for effort and exact data.
   ///
-  inline void setup_effort_directories() {
+  void setup_effort_directories(string& effort_dir, string& exact_dir, string suffix="") {
     int rank, size;
     PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
     PMPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // first make necessary directories.
     ostringstream effort_dir_name;
-    effort_dir_name << working_dir << "/effort-" << size;
+    effort_dir_name << working_dir << "/effort-" << size << suffix;
     effort_dir = effort_dir_name.str();
     mkdir(effort_dir.c_str(), 0750);  // create effort dir if it doesn't exist.
 
@@ -464,7 +470,7 @@ struct effort_module {
 
 
   /// Prints out all callpaths observed to a file in the effort directory.
-  inline void dump_paths(int rank, string name="paths") {
+  inline void dump_paths(int rank, const string& effort_dir, string name="paths") {
     ostringstream fn;
     fn << effort_dir << "/" << name << "-" << rank;
 
@@ -474,7 +480,7 @@ struct effort_module {
 
 
   /// Prints out all callpaths observed to a file in the effort directory.
-  inline void dump_keys(int rank, string name="keys") {
+  inline void dump_keys(int rank, const string& effort_dir, string name="keys") {
     ostringstream fn;
     fn << effort_dir << "/" << name << "-" << rank;
 
@@ -482,6 +488,32 @@ struct effort_module {
     for (effort_map::iterator i=effort_log.begin(); i != effort_log.end(); i++) {
       pathfile << i->first << endl;
     }
+  }
+
+
+
+  ///
+  /// Reorders ranks in a communicator according to npx, npy, and npz;
+  ///
+  MPI_Comm reorder(MPI_Comm input, int npx, int npy, int npz) {
+    int rank, size;
+    PMPI_Comm_rank(input, &rank);
+    PMPI_Comm_size(input, &size);
+
+    if (!(npx && npy && npz)) {
+      cerr << "Error: npx, npy, and npz are not initialized!" << endl;
+      exit(1);
+    }
+    
+    if (size != (npx * npy * npz)) {
+      cerr << "Error: npx, npy, and npz are not the same size as the communicator!" << endl;
+      exit(1);
+    }
+    
+    MPI_Comm reordered;
+    int key = s3d::topo_rank(rank, npx, npy, npz);
+    MPI_Comm_split(input, 0, key, &reordered);
+    return reordered;
   }
 
 
@@ -513,25 +545,52 @@ struct effort_module {
 
     timer.record("StackwalkStats");
 
+    Timer timer2(timer);   // copy this before we start the first compression
+
     // this sets up the directory where we'll do the work.
-    setup_effort_directories();
+    string effort_dir, exact_dir;
+    setup_effort_directories(effort_dir, exact_dir);
     timer.record("Mkdirs");
 
     if (params.ampl) {
       if (ampl_trace_file.is_open()) ampl_trace_file.close();
       ampl_destroy();
+      return;
+    }
+
+    // distribute and do compression.
+    parallel_compressor compressor(params);
+    compressor.set_output_dir(effort_dir);
+    compressor.set_exact_dir(exact_dir);
+    compressor.compress(effort_log, MPI_COMM_WORLD);
+    
+    // dump times on rank 0.
+    if (rank == 0) {
+      ostringstream filename;
+      filename << effort_dir << "/times";
+      ofstream time_file(filename.str().c_str());
       
-    } else {
-      // distribute and do compression.
-      parallel_compressor compressor(params);
-      compressor.set_output_dir(effort_dir);
-      compressor.set_exact_dir(exact_dir);
-      compressor.compress(effort_log, MPI_COMM_WORLD);
+      timer += compressor.get_timer();
+      timer.write(time_file);
+    }
+
+
+    if (params.topo) {
+      // below is extra stuff for S3D topology test.
+      string effort_dir2, exact_dir2;
+      setup_effort_directories(effort_dir2, exact_dir2, "-topo");
+      timer2.record("Mkdirs");
       
-      // dump times on rank 0.
+      compressor.set_output_dir(effort_dir2);
+      compressor.set_exact_dir(exact_dir2);
+      
+      MPI_Comm topo_comm = reorder(MPI_COMM_WORLD, npx, npy, npz);
+      timer2.record("BuildCommunicator");
+      
+      compressor.compress(effort_log, topo_comm);
       if (rank == 0) {
         ostringstream filename;
-        filename << effort_dir << "/times";
+        filename << effort_dir2 << "/times";
         ofstream time_file(filename.str().c_str());
         
         timer += compressor.get_timer();
@@ -589,4 +648,19 @@ void record_effort(double *counter_values) {
 
 void init_metrics(size_t metric_count, const char **metric_names) {
   module().init_metrics(metric_count, metric_names);
+}
+
+
+void effort_set_dims(size_t x, size_t y, size_t z) {
+  ostringstream msg;
+  msg << "Set dimensions to " << x << " x " << y << " x " << z << endl;
+  cerr << msg.str();
+  
+  npx = x;
+  npy = y;
+  npz = z;
+}
+
+extern "C" void effort_set_dims_f(int *x, int *y, int *z) {
+  effort_set_dims(*x,*y,*z);
 }

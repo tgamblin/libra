@@ -29,7 +29,8 @@ libeffort_la_SOURCES = effort_key.C \
 											 Metric.C \
 											 FrameDB.C \
 											 FrameInfo.C \
-											 effort_dataset.C
+											 effort_dataset.C \
+											 s3d_topology.C
 
 if HAVE_MPI
 libeffort_la_SOURCES += parallel_compressor.C \
@@ -44,12 +45,13 @@ libeffort_la_LDFLAGS = -avoid-version
 PMPI_EFFORT_SRCS=effort_module.C \
 								 env_config.C
 
+
 #
 # Effort utility programs
 #
-bin_PROGRAMS = ef nrmse 
+bin_PROGRAMS = ef nrmse s3d-topo-test
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer
+bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer 
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
@@ -77,6 +79,9 @@ tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 bin_test_SOURCES=bin_test.C
 bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+
+s3d_topo_test_SOURCES=s3d_topo_test.C
+s3d_topo_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib
