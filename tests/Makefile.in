@@ -46,8 +46,7 @@ TESTS = seqtest$(EXEEXT) ezwtest$(EXEEXT) insert_bits_test$(EXEEXT) \
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_ampl.m4 \
-	$(top_srcdir)/m4/ac_detect_bluegene.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_inc_subst.m4 \
 	$(top_srcdir)/m4/ac_lib_dwarf.m4 \
 	$(top_srcdir)/m4/ac_lib_elf.m4 $(top_srcdir)/m4/ac_lib_papi.m4 \
@@ -58,7 +57,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_ampl.m4 \
 	$(top_srcdir)/m4/ac_python_devel.m4 \
 	$(top_srcdir)/m4/ac_python_module.m4 \
 	$(top_srcdir)/m4/ac_safe_check_lib.m4 \
-	$(top_srcdir)/m4/ax_boost_base.m4 \
+	$(top_srcdir)/m4/ac_sprng.m4 $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
 	$(top_srcdir)/m4/swig_enable_cxx.m4 \
 	$(top_srcdir)/m4/swig_python.m4 $(top_srcdir)/m4/vtk.m4 \
@@ -78,7 +77,7 @@ am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
 am__DEPENDENCIES_1 =
 bunny_DEPENDENCIES = ../effort/libmanual-effort.la \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) ../cluster/libcluster.la
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
 compress_matfile_OBJECTS = $(am_compress_matfile_OBJECTS)
 compress_matfile_LDADD = $(LDADD)
@@ -157,8 +156,6 @@ CTAGS = ctags
 @HAVE_MPI_TRUE@am__EXEEXT_5 = parezwtest$(EXEEXT) partest$(EXEEXT)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
-AMPL_CPPFLAGS = @AMPL_CPPFLAGS@
-AMPL_LDFLAGS = @AMPL_LDFLAGS@
 AMTAR = @AMTAR@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
@@ -240,6 +237,8 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SPRNG_CPPFLAGS = @SPRNG_CPPFLAGS@
+SPRNG_LDFLAGS = @SPRNG_LDFLAGS@
 STRIP = @STRIP@
 SWIG = @SWIG@
 SWIG_LIB = @SWIG_LIB@
@@ -330,7 +329,7 @@ parezwtest_SOURCES = parezwtest.C
 parspeedbench_SOURCES = parspeedbench.C
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS)
+bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la
 LDADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
 all: all-am

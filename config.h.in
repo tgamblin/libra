@@ -13,9 +13,6 @@
 /* Define if F77 and FC dummy `main' functions are identical. */
 #undef FC_DUMMY_MAIN_EQ_F77
 
-/* Defined if we have the AMPL sampling library. */
-#undef HAVE_AMPL
-
 /* define if the Boost library is available */
 #undef HAVE_BOOST
 
@@ -39,6 +36,9 @@
 
 /* Define to 1 if you have <mpi.h>. */
 #undef HAVE_MPI
+
+/* Defined if we have the SPRNG library. */
+#undef HAVE_SPRNG
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

@@ -44,7 +44,7 @@ parspeedbench_SOURCES = parspeedbench.C
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS)
+bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la
 
 #
 # This will pre-relink all the lt binaries.  This is a workaround for clusters where 

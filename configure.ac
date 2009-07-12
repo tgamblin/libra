@@ -25,10 +25,10 @@ AC_LANG_PUSH([C++])
 AC_DETECT_BLUEGENE
 AC_LANG_POP
 
-# AMPL Support
-AC_AMPL
-if [[ "x$have_ampl" = xyes ]]; then
-   AC_DEFINE([HAVE_AMPL], [1], [Defined if we have the AMPL sampling library.])
+# Distributed Sampling Support
+AC_SPRNG
+if [[ "x$have_sprng" = xyes ]]; then
+   AC_DEFINE([HAVE_SPRNG], [1], [Defined if we have the SPRNG library.])
 fi
 
 
@@ -168,7 +168,7 @@ echo "  Libra Viewer ................................... $build_viewer"
 echo "  PMPI Effort Library ............................ $pmpi_effort"
 echo "  PnMPI Effort Library ........................... $have_pnmpi"
 echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
-echo "  AMPL Support ................................... $have_ampl"
+echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"
 echo
 

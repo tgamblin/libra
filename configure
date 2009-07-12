@@ -845,8 +845,8 @@ HAVE_MPI_FALSE
 HAVE_MPI_TRUE
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
-AMPL_CPPFLAGS
-AMPL_LDFLAGS
+SPRNG_CPPFLAGS
+SPRNG_LDFLAGS
 PMPI_INIT
 FCLIBS
 ac_ct_FC
@@ -969,7 +969,7 @@ with_gnu_ld
 enable_libtool_lock
 with_pic
 with_tags
-with_ampl
+with_sprng
 with_boost
 with_boost_libdir
 with_vtk
@@ -1644,8 +1644,8 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-tags[=TAGS]      include additional configurations [automatic]
-  --with-ampl=<dir>       Path to the installation directory of AMPL sampling
-                          library.
+  --with-sprng=<dir>      Path to the installation directory of Scalable
+                          Parallel Random Number Generator Library.
   --with-boost[=DIR]      use boost (default is yes) - it is possible to
                           specify the root directory for boost (optional)
   --with-boost-libdir=LIB_DIR
@@ -21264,7 +21264,7 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-# AMPL Support
+# Distributed Sampling Support
 
 
   ac_ext=cpp
@@ -21274,33 +21274,33 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-# Check whether --with-ampl was given.
-if test "${with_ampl+set}" = set; then
-  withval=$with_ampl;
+# Check whether --with-sprng was given.
+if test "${with_sprng+set}" = set; then
+  withval=$with_sprng;
   if test "x$withval/lib" != x; then
-    AMPL_LDFLAGS="-L$withval/lib"
+    SPRNG_LDFLAGS="-L$withval/lib"
   else
-    AMPL_LDFLAGS=""
+    SPRNG_LDFLAGS=""
   fi
 
   if test "x" != "x"; then
-    AMPL_LDFLAGS="$AMPL_LDFLAGS "
+    SPRNG_LDFLAGS="$SPRNG_LDFLAGS "
   else
-    AMPL_LDFLAGS="$AMPL_LDFLAGS -lampl"
+    SPRNG_LDFLAGS="$SPRNG_LDFLAGS -lsprng"
   fi
 
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$AMPL_LDFLAGS $LDFLAGS"
+  LDFLAGS="$SPRNG_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for ampl_init in -lampl" >&5
-$as_echo_n "checking for ampl_init in -lampl... " >&6; }
-if test "${ac_cv_lib_ampl_ampl_init+set}" = set; then
+    { $as_echo "$as_me:$LINENO: checking for finit_rng in -lsprng" >&5
+$as_echo_n "checking for finit_rng in -lsprng... " >&6; }
+if test "${ac_cv_lib_sprng_finit_rng+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lampl  $LIBS"
+LIBS="-lsprng  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21314,7 +21314,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 #ifdef __cplusplus
 extern "C"
 #endif
-char ampl_init ();
+char finit_rng ();
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -21326,7 +21326,7 @@ char ampl_init ();
 int
 main ()
 {
-return ampl_init ();
+return finit_rng ();
   ;
   return 0;
 }
@@ -21352,12 +21352,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_ampl_ampl_init=yes
+  ac_cv_lib_sprng_finit_rng=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_ampl_ampl_init=no
+	ac_cv_lib_sprng_finit_rng=no
 fi
 
 rm -rf conftest.dSYM
@@ -21365,15 +21365,15 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_ampl_ampl_init" >&5
-$as_echo "$ac_cv_lib_ampl_ampl_init" >&6; }
-if test "x$ac_cv_lib_ampl_ampl_init" = x""yes; then
-  have_ampl=yes
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_sprng_finit_rng" >&5
+$as_echo "$ac_cv_lib_sprng_finit_rng" >&6; }
+if test "x$ac_cv_lib_sprng_finit_rng" = x""yes; then
+  have_sprng=yes
 else
-  { $as_echo "$as_me:$LINENO: Couldn't find libampl." >&5
-$as_echo "$as_me: Couldn't find libampl." >&6;}
-                     AMPL_LDFLAGS=""
-                     have_ampl=no
+  { $as_echo "$as_me:$LINENO: Couldn't find libsprng." >&5
+$as_echo "$as_me: Couldn't find libsprng." >&6;}
+                     SPRNG_LDFLAGS=""
+                     have_sprng=no
 fi
 
     LIBS="$OLD_LIBS"
@@ -21382,24 +21382,24 @@ fi
 
   LDFLAGS="$OLD_LDFLAGS"
 
-               if [ "x$have_ampl" != xno ]; then
+               if [ "x$have_sprng" != xno ]; then
 
-  AMPL_CPPFLAGS="-I $withval/include"
+  SPRNG_CPPFLAGS="-I $withval/include"
   OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$AMPL_CPPFLAGS $CPPFLAGS"
+  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
 
-  if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
-  { $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
-$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
-if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
+  { $as_echo "$as_me:$LINENO: checking for sprng_cpp.h" >&5
+$as_echo_n "checking for sprng_cpp.h... " >&6; }
+if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
   $as_echo_n "(cached) " >&6
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
-$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_sprng_cpp_h" >&5
+$as_echo "$ac_cv_header_sprng_cpp_h" >&6; }
 else
   # Is the header compilable?
-{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h usability" >&5
-$as_echo_n "checking ampl/interface/AMPLInterface.h usability... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking sprng_cpp.h usability" >&5
+$as_echo_n "checking sprng_cpp.h usability... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21407,7 +21407,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 $ac_includes_default
-#include <ampl/interface/AMPLInterface.h>
+#include <sprng_cpp.h>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -21440,15 +21440,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 $as_echo "$ac_header_compiler" >&6; }
 
 # Is the header present?
-{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h presence" >&5
-$as_echo_n "checking ampl/interface/AMPLInterface.h presence... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking sprng_cpp.h presence" >&5
+$as_echo_n "checking sprng_cpp.h presence... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <ampl/interface/AMPLInterface.h>
+#include <sprng_cpp.h>
 _ACEOF
 if { (ac_try="$ac_cpp conftest.$ac_ext"
 case "(($ac_try" in
@@ -21482,45 +21482,45 @@ $as_echo "$ac_header_preproc" >&6; }
 # So?  What about this header?
 case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in
   yes:no: )
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: proceeding with the compiler's result" >&2;}
     ac_header_preproc=yes
     ;;
   no:yes:* )
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: in the future, the compiler will take precedence" >&2;}
 
     ;;
 esac
-{ $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
-$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
-if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for sprng_cpp.h" >&5
+$as_echo_n "checking for sprng_cpp.h... " >&6; }
+if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
-  ac_cv_header_ampl_interface_AMPLInterface_h=$ac_header_preproc
+  ac_cv_header_sprng_cpp_h=$ac_header_preproc
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
-$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_sprng_cpp_h" >&5
+$as_echo "$ac_cv_header_sprng_cpp_h" >&6; }
 
 fi
-if test "x$ac_cv_header_ampl_interface_AMPLInterface_h" = x""yes; then
-  have_ampl=yes
+if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then
+  have_sprng=yes
 else
-  { $as_echo "$as_me:$LINENO: Couldn't find ampl/interface/AMPLInterface.h." >&5
-$as_echo "$as_me: Couldn't find ampl/interface/AMPLInterface.h." >&6;}
-                   have_ampl=no
+  { $as_echo "$as_me:$LINENO: Couldn't find sprng_cpp.h." >&5
+$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
+                   have_sprng=no
 fi
 
 
@@ -21532,29 +21532,29 @@ fi
 else
 
   if test "x/lib" != x; then
-    AMPL_LDFLAGS="-L/lib"
+    SPRNG_LDFLAGS="-L/lib"
   else
-    AMPL_LDFLAGS=""
+    SPRNG_LDFLAGS=""
   fi
 
   if test "x" != "x"; then
-    AMPL_LDFLAGS="$AMPL_LDFLAGS "
+    SPRNG_LDFLAGS="$SPRNG_LDFLAGS "
   else
-    AMPL_LDFLAGS="$AMPL_LDFLAGS -lampl"
+    SPRNG_LDFLAGS="$SPRNG_LDFLAGS -lsprng"
   fi
 
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$AMPL_LDFLAGS $LDFLAGS"
+  LDFLAGS="$SPRNG_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for ampl_init in -lampl" >&5
-$as_echo_n "checking for ampl_init in -lampl... " >&6; }
-if test "${ac_cv_lib_ampl_ampl_init+set}" = set; then
+    { $as_echo "$as_me:$LINENO: checking for finit_rng in -lsprng" >&5
+$as_echo_n "checking for finit_rng in -lsprng... " >&6; }
+if test "${ac_cv_lib_sprng_finit_rng+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lampl  $LIBS"
+LIBS="-lsprng  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21568,7 +21568,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 #ifdef __cplusplus
 extern "C"
 #endif
-char ampl_init ();
+char finit_rng ();
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -21580,7 +21580,7 @@ char ampl_init ();
 int
 main ()
 {
-return ampl_init ();
+return finit_rng ();
   ;
   return 0;
 }
@@ -21606,12 +21606,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_ampl_ampl_init=yes
+  ac_cv_lib_sprng_finit_rng=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_ampl_ampl_init=no
+	ac_cv_lib_sprng_finit_rng=no
 fi
 
 rm -rf conftest.dSYM
@@ -21619,15 +21619,15 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_ampl_ampl_init" >&5
-$as_echo "$ac_cv_lib_ampl_ampl_init" >&6; }
-if test "x$ac_cv_lib_ampl_ampl_init" = x""yes; then
-  have_ampl=yes
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_sprng_finit_rng" >&5
+$as_echo "$ac_cv_lib_sprng_finit_rng" >&6; }
+if test "x$ac_cv_lib_sprng_finit_rng" = x""yes; then
+  have_sprng=yes
 else
-  { $as_echo "$as_me:$LINENO: Couldn't find libampl." >&5
-$as_echo "$as_me: Couldn't find libampl." >&6;}
-                     AMPL_LDFLAGS=""
-                     have_ampl=no
+  { $as_echo "$as_me:$LINENO: Couldn't find libsprng." >&5
+$as_echo "$as_me: Couldn't find libsprng." >&6;}
+                     SPRNG_LDFLAGS=""
+                     have_sprng=no
 fi
 
     LIBS="$OLD_LIBS"
@@ -21636,24 +21636,24 @@ fi
 
   LDFLAGS="$OLD_LDFLAGS"
 
-               if [ "x$have_ampl" != xno ]; then
+               if [ "x$have_sprng" != xno ]; then
 
-  AMPL_CPPFLAGS="-I /include"
+  SPRNG_CPPFLAGS="-I /include"
   OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$AMPL_CPPFLAGS $CPPFLAGS"
+  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
 
-  if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
-  { $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
-$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
-if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+  if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
+  { $as_echo "$as_me:$LINENO: checking for sprng_cpp.h" >&5
+$as_echo_n "checking for sprng_cpp.h... " >&6; }
+if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
   $as_echo_n "(cached) " >&6
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
-$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_sprng_cpp_h" >&5
+$as_echo "$ac_cv_header_sprng_cpp_h" >&6; }
 else
   # Is the header compilable?
-{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h usability" >&5
-$as_echo_n "checking ampl/interface/AMPLInterface.h usability... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking sprng_cpp.h usability" >&5
+$as_echo_n "checking sprng_cpp.h usability... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21661,7 +21661,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 $ac_includes_default
-#include <ampl/interface/AMPLInterface.h>
+#include <sprng_cpp.h>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -21694,15 +21694,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 $as_echo "$ac_header_compiler" >&6; }
 
 # Is the header present?
-{ $as_echo "$as_me:$LINENO: checking ampl/interface/AMPLInterface.h presence" >&5
-$as_echo_n "checking ampl/interface/AMPLInterface.h presence... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking sprng_cpp.h presence" >&5
+$as_echo_n "checking sprng_cpp.h presence... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <ampl/interface/AMPLInterface.h>
+#include <sprng_cpp.h>
 _ACEOF
 if { (ac_try="$ac_cpp conftest.$ac_ext"
 case "(($ac_try" in
@@ -21736,45 +21736,45 @@ $as_echo "$ac_header_preproc" >&6; }
 # So?  What about this header?
 case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in
   yes:no: )
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the compiler's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: proceeding with the compiler's result" >&2;}
     ac_header_preproc=yes
     ;;
   no:yes:* )
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: present but cannot be compiled" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     check for missing prerequisite headers?" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: see the Autoconf documentation" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: proceeding with the preprocessor's result" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&5
-$as_echo "$as_me: WARNING: ampl/interface/AMPLInterface.h: in the future, the compiler will take precedence" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: sprng_cpp.h: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: sprng_cpp.h: in the future, the compiler will take precedence" >&2;}
 
     ;;
 esac
-{ $as_echo "$as_me:$LINENO: checking for ampl/interface/AMPLInterface.h" >&5
-$as_echo_n "checking for ampl/interface/AMPLInterface.h... " >&6; }
-if test "${ac_cv_header_ampl_interface_AMPLInterface_h+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for sprng_cpp.h" >&5
+$as_echo_n "checking for sprng_cpp.h... " >&6; }
+if test "${ac_cv_header_sprng_cpp_h+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
-  ac_cv_header_ampl_interface_AMPLInterface_h=$ac_header_preproc
+  ac_cv_header_sprng_cpp_h=$ac_header_preproc
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_ampl_interface_AMPLInterface_h" >&5
-$as_echo "$ac_cv_header_ampl_interface_AMPLInterface_h" >&6; }
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_sprng_cpp_h" >&5
+$as_echo "$ac_cv_header_sprng_cpp_h" >&6; }
 
 fi
-if test "x$ac_cv_header_ampl_interface_AMPLInterface_h" = x""yes; then
-  have_ampl=yes
+if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then
+  have_sprng=yes
 else
-  { $as_echo "$as_me:$LINENO: Couldn't find ampl/interface/AMPLInterface.h." >&5
-$as_echo "$as_me: Couldn't find ampl/interface/AMPLInterface.h." >&6;}
-                   have_ampl=no
+  { $as_echo "$as_me:$LINENO: Couldn't find sprng_cpp.h." >&5
+$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
+                   have_sprng=no
 fi
 
 
@@ -21793,10 +21793,10 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-if [ "x$have_ampl" = xyes ]; then
+if [ "x$have_sprng" = xyes ]; then
 
 cat >>confdefs.h <<\_ACEOF
-#define HAVE_AMPL 1
+#define HAVE_SPRNG 1
 _ACEOF
 
 fi
@@ -26244,7 +26244,7 @@ echo "  Libra Viewer ................................... $build_viewer"
 echo "  PMPI Effort Library ............................ $pmpi_effort"
 echo "  PnMPI Effort Library ........................... $have_pnmpi"
 echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
-echo "  AMPL Support ................................... $have_ampl"
+echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"
 echo
 
