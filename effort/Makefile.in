@@ -64,7 +64,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_safe_check_lib.m4 \
 	$(top_srcdir)/m4/ac_sprng.m4 $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
-	$(top_srcdir)/m4/swig_enable_cxx.m4 \
 	$(top_srcdir)/m4/swig_python.m4 $(top_srcdir)/m4/vtk.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -191,36 +190,42 @@ am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
 approx_timer_OBJECTS = $(am_approx_timer_OBJECTS)
 approx_timer_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la ../cluster/libcluster.la \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
 bin_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	../cluster/libcluster.la
 am_dataset_test_OBJECTS = dataset_test.$(OBJEXT)
 dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
 dataset_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1)
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) ../cluster/libcluster.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
 ef_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1)
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) ../cluster/libcluster.la
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	../cluster/libcluster.la
 am_s3d_topo_test_OBJECTS = s3d_topo_test.$(OBJEXT)
 s3d_topo_test_OBJECTS = $(am_s3d_topo_test_OBJECTS)
 s3d_topo_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	../cluster/libcluster.la
 am_sample_test_OBJECTS = sample_test.$(OBJEXT)
 sample_test_OBJECTS = $(am_sample_test_OBJECTS)
 sample_test_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la ../cluster/libcluster.la \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_tuner_OBJECTS = tuner.$(OBJEXT)
 tuner_OBJECTS = $(am_tuner_OBJECTS)
 tuner_DEPENDENCIES = libeffort.la ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la
+	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
+	../cluster/libcluster.la
 dist_binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(dist_bin_SCRIPTS) $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -454,26 +459,26 @@ PMPI_EFFORT_SRCS = effort_module.C \
 dist_bin_SCRIPTS = libra-build-viewer-data libra-reconstruct-exact
 approx_timer_SOURCES = approx_timer.C
 approx_timer_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
 
 sample_test_SOURCES = sample_test.C
 sample_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
 
 dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   $(SYMTAB_LDFLAGS) 
+                   $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 ef_SOURCES = ef.C
-ef_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) 
+ef_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 nrmse_SOURCES = nrmse.C 
-nrmse_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+nrmse_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 tuner_SOURCES = tuner.C
-tuner_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+tuner_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 bin_test_SOURCES = bin_test.C
-bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+bin_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 s3d_topo_test_SOURCES = s3d_topo_test.C
-s3d_topo_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+s3d_topo_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la

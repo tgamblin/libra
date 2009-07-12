@@ -9,15 +9,23 @@ AC_DEFUN([AC_SPRNG],
   AC_ARG_WITH([sprng],
               AS_HELP_STRING([--with-sprng=<dir>],
                              [Path to the installation directory of Scalable Parallel Random Number Generator Library.]),
-              [AC_LIB_SUBST(sprng, finit_rng, SPRNG, [$withval/lib])
+              [#AC_LIB_SUBST(sprng, [init_rng_simple_mpi], SPRNG, [$withval/lib])
                if [[ "x$have_sprng" != xno ]]; then
                  AC_HEADER_SUBST(sprng, [sprng_cpp.h], SPRNG, [-I $withval/include])
                fi
+  if [[ "x$have_sprng" = xyes ]]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+    AC_SUBST(SPRNG_LDFLAGS)
+  fi
               ],
-              [AC_LIB_SUBST(sprng, finit_rng, SPRNG, [$1/lib])
+              [#AC_LIB_SUBST(sprng, finit_rng, SPRNG, [$1/lib])
                if [[ "x$have_sprng" != xno ]]; then
                  AC_HEADER_SUBST(sprng, [sprng_cpp.h], SPRNG, [-I $1/include])
                fi
+  if [[ "x$have_sprng" = xyes ]]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+    AC_SUBST(SPRNG_LDFLAGS)
+  fi
               ]
   )
   AC_LANG_POP

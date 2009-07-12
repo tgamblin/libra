@@ -59,7 +59,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_safe_check_lib.m4 \
 	$(top_srcdir)/m4/ac_sprng.m4 $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
-	$(top_srcdir)/m4/swig_enable_cxx.m4 \
 	$(top_srcdir)/m4/swig_python.m4 $(top_srcdir)/m4/vtk.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -77,7 +76,8 @@ am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
 am__DEPENDENCIES_1 =
 bunny_DEPENDENCIES = ../effort/libmanual-effort.la \
-	$(am__DEPENDENCIES_1) ../cluster/libcluster.la
+	$(am__DEPENDENCIES_1) ../cluster/libcluster.la \
+	$(am__DEPENDENCIES_1)
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
 compress_matfile_OBJECTS = $(am_compress_matfile_OBJECTS)
 compress_matfile_LDADD = $(LDADD)
@@ -329,7 +329,7 @@ parezwtest_SOURCES = parezwtest.C
 parspeedbench_SOURCES = parspeedbench.C
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la
+bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la $(SPRNG_LDFLAGS)
 LDADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
 all: all-am

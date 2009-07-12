@@ -62,30 +62,30 @@ dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 approx_timer_SOURCES = approx_timer.C
 approx_timer_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
 
 sample_test_SOURCES = sample_test.C
 sample_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) 
+                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
 
 dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   $(SYMTAB_LDFLAGS) 
+                   $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
-ef_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) 
+ef_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 nrmse_SOURCES=nrmse.C 
-nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 tuner_SOURCES=tuner.C
-tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 bin_test_SOURCES=bin_test.C
-bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 s3d_topo_test_SOURCES=s3d_topo_test.C
-s3d_topo_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+s3d_topo_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 
 #
 # Build a regular PMPI module and install in $(prefix)/lib

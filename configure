@@ -845,8 +845,8 @@ HAVE_MPI_FALSE
 HAVE_MPI_TRUE
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
-SPRNG_CPPFLAGS
 SPRNG_LDFLAGS
+SPRNG_CPPFLAGS
 PMPI_INIT
 FCLIBS
 ac_ct_FC
@@ -21276,112 +21276,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 # Check whether --with-sprng was given.
 if test "${with_sprng+set}" = set; then
-  withval=$with_sprng;
-  if test "x$withval/lib" != x; then
-    SPRNG_LDFLAGS="-L$withval/lib"
-  else
-    SPRNG_LDFLAGS=""
-  fi
-
-  if test "x" != "x"; then
-    SPRNG_LDFLAGS="$SPRNG_LDFLAGS "
-  else
-    SPRNG_LDFLAGS="$SPRNG_LDFLAGS -lsprng"
-  fi
-
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SPRNG_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for finit_rng in -lsprng" >&5
-$as_echo_n "checking for finit_rng in -lsprng... " >&6; }
-if test "${ac_cv_lib_sprng_finit_rng+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsprng  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char finit_rng ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return finit_rng ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_sprng_finit_rng=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_sprng_finit_rng=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_sprng_finit_rng" >&5
-$as_echo "$ac_cv_lib_sprng_finit_rng" >&6; }
-if test "x$ac_cv_lib_sprng_finit_rng" = x""yes; then
-  have_sprng=yes
-else
-  { $as_echo "$as_me:$LINENO: Couldn't find libsprng." >&5
-$as_echo "$as_me: Couldn't find libsprng." >&6;}
-                     SPRNG_LDFLAGS=""
-                     have_sprng=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
+  withval=$with_sprng; #AC_LIB_SUBST(sprng, [init_rng_simple_mpi], SPRNG, [$withval/lib])
                if [ "x$have_sprng" != xno ]; then
 
   SPRNG_CPPFLAGS="-I $withval/include"
@@ -21528,114 +21423,13 @@ fi
   CPPFLAGS="$OLD_CPPFLAGS"
 
                fi
+  if [ "x$have_sprng" = xyes ]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
 
-else
-
-  if test "x/lib" != x; then
-    SPRNG_LDFLAGS="-L/lib"
-  else
-    SPRNG_LDFLAGS=""
   fi
 
-  if test "x" != "x"; then
-    SPRNG_LDFLAGS="$SPRNG_LDFLAGS "
-  else
-    SPRNG_LDFLAGS="$SPRNG_LDFLAGS -lsprng"
-  fi
-
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SPRNG_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:$LINENO: checking for finit_rng in -lsprng" >&5
-$as_echo_n "checking for finit_rng in -lsprng... " >&6; }
-if test "${ac_cv_lib_sprng_finit_rng+set}" = set; then
-  $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsprng  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char finit_rng ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return finit_rng ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_sprng_finit_rng=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_sprng_finit_rng=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_sprng_finit_rng" >&5
-$as_echo "$ac_cv_lib_sprng_finit_rng" >&6; }
-if test "x$ac_cv_lib_sprng_finit_rng" = x""yes; then
-  have_sprng=yes
-else
-  { $as_echo "$as_me:$LINENO: Couldn't find libsprng." >&5
-$as_echo "$as_me: Couldn't find libsprng." >&6;}
-                     SPRNG_LDFLAGS=""
-                     have_sprng=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
+  #AC_LIB_SUBST(sprng, finit_rng, SPRNG, [/lib])
                if [ "x$have_sprng" != xno ]; then
 
   SPRNG_CPPFLAGS="-I /include"
@@ -21782,6 +21576,10 @@ fi
   CPPFLAGS="$OLD_CPPFLAGS"
 
                fi
+  if [ "x$have_sprng" = xyes ]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+
+  fi
 
 
 fi
@@ -23640,11 +23438,7 @@ $as_echo "$as_me: WARNING: cannot determine SWIG version" >&2;}
 
 if (${SWIG} -version &> /dev/null); then
    have_swig=yes
-
-
-
-        SWIG="$SWIG -c++"
-
+   SWIG_ENABLE_CXX
 
 
 

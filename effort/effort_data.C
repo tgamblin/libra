@@ -56,10 +56,9 @@ namespace effort {
   }
 
 
-  void effort_data::write_current_step(std::ostream& out, string extra) {
+  void effort_data::write_current_step(std::ostream& out) {
     ostringstream buffer;
     buffer << "STEP " << progress_count << endl;
-    buffer << extra;
     for_each(emap.begin(), emap.end(), write_current(buffer, "    "));
     out << buffer.str();
   }

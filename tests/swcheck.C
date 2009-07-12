@@ -3,8 +3,9 @@
 #include <vector>
 using namespace std;
 
-#include "AddrLookup.h"
+#include "Symbol.h"
 #include "walker.h"
+#include "AddrLookup.h"
 #include "frame.h"
 using namespace Dyninst;
 using namespace Dyninst::SymtabAPI;

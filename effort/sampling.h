@@ -34,7 +34,7 @@ namespace effort {
 
     Sprng *rng;                  /// Uniform parallel RN generator
     
-    const size_t initial_sample; /// Settable in constructor.  Defaults to 40.
+    size_t initial_sample;       /// Settable in constructor.  Defaults to 40.
 
     ///
     /// Collective operation.  
