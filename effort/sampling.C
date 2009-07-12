@@ -141,17 +141,6 @@ namespace effort {
         // calculate local sample size and take the max of sizes seen so far.
         size_t sample_size = compute_sample_size(sum, sum2, size, confidence, error);
         local_max_sample_size = max(sample_size, local_max_sample_size);
-
-        ostringstream msg;
-        msg << "local size on " << rank << ": " << local_max_sample_size
-            << "    " << sample_size
-            << "    " << sum
-            << "    " << sum2
-            << "    " << confidence
-            << "    " << error
-            << endl;
-        cerr << msg.str();
-
       }
     }
     
