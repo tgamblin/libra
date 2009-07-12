@@ -6,6 +6,7 @@
 #include <cmath>
 using namespace std;
 
+#include "stl_utils.h"
 #include "wt_parallel.h"
 #include "par_ezw_encoder.h"
 #include "io_utils.h"
@@ -82,121 +83,6 @@ namespace effort {
   }
 
 
-  /// sets confidence interval for sample
-  /// confidence should be in (0, 1]
-  void set_confidence(double confidence);
-  
-  /// sets confidence interval for sample
-  /// error should be in [0. 1)
-  void set_error(double error);
-
-
-  struct sample_elt {
-    int rank;
-    double value;
-
-    sample_elt(int r, double v) : rank(r), value(v) { }
-    sample_elt(const sample_elt& other) : rank(other.rank), value(other.value) { }
-
-    sample_elt& operator=(const sample_elt& other) {
-      rank = other.rank;
-      value = other.value;
-      return *this;
-    }
-  };
-
-  bool operator<(const sample_elt& lhs, const sample_elt& rhs) {
-    return lhs.value < rhs.value;
-  }
-
-  /*
-  MPI_Comm parallel_compressor::reorder_ranks_in_bins(effort_record& record, MPI_Comm comm) {
-    int rank, size;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &size);
-
-    // calculate local trace mean.
-    double total = 0;
-    for (size_t i=0; i < record.values.size(); i++) {
-      total += record.values[i];
-    }
-    double val = total / record.values.size();
-    double val2 = val * val;
-    
-    // calculate variance of the local trace means
-    double sum, sum2;
-    MPI_Reduce(&val, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-    MPI_Reduce(&val2, &sum2, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-
-    // take random sample according to min size then bcast sample.
-    vector<int> sample_ranks;
-    vector<double> sample;
-    size_t min_sample_size;
-    if (rank == 0) {
-      double mean = sum / size;
-      double variance = (sum2 - (sum * sum)/size) / size;
-
-      // calculate min sample size
-      double Za = computeConfidenceInterval(confidence);   // double-tailed norm conf. interval
-      double d = mean * error;                              // real error bound (error var is a %)
-      double stdDev = sqrt(variance);
-      
-      double V = (d/(Za*stdDev));
-      min_sample_size = llround(size * 1/(1 + size * V*V));
-
-      // take a random sample and sort it so it's the sample across all nodes.
-      randomSubset(size, min_sample_size, inserter(sample_ranks, sample_ranks.begin()));
-      
-      ostringstream strm;
-      strm << "comm: " << hex << comm 
-           << "   numvalues: " << record.values.size() 
-           << "   sum: " << sum
-           << "   sum2: " << sum2
-           << "   mean: " << mean
-           << "   variance: " << variance
-           << "   size: " << size
-           << "   stdDev: " << stdDev 
-           << "   min_sample_size: " << min_sample_size << endl
-           << "   sample.size(): " << sample.size();
-      cerr << strm.str();
-    }
-
-    // bcast sample vector to nodes to get new order    
-    MPI_Bcast(&min_sample_size, 1, MPI_SIZE_T, 0, comm);
-    MPI_Bcast(&sample_ranks[0], min_sample_size, MPI_DOUBLE, 0, comm);
-    
-    // bcast each sample value to sync the sample vector
-    for (size_t i=0; i < min_sample_size; i++) {
-      if (rank == sample_ranks[i]) sample[i] = val;
-      MPI_Bcast(&sample[i], 1, MPI_DOUBLE, sample_ranks[i], comm);
-    }
-
-    // sort bins by value
-    vector<sample_elt> sorted_sample(min_sample_size);
-    for (size_t i=0; i < min_sample_size; i++) {
-      sorted_sample[i] = sample_elt(sample_ranks[i], sample[i]);
-    }
-    sort(sorted_sample.begin(), sorted_sample.end());
-
-    // find closest bin to local value.
-    sample_elt me(rank, val);
-    vector<sample_elt>::iterator binit = lower_bound(sorted_sample.begin(), sorted_sample.end(), me);
-    int mybin;
-    if (binit == sorted_sample.end()) {
-      mybin = sorted_sample.back().rank;
-    } else {
-      mybin = binit->rank;
-    }
-    
-    size_t myindex = find(mybin, sample_ranks.begin(), sample_ranks.end()) - sample_ranks.begin();
-    
-    // do another comm_split with color same for everyone but 
-    // rank = indexof(closest sample vector elt) * size + rank
-    // this should put things in bin order
-    MPI_Comm_split();
-  }
-  */
-
   void parallel_compressor::compress(effort_data& effort_log, MPI_Comm comm_world) {
     timer.clear();
 
@@ -263,24 +149,12 @@ namespace effort {
 
     // Dump keys into the vector.
     sorted_keys.reserve(effort_log.size());
-    for (effort_map::iterator e = effort_log.begin(); e != effort_log.end(); e++) {
-      sorted_keys.push_back(e->first);
-    }
+    transform(effort_log.begin(), effort_log.end(), back_inserter(sorted_keys), get_first());
     timer.record("SplitAndDumpKeys");
 
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
     timer.record("SortKeys");
-
-
-
-    // reorder bins
-    /*
-    for (size_t i=0; i < sorted_keys.size(); i++) {
-      reorder_ranks_in_bins(effort_log[sorted_keys[i]], comm_world);
-    }
-    timer.record("ReorderBins");
-    */  
 
     // create separate wavelet transform communicators
     MPI_Comm comm;

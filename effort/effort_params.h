@@ -31,6 +31,10 @@ namespace effort {
                               /// progress every so many actual timesteps.
 
     bool ampl;                /// AMPL mode -- uses AMPL for sampling and outputs sampled trace.
+    double confidence;        /// AMPL confidence
+    double error;             /// AMPL error
+    int windows_per_update;   /// AMPL windows per update.
+
     bool topo;                /// alternately outputs topology-ordered compressed data.
     
     /// Constructor with default values of all parameters.
@@ -46,6 +50,9 @@ namespace effort {
         regions("effort"),
         sampling(1),
         ampl(false),
+        confidence(.90),
+        error(.08),
+        windows_per_update(4),
         topo(false),
         have_time(false),
         parsed(false)

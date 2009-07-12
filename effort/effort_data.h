@@ -49,7 +49,7 @@ namespace effort {
     void clear() { emap.clear(); }
     
     /// Writes keys and values for current progress step
-    void write_current_step(std::ostream& out);
+    void write_current_step(std::ostream& out, std::string extra = "");
 
     /// Loads an effort_log full of keys from a particular directory full of 
     /// effort files. 

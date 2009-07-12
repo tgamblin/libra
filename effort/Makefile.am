@@ -14,7 +14,8 @@ dist_noinst_HEADERS = \
 	Metric.h \
   effort_dataset.h \
 	FrameDB.h \
-	FrameInfo.h
+	FrameInfo.h \
+	sampling.h
 
 lib_LTLIBRARIES = libeffort.la
 
@@ -35,7 +36,10 @@ libeffort_la_SOURCES = effort_key.C \
 if HAVE_MPI
 libeffort_la_SOURCES += parallel_compressor.C \
 												parallel_decompressor.C \
-												synchronize_keys.C
+												synchronize_keys.C \
+if HAVE_SPRNG
+libeffort_la_SOURCES += sampling.C \
+endif
 endif
 libeffort_la_LDFLAGS = -avoid-version
 
@@ -43,8 +47,8 @@ libeffort_la_LDFLAGS = -avoid-version
 # Sources for both PMPI and PnMPI library
 #
 PMPI_EFFORT_SRCS=effort_module.C \
-								 env_config.C
-
+								 env_config.C \
+								 sampling.C
 
 #
 # Effort utility programs
@@ -92,7 +96,7 @@ lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanu
 libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
 libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(AMPL_LDFLAGS)
+libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 libpmpi_effort_la_LDFLAGS = -avoid-version 
 
 libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
@@ -100,7 +104,7 @@ libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet
 libcomm_effort_la_LDFLAGS = -avoid-version 
 
 libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
-libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(AMPL_LDFLAGS)
+libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 libmanual_effort_la_LDFLAGS = -avoid-version 
 
 libtiming_la_SOURCES = timing_module.C
@@ -143,6 +147,7 @@ comm_wrapper.C: comm_wrapper.w
 INCLUDES= -I$(top_srcdir)/libwavelet \
           -I$(top_srcdir)/callpath \
           -I$(top_srcdir)/cluster \
+					$(SPRNG_CPPFLAGS) \
           $(PNMPI_CPPFLAGS) \
           $(BOOST_CPPFLAGS) \
           $(PARADYN_CPPFLAGS) \

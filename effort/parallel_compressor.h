@@ -39,16 +39,6 @@ namespace effort {
       file_map = fm;
     }
 
-    /*    
-    /// sets confidence interval for sample
-    /// confidence should be in (0, 1]
-    void set_confidence(double confidence);
-    
-    /// sets confidence interval for sample
-    /// error should be in [0. 1)
-    void set_error(double error);
-    */
-
     MPI_Comm reorder_ranks_in_bins(effort_record& record, MPI_Comm comm);
     
 
@@ -57,10 +47,6 @@ namespace effort {
     void do_compression(wavelet::wt_matrix& mat, effort_key key, int id, MPI_Comm comm);
     
 
-
-
-
-
     const effort_params& params;
     std::string output_dir;
     std::string exact_dir;
@@ -68,9 +54,6 @@ namespace effort {
     Timer timer;   // keeps stats on timings of compression phases
 
     bool sample_topology;
-
-    //    double error;
-    //    double confidence;
   };
 
 } //namespace
