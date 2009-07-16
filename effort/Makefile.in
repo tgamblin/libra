@@ -45,7 +45,7 @@ bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
 #
 # Build a regular PMPI module and install in $(prefix)/lib
 #
-@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la
+@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la libwaitall-effort.la
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -172,6 +172,19 @@ libtiming_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libtiming_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libtiming_la_rpath = -rpath $(libdir)
+@PMPI_EFFORT_TRUE@libwaitall_effort_la_DEPENDENCIES = libeffort.la \
+@PMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
+@PMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
+@PMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__libwaitall_effort_la_SOURCES_DIST = effort_module.C env_config.C \
+	sampling.C waitall_wrapper.C
+@PMPI_EFFORT_TRUE@am_libwaitall_effort_la_OBJECTS = $(am__objects_1) \
+@PMPI_EFFORT_TRUE@	waitall_wrapper.lo
+libwaitall_effort_la_OBJECTS = $(am_libwaitall_effort_la_OBJECTS)
+libwaitall_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libwaitall_effort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@am_libwaitall_effort_la_rpath = -rpath $(libdir)
 @PNMPI_EFFORT_TRUE@timing_la_DEPENDENCIES =  \
 @PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la
 am__timing_la_SOURCES_DIST = timing_module.C
@@ -243,22 +256,23 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(libeffort_la_SOURCES) $(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
-	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
-	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
-	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(tuner_SOURCES)
+	$(libtiming_la_SOURCES) $(libwaitall_effort_la_SOURCES) \
+	$(timing_la_SOURCES) $(approx_timer_SOURCES) \
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(nrmse_SOURCES) $(s3d_topo_test_SOURCES) \
+	$(sample_test_SOURCES) $(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
-	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
-	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
-	$(dataset_test_SOURCES) $(ef_SOURCES) $(nrmse_SOURCES) \
-	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(tuner_SOURCES)
+	$(am__libtiming_la_SOURCES_DIST) \
+	$(am__libwaitall_effort_la_SOURCES_DIST) \
+	$(am__timing_la_SOURCES_DIST) $(approx_timer_SOURCES) \
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(nrmse_SOURCES) $(s3d_topo_test_SOURCES) \
+	$(sample_test_SOURCES) $(tuner_SOURCES)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
@@ -486,6 +500,9 @@ s3d_topo_test_LDADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libw
 @PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
+@PMPI_EFFORT_TRUE@libwaitall_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) waitall_wrapper.C
+@PMPI_EFFORT_TRUE@libwaitall_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+@PMPI_EFFORT_TRUE@libwaitall_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
 @PMPI_EFFORT_TRUE@libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
 @PMPI_EFFORT_TRUE@libmanual_effort_la_LDFLAGS = -avoid-version 
@@ -530,9 +547,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  effort/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  effort/Makefile
+	  $(AUTOMAKE) --foreign  effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -618,6 +635,8 @@ libpmpi-effort.la: $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_DEPENDENCIES
 	$(libpmpi_effort_la_LINK) $(am_libpmpi_effort_la_rpath) $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_LIBADD) $(LIBS)
 libtiming.la: $(libtiming_la_OBJECTS) $(libtiming_la_DEPENDENCIES) 
 	$(libtiming_la_LINK) $(am_libtiming_la_rpath) $(libtiming_la_OBJECTS) $(libtiming_la_LIBADD) $(LIBS)
+libwaitall-effort.la: $(libwaitall_effort_la_OBJECTS) $(libwaitall_effort_la_DEPENDENCIES) 
+	$(libwaitall_effort_la_LINK) $(am_libwaitall_effort_la_rpath) $(libwaitall_effort_la_OBJECTS) $(libwaitall_effort_la_LIBADD) $(LIBS)
 timing.la: $(timing_la_OBJECTS) $(timing_la_DEPENDENCIES) 
 	$(timing_la_LINK) $(am_timing_la_rpath) $(timing_la_OBJECTS) $(timing_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
@@ -726,6 +745,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuner.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/waitall_wrapper.Plo@am__quote@
 
 .C.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -975,6 +995,9 @@ effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 comm_wrapper.C: comm_wrapper.w
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
+
+waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

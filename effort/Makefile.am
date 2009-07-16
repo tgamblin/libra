@@ -91,7 +91,7 @@ s3d_topo_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwav
 # Build a regular PMPI module and install in $(prefix)/lib
 #
 if PMPI_EFFORT
-lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la
+lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la libwaitall-effort.la
 
 libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
@@ -102,6 +102,10 @@ libpmpi_effort_la_LDFLAGS = -avoid-version
 libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
 libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
 libcomm_effort_la_LDFLAGS = -avoid-version 
+
+libwaitall_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) waitall_wrapper.C
+libwaitall_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
+libwaitall_effort_la_LDFLAGS = -avoid-version 
 
 libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
 libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
@@ -141,6 +145,9 @@ effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 comm_wrapper.C: comm_wrapper.w
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
+
+waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 

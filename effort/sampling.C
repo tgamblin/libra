@@ -47,7 +47,7 @@ namespace effort {
     rng->init_sprng(rank, size, SEED, SPRNG_DEFAULT);
 
     // use first random number to figure out who's enabled to start with.
-    if (initial_sample < size) {
+    if (initial_sample < (size_t)size) {
       initial_sample = size;
     }
     proportion = initial_sample / (double)size;
@@ -165,22 +165,26 @@ namespace effort {
 
       log.write_current_step(trace_file);
     }
-
-    proportion = compute_sample_proportion(log);
-    if (rank == 0) {
-      ostringstream summary;
-      summary << "STEP " << log.progress_count << endl;
-      summary << "    SampleSize " << (size_t)(proportion * size) << endl;
-      summary << "    Proportion " << proportion << endl;
-      summary << "    Keys       " << log.size() << endl;
-      summary_file << summary.str();
+    
+    if (windows % windows_per_update) {
+      proportion = compute_sample_proportion(log);
+      if (rank == 0) {
+        ostringstream summary;
+        summary << "STEP " << log.progress_count << endl;
+        summary << "    SampleSize " << (size_t)(proportion * size) << endl;
+        summary << "    Proportion " << proportion << endl;
+        summary << "    Keys       " << log.size() << endl;
+        summary_file << summary.str();
+      }
+      
+      enabled = (rng->sprng() < proportion);
+      
+      if (!enabled && trace_file.is_open()) {
+        trace_file.close();
+      }
     }
 
-    enabled = (rng->sprng() < proportion);
-
-    if (!enabled && trace_file.is_open()) {
-      trace_file.close();
-    }
+    windows++;
   }
 
   void sampling_module::finalize() {

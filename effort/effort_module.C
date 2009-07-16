@@ -473,20 +473,21 @@ struct effort_module {
     setup_effort_directories(effort_dir, exact_dir);
     timer.record("Mkdirs");
 
+    parallel_compressor compressor(params);
+
 #ifdef HAVE_SPRNG
     // if we're sampling, skip the compression stuff and just return here.
     if (params.ampl) {
       sampler.finalize();
-      return;
-    }
+    } else
 #endif // HAVE_SPRNG
+    {
+      // distribute and do compression.
+      compressor.set_output_dir(effort_dir);
+      compressor.set_exact_dir(exact_dir);
+      compressor.compress(effort_log, MPI_COMM_WORLD);
+    }  
 
-    // distribute and do compression.
-    parallel_compressor compressor(params);
-    compressor.set_output_dir(effort_dir);
-    compressor.set_exact_dir(exact_dir);
-    compressor.compress(effort_log, MPI_COMM_WORLD);
-    
     // dump times on rank 0.
     if (rank == 0) {
       ostringstream filename;
@@ -576,9 +577,6 @@ void init_metrics(size_t metric_count, const char **metric_names) {
 
 void effort_set_dims(size_t x, size_t y, size_t z) {
   ostringstream msg;
-  msg << "Set dimensions to " << x << " x " << y << " x " << z << endl;
-  cerr << msg.str();
-  
   npx = x;
   npy = y;
   npz = z;
