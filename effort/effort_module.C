@@ -122,7 +122,6 @@ struct effort_module {
     env_get_configuration(params.get_config_arguments());
     pnmpi_callpath = &pmpi_only_callpath;
 #endif // PMPI_EFFORT
-
     runtime.set_chop_libc(params.chop_libc);
     regions = str_to_regions(params.regions);
     sample_count = params.sampling;
@@ -155,6 +154,7 @@ struct effort_module {
       setup_effort_directories(effort_dir, exact_dir);
       sampler.init(MPI_COMM_WORLD, params.confidence, params.error, effort_dir);
       sampler.set_windows_per_update(params.windows_per_update);
+      sampler.set_normalized_error(params.normalized_error);
     }
 #endif // HAVE_SPRNG
 
@@ -253,7 +253,7 @@ struct effort_module {
   inline void record_region(const Callpath& start, const Callpath& end) {
     if (params.keep_time()) {
       double cur_time = get_time_ns();
-      double elapsed_time = cur_time = start_time;
+      double elapsed_time = cur_time - start_time;
       record_metric(start, end, Metric::time(), elapsed_time);
       start_time = cur_time;
     }
@@ -344,8 +344,16 @@ struct effort_module {
 
   inline void record_effort(double *counter_values) {
     const vector<Metric>& metrics = params.get_metrics();
+
+    size_t val = 0;
+    if (params.keep_time()) {
+      record_metric(Callpath(), Callpath(), Metric::time(), counter_values[val]);
+      val++;
+    }
+
     for (size_t i=0; i < metrics.size(); i++) {
-      record_metric(Callpath(), Callpath(), metrics[i], counter_values[i]);
+      record_metric(Callpath(), Callpath(), metrics[i], counter_values[val]);
+      val++;
     }
   }
 

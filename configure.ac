@@ -30,7 +30,7 @@ AC_SPRNG
 if [[ "x$have_sprng" = xyes ]]; then
    AC_DEFINE([HAVE_SPRNG], [1], [Defined if we have the SPRNG library.])
 fi
-
+AM_CONDITIONAL([HAVE_SPRNG], [test "x$have_sprng" == xyes])
 
 # We need the boost matrix class to build this library.
 AX_BOOST_BASE

@@ -33,6 +33,7 @@ namespace effort {
     bool ampl;                /// AMPL mode -- uses AMPL for sampling and outputs sampled trace.
     double confidence;        /// AMPL confidence
     double error;             /// AMPL error
+    bool normalized_error;    /// Whether error is absolute or normalized bt/w 0 and 1.  Default false.
     int windows_per_update;   /// AMPL windows per update.
 
     bool topo;                /// alternately outputs topology-ordered compressed data.
@@ -52,6 +53,7 @@ namespace effort {
         ampl(false),
         confidence(.90),
         error(.08),
+        normalized_error(false),
         windows_per_update(4),
         topo(false),
         have_time(false),

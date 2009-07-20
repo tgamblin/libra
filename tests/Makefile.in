@@ -40,7 +40,7 @@ TESTS = seqtest$(EXEEXT) ezwtest$(EXEEXT) insert_bits_test$(EXEEXT) \
 	vltest$(EXEEXT) $(am__EXEEXT_5)
 @HAVE_MPI_TRUE@am__append_1 = partest parezwtest parspeedbench
 @HAVE_MPI_TRUE@am__append_2 = parezwtest partest 
-@PMPI_EFFORT_TRUE@am__append_3 = bunny
+@PMPI_EFFORT_TRUE@am__append_3 = bunny ampl-test
 @HAVE_SW_TRUE@@HAVE_SYMTAB_TRUE@am__append_4 = swcheck
 @HAVE_PAPI_TRUE@am__append_5 = papicheck
 subdir = tests
@@ -59,6 +59,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
 	$(top_srcdir)/m4/ac_safe_check_lib.m4 \
 	$(top_srcdir)/m4/ac_sprng.m4 $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
+	$(top_srcdir)/m4/swig_enable_cxx.m4 \
 	$(top_srcdir)/m4/swig_python.m4 $(top_srcdir)/m4/vtk.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -68,16 +69,16 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 @HAVE_MPI_TRUE@am__EXEEXT_1 = partest$(EXEEXT) parezwtest$(EXEEXT) \
 @HAVE_MPI_TRUE@	parspeedbench$(EXEEXT)
-@PMPI_EFFORT_TRUE@am__EXEEXT_2 = bunny$(EXEEXT)
+@PMPI_EFFORT_TRUE@am__EXEEXT_2 = bunny$(EXEEXT) ampl-test$(EXEEXT)
 @HAVE_SW_TRUE@@HAVE_SYMTAB_TRUE@am__EXEEXT_3 = swcheck$(EXEEXT)
 @HAVE_PAPI_TRUE@am__EXEEXT_4 = papicheck$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
+am_ampl_test_OBJECTS = ampl-test.$(OBJEXT)
+ampl_test_OBJECTS = $(am_ampl_test_OBJECTS)
+ampl_test_DEPENDENCIES = ../effort/libeffort-runtime.la
 am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
-am__DEPENDENCIES_1 =
-bunny_DEPENDENCIES = ../effort/libmanual-effort.la \
-	$(am__DEPENDENCIES_1) ../cluster/libcluster.la \
-	$(am__DEPENDENCIES_1)
+bunny_DEPENDENCIES = ../effort/libeffort-runtime.la
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
 compress_matfile_OBJECTS = $(am_compress_matfile_OBJECTS)
 compress_matfile_LDADD = $(LDADD)
@@ -95,7 +96,9 @@ insert_bits_test_DEPENDENCIES = ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 am_papicheck_OBJECTS = papicheck-papicheck.$(OBJEXT)
 papicheck_OBJECTS = $(am_papicheck_OBJECTS)
-papicheck_DEPENDENCIES = $(am__DEPENDENCIES_1)
+papicheck_LDADD = $(LDADD)
+papicheck_DEPENDENCIES = ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 am_parezwtest_OBJECTS = parezwtest.$(OBJEXT)
 parezwtest_OBJECTS = $(am_parezwtest_OBJECTS)
 parezwtest_LDADD = $(LDADD)
@@ -118,7 +121,9 @@ seqtest_DEPENDENCIES = ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 am_swcheck_OBJECTS = swcheck-swcheck.$(OBJEXT)
 swcheck_OBJECTS = $(am_swcheck_OBJECTS)
-swcheck_DEPENDENCIES = $(am__DEPENDENCIES_1)
+swcheck_LDADD = $(LDADD)
+swcheck_DEPENDENCIES = ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 am_vary_passes_OBJECTS = vary_passes.$(OBJEXT)
 vary_passes_OBJECTS = $(am_vary_passes_OBJECTS)
 vary_passes_LDADD = $(LDADD)
@@ -141,16 +146,18 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(bunny_SOURCES) $(compress_matfile_SOURCES) \
-	$(ezwtest_SOURCES) $(insert_bits_test_SOURCES) \
-	$(papicheck_SOURCES) $(parezwtest_SOURCES) \
-	$(parspeedbench_SOURCES) $(partest_SOURCES) $(seqtest_SOURCES) \
-	$(swcheck_SOURCES) $(vary_passes_SOURCES) $(vltest_SOURCES)
-DIST_SOURCES = $(bunny_SOURCES) $(compress_matfile_SOURCES) \
-	$(ezwtest_SOURCES) $(insert_bits_test_SOURCES) \
-	$(papicheck_SOURCES) $(parezwtest_SOURCES) \
-	$(parspeedbench_SOURCES) $(partest_SOURCES) $(seqtest_SOURCES) \
-	$(swcheck_SOURCES) $(vary_passes_SOURCES) $(vltest_SOURCES)
+SOURCES = $(ampl_test_SOURCES) $(bunny_SOURCES) \
+	$(compress_matfile_SOURCES) $(ezwtest_SOURCES) \
+	$(insert_bits_test_SOURCES) $(papicheck_SOURCES) \
+	$(parezwtest_SOURCES) $(parspeedbench_SOURCES) \
+	$(partest_SOURCES) $(seqtest_SOURCES) $(swcheck_SOURCES) \
+	$(vary_passes_SOURCES) $(vltest_SOURCES)
+DIST_SOURCES = $(ampl_test_SOURCES) $(bunny_SOURCES) \
+	$(compress_matfile_SOURCES) $(ezwtest_SOURCES) \
+	$(insert_bits_test_SOURCES) $(papicheck_SOURCES) \
+	$(parezwtest_SOURCES) $(parspeedbench_SOURCES) \
+	$(partest_SOURCES) $(seqtest_SOURCES) $(swcheck_SOURCES) \
+	$(vary_passes_SOURCES) $(vltest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 @HAVE_MPI_TRUE@am__EXEEXT_5 = parezwtest$(EXEEXT) partest$(EXEEXT)
@@ -320,16 +327,16 @@ vary_passes_SOURCES = vary_passes.C
 vltest_SOURCES = vltest.C
 papicheck_SOURCES = papicheck.C
 papicheck_CPPFLAGS = $(PAPI_CPPFLAGS)
-papicheck_LDADD = $(PAPI_LDFLAGS)
 swcheck_SOURCES = swcheck.C
-swcheck_LDADD = $(SW_LDFLAGS)
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
 partest_SOURCES = partest.C
 parezwtest_SOURCES = parezwtest.C
 parspeedbench_SOURCES = parspeedbench.C
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la $(SPRNG_LDFLAGS)
+bunny_LDADD = ../effort/libeffort-runtime.la
+ampl_test_SOURCES = ampl-test.C
+ampl_test_LDADD = ../effort/libeffort-runtime.la
 LDADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la
 INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
 all: all-am
@@ -372,6 +379,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+ampl-test$(EXEEXT): $(ampl_test_OBJECTS) $(ampl_test_DEPENDENCIES) 
+	@rm -f ampl-test$(EXEEXT)
+	$(CXXLINK) $(ampl_test_OBJECTS) $(ampl_test_LDADD) $(LIBS)
 bunny$(EXEEXT): $(bunny_OBJECTS) $(bunny_DEPENDENCIES) 
 	@rm -f bunny$(EXEEXT)
 	$(CXXLINK) $(bunny_OBJECTS) $(bunny_LDADD) $(LIBS)
@@ -415,6 +425,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ampl-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bunny-bunny.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compress_matfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ezwtest.Po@am__quote@

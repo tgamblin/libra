@@ -35,13 +35,13 @@ namespace effort {
 
 
   void sampling_module::init(MPI_Comm comm, double confidence, double error, std::string output_dir) {
-    int rank, size;
-    PMPI_Comm_rank(comm, &rank);
-    PMPI_Comm_size(comm, &size);
-
     this->comm = comm;
     this->confidence = confidence;
     this->error = error;
+
+    int rank, size;
+    PMPI_Comm_rank(comm, &rank);
+    PMPI_Comm_size(comm, &size);
 
     // init random number generator across procsses
     rng->init_sprng(rank, size, SEED, SPRNG_DEFAULT);
@@ -65,7 +65,7 @@ namespace effort {
     // create summary file
     if (rank == 0) {
       ostringstream summary_filename;
-      summary_filename << output_dir << "/ampl_summary";
+      summary_filename << output_dir << "/summary";
       summary_file.open(summary_filename.str().c_str());
     }
   }
@@ -84,7 +84,12 @@ namespace effort {
   }
 
 
-  static size_t compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
+  void sampling_module::set_normalized_error(bool normalized) {
+    normalized_error = normalized;
+  }
+
+
+  size_t sampling_module::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
     double mean = sum/N;                            // sample mean
     double variance = (sum2/N - (mean*mean));       // estimate w/sample mean
     double stdDev = sqrt(variance);
@@ -93,7 +98,9 @@ namespace effort {
 
     // calculate min sample size
     double Za = computeConfidenceInterval(confidence);   // double-tailed norm conf. interval
-    double d = mean * error;                             // real error bound (error var is a %)
+    double d = error;
+    if (normalized_error) d *= mean;           // if normalized, error is a %, so multiply by mean.
+
     double V = (d/(Za*stdDev));
 
     size_t min_sample_size = llround(N / (1 + N * V*V));
@@ -147,7 +154,10 @@ namespace effort {
     // find global sample size with allreduce.
     size_t max_sample_size;
     PMPI_Allreduce(&local_max_sample_size, &max_sample_size, 1, MPI_SIZE_T, MPI_MAX, comm);
-    
+
+    // in case there's really no variance.
+    if (max_sample_size < 1) max_sample_size = 1;
+
     return max_sample_size / (double)size;
   }
 

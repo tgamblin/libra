@@ -25,6 +25,7 @@ namespace effort {
     
     double confidence;           /// confidence bound for sampling
     double error;                /// error bound for sampling (percentage)
+    bool normalized_error;       /// whether error is normalized or absolute bound
     
     size_t windows;              /// Windows seen so far.
     size_t windows_per_update;   /// Number of windows before we update sample proportion
@@ -42,6 +43,8 @@ namespace effort {
     ///
     double compute_sample_proportion(effort_data& log);
 
+    size_t compute_sample_size(double sum, double sum2, size_t N, double confidence, double error);
+
   public:
     /// Constructor.  Doesn't init anything, but can optionally set initial sample size here.
     sampling_module(size_t initial_sample_size = 40);
@@ -55,6 +58,7 @@ namespace effort {
 
     
     void set_windows_per_update(size_t wpu);
+    void set_normalized_error(bool normalized);
 
     /// Record end of a window.  Possibly update.
     void sample_step(effort_data& log);

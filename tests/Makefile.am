@@ -9,7 +9,7 @@ TESTS += parezwtest partest
 endif
 
 if PMPI_EFFORT
-noinst_PROGRAMS += bunny
+noinst_PROGRAMS += bunny ampl-test
 endif
 
 if HAVE_SYMTAB
@@ -32,10 +32,8 @@ vltest_SOURCES = vltest.C
 
 papicheck_SOURCES = papicheck.C
 papicheck_CPPFLAGS=$(PAPI_CPPFLAGS)
-papicheck_LDADD=$(PAPI_LDFLAGS)
 
 swcheck_SOURCES = swcheck.C
-swcheck_LDADD = $(SW_LDFLAGS)
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
 
 partest_SOURCES = partest.C
@@ -44,7 +42,10 @@ parspeedbench_SOURCES = parspeedbench.C
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la $(SW_LDFLAGS) ../cluster/libcluster.la $(SPRNG_LDFLAGS)
+bunny_LDADD = ../effort/libeffort-runtime.la
+
+ampl_test_SOURCES = ampl-test.C
+ampl_test_LDADD = ../effort/libeffort-runtime.la
 
 #
 # This will pre-relink all the lt binaries.  This is a workaround for clusters where 

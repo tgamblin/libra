@@ -15,7 +15,8 @@ dist_noinst_HEADERS = \
   effort_dataset.h \
 	FrameDB.h \
 	FrameInfo.h \
-	sampling.h
+	sampling.h \
+	ltqnorm.h
 
 lib_LTLIBRARIES = libeffort.la
 
@@ -34,21 +35,51 @@ libeffort_la_SOURCES = effort_key.C \
 											 s3d_topology.C
 
 if HAVE_MPI
+# move this to runtime?
 libeffort_la_SOURCES += parallel_compressor.C \
 												parallel_decompressor.C \
-												synchronize_keys.C \
+												synchronize_keys.C
+
 if HAVE_SPRNG
-libeffort_la_SOURCES += sampling.C \
+libeffort_la_SOURCES += sampling.C ltqnorm.C
 endif
 endif
+
 libeffort_la_LDFLAGS = -avoid-version
+libeffort_la_LIBADD = \
+	../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la \
+	$(PAPI_LDFLAGS) \
+	$(SPRNG_LDFLAGS)
 
 #
-# Sources for both PMPI and PnMPI library
+# Effort runtime library and wrapper libraries
 #
-PMPI_EFFORT_SRCS=effort_module.C \
-								 env_config.C \
-								 sampling.C
+if PMPI_EFFORT
+lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la 
+
+libpcontrol_counter_la_SOURCES = pcontrol_counter.C
+
+libeffort_runtime_la_SOURCES = effort_module.C \
+															 env_config.C \
+															 sampling.C \
+															 base_wrapper.C
+libeffort_runtime_la_LIBADD = libeffort.la
+libeffort_runtime_la_LDFLAGS = -avoid-version 
+
+libpmpi_effort_la_SOURCES = effort_wrapper.C
+libpmpi_effort_la_LIBADD = libeffort-runtime.la
+libpmpi_effort_la_LDFLAGS = -avoid-version 
+
+libcomm_effort_la_SOURCES = comm_wrapper.C
+libcomm_effort_la_LIBADD = libeffort-runtime.la
+libcomm_effort_la_LDFLAGS = -avoid-version 
+
+libtiming_la_SOURCES = timing_module.C
+libtiming_la_LDFLAGS = -avoid-version
+libtiming_la_LIBADD = ../libwavelet/libwavelet.la
+endif
+
 
 #
 # Effort utility programs
@@ -61,85 +92,28 @@ endif
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 approx_timer_SOURCES = approx_timer.C
-approx_timer_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
+approx_timer_LDADD=libeffort.la ../cluster/libcluster.la
 
 sample_test_SOURCES = sample_test.C
-sample_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   ../cluster/libcluster.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) 
+sample_test_LDADD=libeffort.la ../cluster/libcluster.la
 
 dataset_test_SOURCES = dataset_test.C
-dataset_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-                   $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
+dataset_test_LDADD=libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
-ef_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SYMTAB_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
+ef_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
 
 nrmse_SOURCES=nrmse.C 
-nrmse_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-
 tuner_SOURCES=tuner.C
-tuner_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-
 bin_test_SOURCES=bin_test.C
-bin_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-
 s3d_topo_test_SOURCES=s3d_topo_test.C
-s3d_topo_test_LDADD=libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-
-#
-# Build a regular PMPI module and install in $(prefix)/lib
-#
-if PMPI_EFFORT
-lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libmanual-effort.la libcomm-effort.la libwaitall-effort.la
-
-libpcontrol_counter_la_SOURCES = pcontrol_counter.C
-
-libpmpi_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-libpmpi_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-libpmpi_effort_la_LDFLAGS = -avoid-version 
-
-libcomm_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) comm_wrapper.C
-libcomm_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
-libcomm_effort_la_LDFLAGS = -avoid-version 
-
-libwaitall_effort_la_SOURCES = $(PMPI_EFFORT_SRCS) waitall_wrapper.C
-libwaitall_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
-libwaitall_effort_la_LDFLAGS = -avoid-version 
-
-libmanual_effort_la_SOURCES = $(PMPI_EFFORT_SRCS)
-libmanual_effort_la_LIBADD = libeffort.la ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS) ../cluster/libcluster.la
-libmanual_effort_la_LDFLAGS = -avoid-version 
-
-libtiming_la_SOURCES = timing_module.C
-libtiming_la_LDFLAGS = -avoid-version
-libtiming_la_LIBADD = ../libwavelet/libwavelet.la
-endif
-
-#
-# Build a PnMPI module and install in PnMPI's module directory.
-#
-if PNMPI_EFFORT
-pnmpi_LTLIBRARIES = effort.la timing.la
-
-timing_la_SOURCES = timing_module.C
-timing_la_LDFLAGS = -avoid-version -module
-timing_la_LIBADD = ../libwavelet/libwavelet.la
-
-effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(SW_LDFLAGS) $(PAPI_LDFLAGS)
-effort_la_LDFLAGS = -avoid-version -module
-
-# Installs library using PnMPI patcher
-install-exec-hook:
-	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
-	chmod u+x .libs/effort-patched.so
-	mv -f .libs/effort-patched.so .libs/effort.so
-endif
 
 CLEANFILES = effort_wrapper.C comm_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
+
+base_wrapper.C: base_wrapper.w
+	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
@@ -151,13 +125,43 @@ waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 
-INCLUDES= -I$(top_srcdir)/libwavelet \
-          -I$(top_srcdir)/callpath \
-          -I$(top_srcdir)/cluster \
-					$(SPRNG_CPPFLAGS) \
-          $(PNMPI_CPPFLAGS) \
-          $(BOOST_CPPFLAGS) \
-          $(PARADYN_CPPFLAGS) \
-          $(PAPI_CPPFLAGS) \
-          $(SW_CPPFLAGS) \
-          $(AMPL_CPPFLAGS)
+LDADD   =  libeffort.la
+INCLUDES = -I$(top_srcdir)/libwavelet \
+           -I$(top_srcdir)/callpath \
+           -I$(top_srcdir)/cluster \
+					 $(SPRNG_CPPFLAGS) \
+           $(PNMPI_CPPFLAGS) \
+           $(BOOST_CPPFLAGS) \
+           $(PARADYN_CPPFLAGS) \
+           $(PAPI_CPPFLAGS) \
+           $(SW_CPPFLAGS) \
+           $(AMPL_CPPFLAGS)
+
+
+
+
+
+
+
+#
+# Build a PnMPI module and install in PnMPI's module directory.
+# NOTE: below is currently unmaintained and unsupported.
+#
+if PNMPI_EFFORT
+pnmpi_LTLIBRARIES = effort.la timing.la
+
+timing_la_SOURCES = timing_module.C
+timing_la_LDFLAGS = -avoid-version -module
+timing_la_LIBADD = ../libwavelet/libwavelet.la
+
+effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
+effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
+effort_la_LDFLAGS = -avoid-version -module
+
+# Installs library using PnMPI patcher
+install-exec-hook:
+	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
+	chmod u+x .libs/effort-patched.so
+	mv -f .libs/effort-patched.so .libs/effort.so
+endif
+
