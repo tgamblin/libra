@@ -5,10 +5,11 @@
 
 ../configure \
     CXX=mpicxx \
-    CXXFLAGS="-g3 -O3 -Wall -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK" \
+    CXXFLAGS="-g3 -O3 -Wall -Wno-deprecated -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK" \
     --prefix=${HOME}/opt/libra/bgl_cnk \
+    --with-python=/usr/gapps/python/sles_9_ppc64/opt-2.5.2 \
     --with-paradyn=${HOME}/src/sw/ppc32_bgcompute \
     --with-boost=${HOME}/opt/boost \
-    --with-pnmpi=${HOME}/src/pnmpi-1.2/${SYS_TYPE} \
-    --disble-shared
-
+    --with-sprng=${HOME}/opt/sprng/${SYS_TYPE} \
+    --without-vtk \
+    --disable-shared
