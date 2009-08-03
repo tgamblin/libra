@@ -82,7 +82,7 @@ endif
 #
 # Effort utility programs
 #
-bin_PROGRAMS = ef nrmse s3d-topo-test sam
+bin_PROGRAMS = ef nrmse s3d-topo-test 
 if HAVE_MPI
 bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer 
 endif
@@ -100,9 +100,6 @@ dataset_test_LDADD=libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
 ef_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
-
-sam_SOURCES=sam.C
-sam_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
 
 nrmse_SOURCES=nrmse.C 
 tuner_SOURCES=tuner.C

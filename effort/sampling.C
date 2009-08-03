@@ -264,10 +264,6 @@ namespace effort {
         summary_file << summary.str();
       }
       
-      msg.str("");
-      msg << "finishing" << endl;
-      cerr << msg.str();
-
       enabled = trace && (rng->sprng() < proportion);
       
       if (!enabled && trace_file.is_open()) {
