@@ -6,6 +6,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 using namespace std;
 
@@ -13,6 +14,9 @@ using namespace std;
 #include "synchronize_keys.h"
 #include "effort_key.h"
 #include "ltqnorm.h"
+
+#include "string_utils.h"
+using namespace stringutils;
 
 #define USE_MPI
 #include "sprng_cpp.h"
@@ -29,6 +33,8 @@ namespace effort {
       error(0),
       windows(0),
       windows_per_update(1),
+      stats(false),
+      trace(true),
       rng(new LCG()),
       initial_sample(initial_sample_size)
   { }
@@ -89,7 +95,18 @@ namespace effort {
   }
 
 
-  size_t sampling_module::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
+  void sampling_module::set_stats(bool stats) {
+    this->stats = stats;
+  }
+
+
+  void sampling_module::set_trace(bool trace) {
+    this->trace = trace;
+  }
+
+
+
+  sample_desc sampling_module::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
     double mean = sum/N;                            // sample mean
     double variance = (sum2/N - (mean*mean));       // estimate w/sample mean
     double stdDev = sqrt(variance);
@@ -105,7 +122,7 @@ namespace effort {
 
     size_t min_sample_size = llround(N / (1 + N * V*V));
 
-    return min_sample_size;
+    return sample_desc(mean, variance, stdDev, min_sample_size);
   }
 
 
@@ -124,8 +141,13 @@ namespace effort {
     sorted_keys.reserve(log.size());
     transform(log.begin(), log.end(), back_inserter(sorted_keys), get_first());
 
+
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
+
+    vector<sample_desc> vars;
+    if (rank == 0) vars.resize(sorted_keys.size());
+    size_t voff = 0;
 
     size_t local_max_sample_size = 0;
     size_t k = 0;
@@ -144,13 +166,37 @@ namespace effort {
         PMPI_Reduce(&val2, &sum2, 1, MPI_DOUBLE, MPI_SUM, root, comm);
       }
 
+      sample_desc sd;
       if (rank < root) {
         // calculate local sample size and take the max of sizes seen so far.
-        size_t sample_size = compute_sample_size(sum, sum2, size, confidence, error);
-        local_max_sample_size = max(sample_size, local_max_sample_size);
+        sd = compute_sample_size(sum, sum2, size, confidence, error);
+        local_max_sample_size = max(sd.sample_size, local_max_sample_size);
+      }
+
+      // gather sample_descs to proc 0
+      if (stats) {
+        MPI_Comm gather_comm;
+        PMPI_Comm_split(comm, (rank < root ? 0 : 1), rank, &gather_comm);
+
+        if (rank < root) {
+          PMPI_Gather(&sd,         sizeof(sample_desc), MPI_BYTE,
+                      &vars[voff], sizeof(sample_desc), MPI_BYTE,
+                      0, gather_comm);
+        }
+        voff += size;
+
+        PMPI_Comm_free(&gather_comm);
       }
     }
-    
+
+
+    if (stats) {
+      key_stats.clear();
+      for (size_t i=0; i < vars.size(); i++) {
+        key_stats[sorted_keys[i]] = vars[i];
+      } 
+    }
+
     // find global sample size with allreduce.
     size_t max_sample_size;
     PMPI_Allreduce(&local_max_sample_size, &max_sample_size, 1, MPI_SIZE_T, MPI_MAX, comm);
@@ -162,12 +208,20 @@ namespace effort {
   }
 
 
+  struct variance_gt {
+    const stat_map& stats;
+    variance_gt(const stat_map& sm) : stats(sm) { }
+    bool operator()(const effort_key& lhs, const effort_key& rhs) {
+      return stats.find(lhs)->second.variance > stats.find(rhs)->second.variance;
+    }
+  };
+
   void sampling_module::sample_step(effort_data& log) { 
     int rank, size;
     PMPI_Comm_rank(comm, &rank);
     PMPI_Comm_size(comm, &size);
-
-    if (enabled) {
+    
+    if (enabled && trace) {
       // open trace file for writing if needed.
       if (!trace_file.is_open()) {
         trace_file.open(trace_filename.c_str(), ios::app);
@@ -184,10 +238,37 @@ namespace effort {
         summary << "    SampleSize " << (size_t)(proportion * size) << endl;
         summary << "    Proportion " << proportion << endl;
         summary << "    Keys       " << log.size() << endl;
+
+        if (stats) {
+          // stats are in vars vector if stats is on.
+          size_t place = 1;
+
+          vector<effort_key> vsorted_keys;
+          transform(key_stats.begin(), key_stats.end(), back_inserter(vsorted_keys), get_first());
+          sort(vsorted_keys.begin(), vsorted_keys.end(), variance_gt(key_stats));
+
+          for (size_t i=0; i < vsorted_keys.size(); i++) {
+            const effort_key& key = vsorted_keys[i];
+            const sample_desc& sd = key_stats[key];
+
+            summary << setw(4)  << place++
+                    << setw(10) << setprecision(3) << sd.mean
+                    << setw(10) << setprecision(3) << sd.variance
+                    << setw(10) << setprecision(3) << sd.std_dev
+                    << setw(10) << setprecision(3) << sd.sample_size
+                    << "    "   << key
+                    << endl;
+          }
+        }
+
         summary_file << summary.str();
       }
       
-      enabled = (rng->sprng() < proportion);
+      msg.str("");
+      msg << "finishing" << endl;
+      cerr << msg.str();
+
+      enabled = trace && (rng->sprng() < proportion);
       
       if (!enabled && trace_file.is_open()) {
         trace_file.close();
@@ -206,6 +287,40 @@ namespace effort {
       trace_file.close();
     }
   }
-   
+
+
+  void sampling_module::add_guide_key(const effort_key& key) {
+    guide.insert(key);
+  }
+
+
+  static Callpath make_path(const string& path) {
+    vector<string> frame_strings;
+    vector<FrameId> frames;
+
+    split(path, ":", frame_strings);
+    for (size_t i=0; i < frame_strings.size(); i++) {
+      char *err;
+      uintptr_t offset = strtol(frame_strings[i].c_str(), &err, 0);
+      frames.push_back(FrameId(ModuleId(), offset));
+    }
+    return Callpath::create(frames);
+  }
+
+
+  // parses effort keys out of environment
+  void parse_effort_keys(const char *str, vector<effort_key>& keys) {
+    vector<string> key_strings;
+    split(str, ", ", key_strings);
+    
+    for (size_t k=0; k < key_strings.size(); k++) {
+      vector<string> path_strings;
+      split_str(key_strings[k], "=>", path_strings);
+      Callpath start(make_path(path_strings[0]));
+      Callpath end(make_path(path_strings[1]));
+      keys.push_back(effort_key(Metric::time(), 0, start, end));
+    }
+  }
+
 }
 

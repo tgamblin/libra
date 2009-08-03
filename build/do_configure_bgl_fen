@@ -9,7 +9,7 @@
     --prefix=${HOME}/opt/libra/sles_9_ppc64 \
     --with-xml2=${HOME}/opt/libxml2 \
     --with-dwarf=${HOME}/opt/dwarf-20080615 \
-    --with-paradyn=${HOME}/src/sw/ppc64_linux \
+    --with-paradyn=${HOME}/projects/dawn-sw/sw_beta5/ppc64_linux \
     --with-boost=${HOME}/opt/boost
 
 

@@ -12,6 +12,8 @@ libcallpath_la_SOURCES = \
 	Callpath.C \
 	FrameId.C \
 	ModuleId.C \
+	FrameInfo.C \
+	Translator.C \
 	$(SW_ONLY_SRCS)
 libcallpath_la_LIBADD = $(SW_LDFLAGS)
 libcallpath_la_LDFLAGS = -avoid-version 
@@ -20,7 +22,9 @@ include_HEADERS = \
 	Callpath.h \
 	CallpathRuntime.h \
   UniqueId.h \
-	ModuleId.h
+	ModuleId.h \
+	FrameInfo.h \
+	Translator.h
 
 INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 

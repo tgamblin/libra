@@ -51,6 +51,11 @@ public:
   /// using static routines below.
   typedef std::map<uintptr_t, Derived> id_map;
 
+private:
+  // use for safe bool conversion
+  typedef void (UniqueId<Derived>::*bool_type)() const;
+  void not_comparable() const { }
+
 protected:
   /// Unique identifier for this instance of the UniqueId
   const std::string *identifier;
@@ -78,6 +83,10 @@ protected:
   }
   
 public:
+  operator bool_type() {  // safe bool conversion
+    return identifier ? &UniqueId<Derived>::not_comparable : 0;
+  }
+    
   Derived& operator=(const Derived& other) {
     identifier = other->identifier;
   }
@@ -235,7 +244,8 @@ public:
 
 template<class Derived>
 std::ostream& operator<<(std::ostream& out, UniqueId<Derived> uid) {
-  out << *uid.identifier;
+  // TODO: let derived redefine "unknown" somehow.
+  out << (uid.identifier ? (*uid.identifier) : "unknown");
   return out;
 }
 

@@ -19,12 +19,19 @@ namespace effort {
     out << "   chop_libc            = " << params.chop_libc          << endl;
     out << "   regions              = " << params.regions            << endl;
     out << "   sampling             = " << params.sampling           << endl;
-    out << "   ampl                 = " << params.ampl               << endl;
-    out << "     confidence         = " << params.confidence         << endl;
-    out << "     error              = " << params.error              << endl;
-    out << "     normalized_error   = " << params.normalized_error   << endl;
-    out << "     windows_per_update = " << params.windows_per_update << endl;
     out << "   topo                 = " << params.topo               << endl;
+
+    out << "   ampl                 = " << params.ampl               << endl;
+    if (params.ampl) {
+      out << "     confidence         = " << params.confidence         << endl;
+      out << "     error              = " << params.error              << endl;
+      out << "     normalized_error   = " << params.normalized_error   << endl;
+      out << "     windows_per_update = " << params.windows_per_update << endl;
+      out << "     ampl_stats         = " << params.ampl_stats         << endl;
+      out << "     ampl_trace         = " << params.ampl_trace         << endl;
+      out << "     ampl_guide         = " << params.ampl_guide         << endl;
+    }
+
     return out;
   }
 
@@ -41,12 +48,15 @@ namespace effort {
       config_desc("chop_libc",          &this->chop_libc),
       config_desc("regions",            &this->regions),
       config_desc("sampling",           &this->sampling),
+      config_desc("topo",               &this->topo),
       config_desc("ampl",               &this->ampl),
       config_desc("confidence",         &this->confidence),
       config_desc("error",              &this->error),
       config_desc("normalized_error",   &this->normalized_error),
       config_desc("windows_per_update", &this->windows_per_update),
-      config_desc("topo",               &this->topo),
+      config_desc("ampl_stats",         &this->ampl_stats),
+      config_desc("ampl_trace",         &this->ampl_trace),
+      config_desc("ampl_guide",         &this->ampl_guide),
       config_desc()
     };
     return args;

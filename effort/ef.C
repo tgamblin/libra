@@ -15,23 +15,20 @@ using namespace std;
 #endif // HAVE_CONFIG_H
 
 #include "ModuleId.h"
+#include "FrameInfo.h"
+#include "Translator.h"
+
 #include "wavelet.h"
 #include "wt_direct.h"
+#include "io_utils.h"
 #include "ezw_decoder.h"
 #include "matrix_utils.h"
 using namespace wavelet;
 
 #include "effort_key.h"
-#include "FrameInfo.h"
 #include "FrameDB.h"
 using namespace effort;
 
-
-#ifdef HAVE_SYMTAB
-#include "Symtab.h"
-#include "Symbol.h"
-using namespace Dyninst::SymtabAPI;
-#endif // HAVE_SYMTAB
 
 typedef unsigned decompression_stage;
 
@@ -41,16 +38,14 @@ const decompression_stage wt_coeff    = 0x2;
 const decompression_stage reconstruct = 0x4;
 decompression_stage stage = none;
 
-ModuleId UNKNOWN_MODULE("[unknown module]");
-
 int iwt_level = -1;                    /// Deterines level of compression
 bool reduce = false;                   /// Output reduced size metrix for small levels
 bool translate = false;                /// Whether to translate symbol names as we find them.
 bool one_line = false;                 /// Whether to translate symbol names as we find them.
 string fields("mtazsrclSMTebpERZ");    /// Which fields to show. All if empty.
-ModuleId executable(UNKNOWN_MODULE);   /// Optionally supplied executable to look up symbols in.
 
 auto_ptr<FrameDB> frames;              /// Cache of data from pre-generated symtab data file.
+Translator translator;
 
 /// Usage parameters
 void usage() {
@@ -118,11 +113,7 @@ void get_args(int *argc, char ***argv) {
       break;
     case 'e':
       translate = true;
-      executable = string(optarg);
-#ifndef HAVE_SYMTAB
-      cerr << "ERROR: -e requires SymbtabAPI." << endl;
-      exit(1);
-#endif // HAVE_SYMTAB
+      translator.set_executable(string(optarg));
       break;
     case 'h':
     default:
@@ -136,109 +127,15 @@ void get_args(int *argc, char ***argv) {
   *argv += optind;
 }
 
-//
-// Below routines will only compile with symtab API installed.
-//
-#ifdef HAVE_SYMTAB
-
-struct symbol_addr_gt {
-  bool operator()(Symbol* lhs, Symbol *rhs)   { return lhs->getAddr() > rhs->getAddr(); }
-  bool operator()(uintptr_t lhs, Symbol *rhs) { return lhs > rhs->getAddr(); }
-  bool operator()(Symbol* lhs, uintptr_t rhs) { return lhs->getAddr() > rhs; }
-};
-
-class symtab_info {
-  Symtab *symtab;
-  vector<Symbol*> syms;
-
-public:
-  symtab_info(Symtab *s) : symtab(s) { }
-  ~symtab_info() { }
-
-  bool getSourceLines(vector<LineNoTuple>& lines, uintptr_t offset) {
-    return !symtab ? false : symtab->getSourceLines(lines, offset);
-  }
-
-  /// This gets a symbol name from an offset the same way stackwalker does it.
-  void getName(uintptr_t offset, string& name) {
-    if (!symtab) {
-      ostringstream info;
-      info << "[unknown module](0x" << hex << offset << dec << ")" << endl;
-      name = info.str();
-      return;
-    }
-    
-    if (!syms.size()) {
-      if (!symtab->getAllSymbolsByType(syms, Symbol::ST_FUNCTION)) {
-        cerr << "ERROR: couldn't read symbols from " << symtab->file() << endl;
-        return;
-      }
-      sort(syms.begin(), syms.end(), symbol_addr_gt());
-    }
-    
-    Symbol *sym = 
-      *lower_bound(syms.begin(), syms.end(), offset, symbol_addr_gt());
-
-    name = sym->getTypedName();
-    if (!name.length())
-      name = sym->getPrettyName();
-    if (!name.length())
-      name = sym->getName();
-  }
-};
-
-typedef map<ModuleId, symtab_info> symtab_cache;
-static symtab_cache symtabs;
-
-
-/// Reads in a symbol table for the executable file; aborts on failure.
-symtab_info *getSymtabInfo(ModuleId module) {
-  symtab_cache::iterator sti = symtabs.find(module);
-  if (sti == symtabs.end()) {
-    Symtab *symtab;
-    string filename = module.str();
-
-    if (!exists(filename.c_str()) || !Symtab::openFile(symtab, filename)) {
-      symtab = NULL;
-    }
-    sti = symtabs.insert(symtab_cache::value_type(module, symtab_info(symtab))).first;
-  }
-
-  return &sti->second;
-}
-
-#endif // HAVE_SYMTAB
-
-
-FrameInfo  get_symtab_frame_info(const FrameId& frame) {
-#ifdef HAVE_SYMTAB
-  vector<LineNoTuple> lines;
-
-  ModuleId module = frame.module;
-  if (module == UNKNOWN_MODULE) module = executable;
-
-  symtab_info *stinfo = getSymtabInfo(module);
-    
-  // Subtract one from the offset here, to hackily
-  // convert return address to callsite
-  uintptr_t offset = frame.offset ? frame.offset - 1 : frame.offset;
-  if (stinfo->getSourceLines(lines, offset)) {
-    string name;
-    stinfo->getName(offset, name);
-    return FrameInfo(module, offset, lines[0].first, lines[0].second, name);
-    
-  }
-#endif // HAVE_SYMTAB
-  return FrameInfo(frame.module, frame.offset);
-}
-
 
 
 FrameInfo get_frame_info(const FrameId& frame) {
   if (frames.get()) {
     return frames->info_for(frame);
+  } else if (translate) {
+    return translator.translate(frame);
   } else {
-    return get_symtab_frame_info(frame);
+    return FrameInfo(frame.module, frame.offset);
   }
 }
 
@@ -363,7 +260,6 @@ int main(int argc, char **argv) {
       exit(1);
     }
 
-#ifndef HAVE_SYMTAB
     // try to find frame info database based on location of first effort file
     // fail if it's not found and we can't look up the symbols with SymtabAPI
     if (translate) {
@@ -378,7 +274,6 @@ int main(int argc, char **argv) {
         exit(1);
       }
     }
-#endif // HAVE_SYMTAB
 
     effort_key key;
     ezw_header header;

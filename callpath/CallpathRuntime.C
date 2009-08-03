@@ -4,9 +4,13 @@
 #include <iostream>
 using namespace std;
 
-#include "FrameId.h"
+#include "frame.h"
+#include "walker.h"
 using namespace Dyninst;
 using namespace Dyninst::Stackwalker;
+
+#include "FrameId.h"
+
 
 #ifdef HAVE_SYMTAB
 #include "AddrLookup.h"
@@ -25,6 +29,7 @@ CallpathRuntime::CallpathRuntime()
 Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
   num_walks++;  // increment stackwalk counter.
 
+  vector<Frame> swalk;
   bool good = walker->walkStack(swalk);
   if (!good) {
     bad_walks++;
@@ -35,8 +40,6 @@ Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
 
   // build up a temporary callpath
   vector<FrameId> temp;
-  string temp_modules[swalk.size()];
-
 
   for (size_t i=start; i < swalk.size(); i++) {
 #ifdef HAVE_SYMTAB
@@ -56,17 +59,14 @@ Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
 #endif // HAVE_SYMTAB
 
     Dyninst::Offset offset;
-
-#ifdef HAVE_SYMTAB
+    string modname;
     void *symtab;
-    if (!swalk[i].getLibOffset(temp_modules[i], offset, symtab)) 
-#endif // HAVE_SYMTAB
-    {
-      temp_modules[i] = "[unknown module]";
-      offset = swalk[i].getRA();
-    }
 
-    temp.push_back(FrameId(temp_modules[i], offset));
+    if (!swalk[i].getLibOffset(modname, offset, symtab)) {
+      temp.push_back(FrameId(ModuleId(), swalk[i].getRA()));
+    } else {
+      temp.push_back(FrameId(modname, offset));
+    }
   }
 
   return Callpath::create(temp);

@@ -95,12 +95,12 @@ std::ostream& operator<<(std::ostream& out, const Callpath& cp) {
   } else {
     vector<FrameId>::const_reverse_iterator i=cp.path->rbegin();
     if (i != cp.path->rend()) {
-      out << i->module << "(" << hex << i->offset << ")";
+      out << i->module << "(0x" << hex << i->offset << ")";
       i++;
     }
     while (i != cp.path->rend()) {
       out << " : "
-          << i->module << "(" << hex << i->offset << ")";
+          << i->module << "(0x" << hex << i->offset << ")";
       i++;
     }
   }

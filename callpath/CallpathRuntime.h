@@ -3,9 +3,13 @@
 
 #include <vector>
 #include <stdint.h>
-#include "walker.h"
-#include "frame.h"
 #include "Callpath.h"
+
+namespace Dyninst {
+  namespace Stackwalker {
+    class Walker;
+  }
+}
 
 /// This class contains runtime support methods for Callpaths.
 /// It's the interface between our modules and DynStackwalker.
@@ -32,9 +36,6 @@ public:
 private:
   /// Used by doStackwalk
   Dyninst::Stackwalker::Walker *walker;
-
-  /// Used by doStackwalk.
-  std::vector<Dyninst::Stackwalker::Frame> swalk;
 
   // These counters keep track of stats on how many
   // bad stackwalks we're getting.

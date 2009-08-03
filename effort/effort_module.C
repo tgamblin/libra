@@ -155,6 +155,14 @@ struct effort_module {
       sampler.init(MPI_COMM_WORLD, params.confidence, params.error, effort_dir);
       sampler.set_windows_per_update(params.windows_per_update);
       sampler.set_normalized_error(params.normalized_error);
+      sampler.set_stats(params.ampl_stats);
+      sampler.set_trace(params.ampl_trace);
+
+      vector<effort_key> guide_keys;
+      parse_effort_keys(params.ampl_guide, guide_keys);
+      for(size_t i=0; i < guide_keys.size(); i++) {
+        sampler.add_guide_key(guide_keys[i]);
+      }
     }
 #endif // HAVE_SPRNG
 

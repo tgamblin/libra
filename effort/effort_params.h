@@ -30,13 +30,17 @@ namespace effort {
     long long sampling;       /// Sampling rate for progress steps.  Defaults to 1.  If set higher, only rolls over 
                               /// progress every so many actual timesteps.
 
+    bool topo;                /// alternately outputs topology-ordered compressed data.
+
     bool ampl;                /// AMPL mode -- uses AMPL for sampling and outputs sampled trace.
     double confidence;        /// AMPL confidence
     double error;             /// AMPL error
     bool normalized_error;    /// Whether error is absolute or normalized bt/w 0 and 1.  Default false.
     int windows_per_update;   /// AMPL windows per update.
+    bool ampl_stats;          /// Whether AMPL should write stats for eventsin its log.
+    bool ampl_trace;          /// Whether AMPL should write traces
+    const char *ampl_guide;   /// identifier for region to guide sampling
 
-    bool topo;                /// alternately outputs topology-ordered compressed data.
     
     /// Constructor with default values of all parameters.
     effort_params() 
@@ -50,12 +54,15 @@ namespace effort {
         chop_libc(false),
         regions("effort"),
         sampling(1),
+        topo(false),
         ampl(false),
         confidence(.90),
         error(.08),
         normalized_error(false),
         windows_per_update(4),
-        topo(false),
+        ampl_stats(false),
+        ampl_trace(true),
+        ampl_guide(NULL),
         have_time(false),
         parsed(false)
     { /* constructor just inits things. */ }

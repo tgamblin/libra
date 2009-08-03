@@ -1,5 +1,6 @@
 #include "string_utils.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 namespace stringutils {
@@ -49,6 +50,14 @@ namespace stringutils {
     }
     
     return string(str, start, end - start);
+  }
+
+  string times(const string& str, size_t n) {
+    ostringstream s;
+    for (size_t i=0; i < n; i++) {
+      s << str;
+    }
+    return s.str();
   }
 
 }  // namespace

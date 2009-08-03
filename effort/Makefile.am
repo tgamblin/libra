@@ -14,7 +14,6 @@ dist_noinst_HEADERS = \
 	Metric.h \
   effort_dataset.h \
 	FrameDB.h \
-	FrameInfo.h \
 	sampling.h \
 	ltqnorm.h
 
@@ -30,7 +29,6 @@ libeffort_la_SOURCES = effort_key.C \
 											 string_utils.C \
 											 Metric.C \
 											 FrameDB.C \
-											 FrameInfo.C \
 											 effort_dataset.C \
 											 s3d_topology.C
 
@@ -84,7 +82,7 @@ endif
 #
 # Effort utility programs
 #
-bin_PROGRAMS = ef nrmse s3d-topo-test
+bin_PROGRAMS = ef nrmse s3d-topo-test sam
 if HAVE_MPI
 bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer 
 endif
@@ -102,6 +100,9 @@ dataset_test_LDADD=libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
 ef_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
+
+sam_SOURCES=sam.C
+sam_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
 
 nrmse_SOURCES=nrmse.C 
 tuner_SOURCES=tuner.C

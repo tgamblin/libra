@@ -5,7 +5,16 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <sys/stat.h>
+
 namespace wavelet {
+
+  // test whether a file exists or not
+  inline bool exists(const char *filename) {
+    struct stat st;
+    return !stat(filename, &st);
+  }
+
 
   // Variable-length read and write routines for unsigned numbers.
   size_t vl_write(std::ostream& out, unsigned long long size);
