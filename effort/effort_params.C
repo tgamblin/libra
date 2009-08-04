@@ -3,12 +3,13 @@
 #include <cstring>
 using namespace std;
 
+#include "sampling.h"
 #include "string_utils.h"
 using namespace stringutils;
 
 namespace effort {
 
-  ostream& operator<<(ostream& out, const effort_params& params) {
+  ostream& operator<<(ostream& out, effort_params& params) {
     out << "   metrics              = " << params.metrics            << endl;
     out << "   pass_limit           = " << params.pass_limit         << endl;
     out << "   scale                = " << params.scale              << endl;
@@ -29,7 +30,19 @@ namespace effort {
       out << "     windows_per_update = " << params.windows_per_update << endl;
       out << "     ampl_stats         = " << params.ampl_stats         << endl;
       out << "     ampl_trace         = " << params.ampl_trace         << endl;
-      out << "     ampl_guide         = " << params.ampl_guide         << endl;
+      out << "     ampl_guide         = ";
+
+      const set<effort_key>& keys(params.guide_keys());
+
+      set<effort_key>::const_iterator i=keys.begin();
+
+      if (i != keys.end()) 
+        out << *i++ << endl;;
+
+      while (i != keys.end()) {
+        out << "                          " << *i++ << endl;
+      }
+      out << endl;
     }
 
     return out;
@@ -60,6 +73,17 @@ namespace effort {
       config_desc()
     };
     return args;
+  }
+
+
+  void effort_params::parse() {
+    parse_keys();
+    parse_metrics();
+  }
+
+
+  void effort_params::parse_keys() {
+    parse_effort_keys(ampl_guide, inserter(guide_list, guide_list.end()));
   }
 
 

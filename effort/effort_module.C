@@ -158,10 +158,9 @@ struct effort_module {
       sampler.set_stats(params.ampl_stats);
       sampler.set_trace(params.ampl_trace);
 
-      vector<effort_key> guide_keys;
-      parse_effort_keys(params.ampl_guide, guide_keys);
-      for(size_t i=0; i < guide_keys.size(); i++) {
-        sampler.add_guide_key(guide_keys[i]);
+      const set<effort_key>& guide_keys = params.guide_keys();
+      for(set<effort_key>::iterator k=guide_keys.begin(); k != guide_keys.end(); k++) {
+        sampler.add_guide_key(*k);
       }
     }
 #endif // HAVE_SPRNG

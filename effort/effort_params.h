@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <vector>
+#include <set>
 #include "effort_key.h"
 #include "env_config.h"
 #include "Metric.h"
@@ -73,10 +74,12 @@ namespace effort {
     
     /// parses metrics into metric_names vector.
     void parse_metrics();
+    void parse_keys();
+    void parse();
 
     /// Returns name mapping for a particular metric id.  METRIC_TIME
     const std::vector<Metric>& get_metrics() {
-      if (!parsed) parse_metrics();
+      if (!parsed) parse();
       return all_metrics;
     }
 
@@ -85,25 +88,32 @@ namespace effort {
     }
 
     size_t num_metrics() {
-      if (!parsed) parse_metrics();
+      if (!parsed) parse();
       return all_metrics.size() + (have_time ? 1 : 0);
     }
     
     /// Whether user wants us to track time.
     bool keep_time() {
-      if (!parsed) parse_metrics();
+      if (!parsed) parse();
       return have_time;
+    }
+
+    const std::set<effort_key> guide_keys() {
+      if (!parsed) parse();
+      return guide_list;
     }
 
   private:
     std::vector<Metric> all_metrics;             /// Parsed metric names, in the order they apeared in this->metrics
     std::map<Metric, size_t> metric_to_index;    /// Map from metric to index in array.
 
+    std::set<effort_key> guide_list;          /// Effort keys to guide ampl sampling.
+
     bool have_time;               /// memo-ized record of whether 
     bool parsed;                  /// whether metrics were parsed yet.
   };
 
-  std::ostream& operator<<(std::ostream& out, const effort_params& params);
+  std::ostream& operator<<(std::ostream& out, effort_params& params);
 
 } //namespace
 

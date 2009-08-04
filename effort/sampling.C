@@ -15,9 +15,6 @@ using namespace std;
 #include "effort_key.h"
 #include "ltqnorm.h"
 
-#include "string_utils.h"
-using namespace stringutils;
-
 #define USE_MPI
 #include "sprng_cpp.h"
 
@@ -105,7 +102,6 @@ namespace effort {
   }
 
 
-
   sample_desc sampling_module::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
     double mean = sum/N;                            // sample mean
     double variance = (sum2/N - (mean*mean));       // estimate w/sample mean
@@ -125,6 +121,32 @@ namespace effort {
     return sample_desc(mean, variance, stdDev, min_sample_size);
   }
 
+  struct guide_check {
+    set<effort_key>& guide;
+    guide_check(set<effort_key>& g) : guide(g) { }
+
+    bool operator()(const effort_key& key) {
+      if (guide.empty()) return true;   // empty set => all true.
+      effort_key normalized(Metric::time(), 0, key.start_path, key.end_path);
+      return (guide.find(normalized) != guide.end());
+    }
+  };
+
+
+  void sampling_module::get_sample_keys(effort_data& log, vector<effort_key>& sorted_keys) {
+    sorted_keys.clear();
+
+    // Dump keys into the vector.
+    sorted_keys.reserve(log.size());
+    transform(log.begin(), log.end(), back_inserter(sorted_keys), get_first());
+
+    // remove non-guiding keys.
+    sorted_keys.erase(
+      partition(sorted_keys.begin(), sorted_keys.end(), guide_check(guide)),
+      sorted_keys.end()
+    );
+  }
+
 
   double sampling_module::compute_sample_proportion(effort_data& log) {
     int rank, size;
@@ -136,14 +158,11 @@ namespace effort {
 
     // Vector to hold keys in identical order across processes
     vector<effort_key> sorted_keys;
-
-    // Dump keys into the vector.
-    sorted_keys.reserve(log.size());
-    transform(log.begin(), log.end(), back_inserter(sorted_keys), get_first());
-
+    get_sample_keys(log, sorted_keys);
 
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
+
 
     vector<sample_desc> vars;
     if (rank == 0) vars.resize(sorted_keys.size());
@@ -244,11 +263,13 @@ namespace effort {
           size_t place = 1;
 
           vector<effort_key> vsorted_keys;
-          transform(key_stats.begin(), key_stats.end(), back_inserter(vsorted_keys), get_first());
+          get_sample_keys(log, vsorted_keys);
           sort(vsorted_keys.begin(), vsorted_keys.end(), variance_gt(key_stats));
 
           for (size_t i=0; i < vsorted_keys.size(); i++) {
             const effort_key& key = vsorted_keys[i];
+
+            
             const sample_desc& sd = key_stats[key];
 
             summary << setw(4)  << place++
@@ -276,7 +297,7 @@ namespace effort {
 
   void sampling_module::finalize() {
     if (rng) {
-      rng->free_sprng();
+      //rng->free_sprng();
       rng = NULL;
     }
     if (trace_file.is_open()) {
@@ -290,11 +311,11 @@ namespace effort {
   }
 
 
-  static Callpath make_path(const string& path) {
+  Callpath make_path(const string& path) {
     vector<string> frame_strings;
     vector<FrameId> frames;
 
-    split(path, ":", frame_strings);
+    stringutils::split(path, ":", frame_strings);
     for (size_t i=0; i < frame_strings.size(); i++) {
       char *err;
       uintptr_t offset = strtol(frame_strings[i].c_str(), &err, 0);
@@ -304,21 +325,6 @@ namespace effort {
   }
 
 
-  // parses effort keys out of environment
-  void parse_effort_keys(const char *str, vector<effort_key>& keys) {
-    if (!str) return;
-
-    vector<string> key_strings;
-    split(str, ", ", key_strings);
-    
-    for (size_t k=0; k < key_strings.size(); k++) {
-      vector<string> path_strings;
-      split_str(key_strings[k], "=>", path_strings);
-      Callpath start(make_path(path_strings[0]));
-      Callpath end(make_path(path_strings[1]));
-      keys.push_back(effort_key(Metric::time(), 0, start, end));
-    }
-  }
 
 }
 

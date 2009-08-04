@@ -11,6 +11,9 @@
 #include "effort_data.h"
 #include "effort_key.h"
 #include "RNGenerator.h"
+#include "Callpath.h"
+#include "string_utils.h"
+
 
 class Sprng; /// Scalable parallel random number generator
 
@@ -65,6 +68,8 @@ namespace effort {
 
     sample_desc compute_sample_size(double sum, double sum2, size_t N, double confidence, double error);
 
+    void get_sample_keys(effort_data& log, std::vector<effort_key>& sorted_keys);
+
   public:
     /// Constructor.  Doesn't init anything, but can optionally set initial sample size here.
     sampling_module(size_t initial_sample_size = 40);
@@ -90,8 +95,28 @@ namespace effort {
     void finalize();
   };
 
+  Callpath make_path(const std::string& path);
 
-  void parse_effort_keys(const char *str, std::vector<effort_key>& keys);
+  template <class OutputIterator>
+  void parse_effort_keys(const char *str, OutputIterator output) {
+    if (!str) return;
+
+    std::vector<std::string> key_strings;
+    stringutils::split(str, ", ", key_strings);
+    
+    for (size_t k=0; k < key_strings.size(); k++) {
+      std::vector<std::string> path_strings;
+      stringutils::split_str(key_strings[k], "=>", path_strings);
+
+      Callpath start(make_path(path_strings[0]));
+      Callpath end(start);
+      if (path_strings.size() > 1) {
+        end = make_path(path_strings[1]);        
+      }
+      
+      *output++ = effort_key(Metric::time(), 0, start, end);
+    }
+  }
 
 
 }
