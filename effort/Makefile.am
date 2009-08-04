@@ -60,16 +60,16 @@ libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
 libeffort_runtime_la_SOURCES = effort_module.C \
 															 env_config.C \
-															 sampling.C \
-															 base_wrapper.C
+															 sampling.C
+
 libeffort_runtime_la_LIBADD = libeffort.la
 libeffort_runtime_la_LDFLAGS = -avoid-version 
 
-libpmpi_effort_la_SOURCES = effort_wrapper.C
+libpmpi_effort_la_SOURCES = effort_wrapper.C base_wrapper.C
 libpmpi_effort_la_LIBADD = libeffort-runtime.la
 libpmpi_effort_la_LDFLAGS = -avoid-version 
 
-libcomm_effort_la_SOURCES = comm_wrapper.C
+libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 libcomm_effort_la_LIBADD = libeffort-runtime.la
 libcomm_effort_la_LDFLAGS = -avoid-version 
 

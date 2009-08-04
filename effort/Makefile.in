@@ -102,8 +102,9 @@ effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @PNMPI_EFFORT_TRUE@am_effort_la_rpath = -rpath $(pnmpidir)
 @PMPI_EFFORT_TRUE@libcomm_effort_la_DEPENDENCIES =  \
 @PMPI_EFFORT_TRUE@	libeffort-runtime.la
-am__libcomm_effort_la_SOURCES_DIST = comm_wrapper.C
-@PMPI_EFFORT_TRUE@am_libcomm_effort_la_OBJECTS = comm_wrapper.lo
+am__libcomm_effort_la_SOURCES_DIST = comm_wrapper.C base_wrapper.C
+@PMPI_EFFORT_TRUE@am_libcomm_effort_la_OBJECTS = comm_wrapper.lo \
+@PMPI_EFFORT_TRUE@	base_wrapper.lo
 libcomm_effort_la_OBJECTS = $(am_libcomm_effort_la_OBJECTS)
 libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -111,9 +112,9 @@ libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @PMPI_EFFORT_TRUE@am_libcomm_effort_la_rpath = -rpath $(libdir)
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_DEPENDENCIES = libeffort.la
 am__libeffort_runtime_la_SOURCES_DIST = effort_module.C env_config.C \
-	sampling.C base_wrapper.C
+	sampling.C
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_OBJECTS = effort_module.lo \
-@PMPI_EFFORT_TRUE@	env_config.lo sampling.lo base_wrapper.lo
+@PMPI_EFFORT_TRUE@	env_config.lo sampling.lo
 libeffort_runtime_la_OBJECTS = $(am_libeffort_runtime_la_OBJECTS)
 libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -146,8 +147,9 @@ libpcontrol_counter_la_OBJECTS = $(am_libpcontrol_counter_la_OBJECTS)
 @PMPI_EFFORT_TRUE@am_libpcontrol_counter_la_rpath = -rpath $(libdir)
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_DEPENDENCIES =  \
 @PMPI_EFFORT_TRUE@	libeffort-runtime.la
-am__libpmpi_effort_la_SOURCES_DIST = effort_wrapper.C
-@PMPI_EFFORT_TRUE@am_libpmpi_effort_la_OBJECTS = effort_wrapper.lo
+am__libpmpi_effort_la_SOURCES_DIST = effort_wrapper.C base_wrapper.C
+@PMPI_EFFORT_TRUE@am_libpmpi_effort_la_OBJECTS = effort_wrapper.lo \
+@PMPI_EFFORT_TRUE@	base_wrapper.lo
 libpmpi_effort_la_OBJECTS = $(am_libpmpi_effort_la_OBJECTS)
 libpmpi_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -436,15 +438,14 @@ libeffort_la_LIBADD = \
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_SOURCES = effort_module.C \
 @PMPI_EFFORT_TRUE@															 env_config.C \
-@PMPI_EFFORT_TRUE@															 sampling.C \
-@PMPI_EFFORT_TRUE@															 base_wrapper.C
+@PMPI_EFFORT_TRUE@															 sampling.C
 
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LIBADD = libeffort.la
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LDFLAGS = -avoid-version 
-@PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = effort_wrapper.C
+@PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = effort_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort-runtime.la
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LDFLAGS = -avoid-version 
-@PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = comm_wrapper.C
+@PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort-runtime.la
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libtiming_la_SOURCES = timing_module.C

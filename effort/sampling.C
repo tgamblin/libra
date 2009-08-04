@@ -306,6 +306,8 @@ namespace effort {
 
   // parses effort keys out of environment
   void parse_effort_keys(const char *str, vector<effort_key>& keys) {
+    if (!str) return;
+
     vector<string> key_strings;
     split(str, ", ", key_strings);
     
