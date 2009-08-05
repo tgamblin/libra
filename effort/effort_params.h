@@ -63,7 +63,7 @@ namespace effort {
         windows_per_update(4),
         ampl_stats(false),
         ampl_trace(true),
-        ampl_guide(NULL),
+        ampl_guide(""),
         have_time(false),
         parsed(false)
     { /* constructor just inits things. */ }

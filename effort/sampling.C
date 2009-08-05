@@ -147,6 +147,25 @@ namespace effort {
     );
   }
 
+  /*
+  static void dump(vector<effort_key>& keys) {
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    ostringstream msg;
+    msg << "dumping " << keys.size() << " keys" << endl;
+    cerr << msg.str();
+
+    ostringstream filename;
+    filename << "keys." << rank;
+    string file_str(filename.str());
+    ofstream file(file_str.c_str());
+
+    for (size_t i=0; i < keys.size(); i++) {
+      file << keys[i] << endl;
+    }
+  }
+  */
 
   double sampling_module::compute_sample_proportion(effort_data& log) {
     int rank, size;
@@ -162,7 +181,6 @@ namespace effort {
 
     // Sort vector using heavy key comparison (cmpares by all frames, full module names, offsets)
     sort(sorted_keys.begin(), sorted_keys.end(), effort_key_full_lt());
-
 
     vector<sample_desc> vars;
     if (rank == 0) vars.resize(sorted_keys.size());
@@ -208,7 +226,6 @@ namespace effort {
       }
     }
 
-
     if (stats) {
       key_stats.clear();
       for (size_t i=0; i < vars.size(); i++) {
@@ -251,6 +268,7 @@ namespace effort {
     
     if (windows % windows_per_update) {
       proportion = compute_sample_proportion(log);
+
       if (rank == 0) {
         ostringstream summary;
         summary << "STEP " << log.progress_count << endl;
@@ -321,6 +339,8 @@ namespace effort {
       uintptr_t offset = strtol(frame_strings[i].c_str(), &err, 0);
       frames.push_back(FrameId(ModuleId(), offset));
     }
+    reverse(frames.begin(), frames.end());
+
     return Callpath::create(frames);
   }
 

@@ -51,11 +51,6 @@ public:
   /// using static routines below.
   typedef std::map<uintptr_t, Derived> id_map;
 
-private:
-  // use for safe bool conversion
-  typedef void (UniqueId<Derived>::*bool_type)() const;
-  void not_comparable() const { }
-
 protected:
   /// Unique identifier for this instance of the UniqueId
   const std::string *identifier;
@@ -65,28 +60,26 @@ protected:
     return ids;
   }
 
-  /// Raw pointer constructor.  Used internally for serialization.
-  UniqueId(const std::string *id) : identifier(id) { }
-  
-  /// Construct a Null UniqueId.  Subclasses can choose to expose this or not.
-  UniqueId() : identifier(NULL) { }
-  
-  /// Constructor takes a const std::string reference, gets a unique pointer to its value,
-  /// and inits this uid with the pointer.
-  UniqueId(const std::string& id) { 
+  const std::string *lookup(const std::string& id) {
     id_set& ids = get_identifiers();
     id_set_iterator i = ids.find(&id);
     if (i == ids.end()) {
       i = ids.insert(new std::string(id)).first;
     }
-    this->identifier = *i;
+    return *i;
   }
+
+  /// Raw pointer constructor.  Used internally for serialization.
+  UniqueId(const std::string *id) : identifier(id) { }
+  
+  /// Construct a Null UniqueId.  Subclasses can choose to expose this or not.
+  UniqueId() : identifier(lookup("")) { }
+  
+  /// Constructor takes a const std::string reference, gets a unique pointer to its value,
+  /// and inits this uid with the pointer.
+  UniqueId(const std::string& id) : identifier(lookup(id)) { }
   
 public:
-  operator bool_type() {  // safe bool conversion
-    return identifier ? &UniqueId<Derived>::not_comparable : 0;
-  }
-    
   Derived& operator=(const Derived& other) {
     identifier = other->identifier;
   }
@@ -244,8 +237,7 @@ public:
 
 template<class Derived>
 std::ostream& operator<<(std::ostream& out, UniqueId<Derived> uid) {
-  // TODO: let derived redefine "unknown" somehow.
-  out << (uid.identifier ? (*uid.identifier) : "unknown");
+  out << uid.str();
   return out;
 }
 
