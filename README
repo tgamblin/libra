@@ -1,10 +1,11 @@
 ==========================================
-    /|            libwavelet 
+    /|            Libra 
  __/  \  .__      by Todd Gamblin
-       \/         tgamblin@cs.unc.edu
+       \/         tgamblin@llnl.gov
 ==========================================
 
-This is libwavelet, a library for sequential and parallel wavelet transforms.
+This is Libra, a tool for load-balance analysis in parallel applications.
+
 See below for guidelines for a typical installation.
 See the LICENSE file for license and distribution information.  
 
