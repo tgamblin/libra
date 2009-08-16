@@ -75,6 +75,15 @@ mpi_array_calls = {
     "MPI_Waitsome"           : { 1:0, 4:0 }
 }
 
+
+def write_fortran_init_flag():
+    output.write("static int fortran_init = 0;\n")
+
+def once(function):
+    if not hasattr(function, "did_once"):
+        function()
+        function.did_once = True
+
 # Returns MPI_Blah_[f2c,c2f] prefix for a handle type
 def conversion_prefix(handle_type):
     if handle_type == "MPI_Datatype":
@@ -682,6 +691,8 @@ def fn(out, scope, args, children):
                 out.write("    }\n")
 
             scope["callfn"] = callfn
+            once(write_fortran_init_flag)
+
         else:
             scope["callfn"] = c_call
             
@@ -869,9 +880,6 @@ extern "C" {
 #endif /* _EXTERN_C_ */
 ''')
 
-if output_fortran_wrappers:
-    output.write("static int fortran_init = 0;\n")
-
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
 
@@ -889,7 +897,8 @@ for f in args:
     outer_scope["fileno"] = str(fileno)
     outer_scope.include(macros)
 
-    for chunk in parse(lexer.lex(file), macros):
+    chunks = parse(lexer.lex(file), macros)
+    for chunk in chunks:
         chunk.execute(output, outer_scope)
 
     fileno += 1

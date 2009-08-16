@@ -60,7 +60,7 @@ namespace effort {
         confidence(.90),
         error(.08),
         normalized_error(false),
-        windows_per_update(4),
+        windows_per_update(5),
         ampl_stats(false),
         ampl_trace(true),
         ampl_guide(""),

@@ -29,7 +29,7 @@ namespace effort {
       confidence(0), 
       error(0),
       windows(0),
-      windows_per_update(1),
+      windows_per_update(5),
       stats(false),
       trace(true),
       rng(new LCG()),
@@ -252,6 +252,14 @@ namespace effort {
     }
   };
 
+  struct sample_size_gt {
+    const stat_map& stats;
+    sample_size_gt(const stat_map& sm) : stats(sm) { }
+    bool operator()(const effort_key& lhs, const effort_key& rhs) {
+      return stats.find(lhs)->second.sample_size > stats.find(rhs)->second.sample_size;
+    }
+  };
+
   void sampling_module::sample_step(effort_data& log) { 
     int rank, size;
     PMPI_Comm_rank(comm, &rank);
@@ -266,7 +274,7 @@ namespace effort {
       log.write_current_step(trace_file);
     }
     
-    if (windows % windows_per_update) {
+    if (windows % windows_per_update == 0) {
       proportion = compute_sample_proportion(log);
 
       if (rank == 0) {
@@ -282,7 +290,7 @@ namespace effort {
 
           vector<effort_key> vsorted_keys;
           get_sample_keys(log, vsorted_keys);
-          sort(vsorted_keys.begin(), vsorted_keys.end(), variance_gt(key_stats));
+          sort(vsorted_keys.begin(), vsorted_keys.end(), sample_size_gt(key_stats));
 
           for (size_t i=0; i < vsorted_keys.size(); i++) {
             const effort_key& key = vsorted_keys[i];
@@ -336,7 +344,7 @@ namespace effort {
     stringutils::split(path, ":", frame_strings);
     for (size_t i=0; i < frame_strings.size(); i++) {
       char *err;
-      uintptr_t offset = strtol(frame_strings[i].c_str(), &err, 0);
+      uintptr_t offset = strtoull(frame_strings[i].c_str(), &err, 0);
       frames.push_back(FrameId(ModuleId(), offset));
     }
     reverse(frames.begin(), frames.end());

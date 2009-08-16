@@ -106,7 +106,7 @@ namespace effort {
     
     for (size_t k=0; k < key_strings.size(); k++) {
       std::vector<std::string> path_strings;
-      stringutils::split_str(key_strings[k], "=>", path_strings);
+      stringutils::split_str(key_strings[k], ">", path_strings);
 
       Callpath start(make_path(path_strings[0]));
       Callpath end(start);

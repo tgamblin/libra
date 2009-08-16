@@ -7,15 +7,14 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_SYMTAB
 #include "Symtab.h"
 #include "Symbol.h"
+using namespace std;
 using namespace Dyninst::SymtabAPI;
-#endif // HAVE_SYMTAB
 
 #include "io_utils.h"
 using wavelet::exists;
-using namespace std;
+
 
 Translator::Translator(const string& exe) : executable(exe) { }
 
@@ -171,7 +170,7 @@ void Translator::write_path(ostream& out, const Callpath& path, bool one_line, s
     size_t file_line_width = max_file+max_line + 3;
     size_t max_sym_width = max_sym + 2;
 
-    for (int i=0; i < path.size(); i++) {
+    for (size_t i=0; i < path.size(); i++) {
       out << indent;
       infos[i].write(out, file_line_width, max_sym_width);
       out << endl;
