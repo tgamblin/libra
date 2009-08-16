@@ -7,14 +7,15 @@
 #include "config.h"
 #endif
 
+#ifdef HAVE_SYMTAB
 #include "Symtab.h"
 #include "Symbol.h"
-using namespace std;
 using namespace Dyninst::SymtabAPI;
+#endif // HAVE_SYMTAB
 
 #include "io_utils.h"
 using wavelet::exists;
-
+using namespace std;
 
 Translator::Translator(const string& exe) : executable(exe) { }
 
