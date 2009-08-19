@@ -7,6 +7,7 @@
 #include <map>
 #include <ostream>
 
+#include "safe_bool.h"
 #include "io_utils.h"
 
 #include "libra-config.h"
@@ -40,7 +41,9 @@ struct dereference_lt {
 /// That's all!
 ///
 template <class Derived>
-class UniqueId {
+class UniqueId 
+  : public safe_bool< UniqueId<Derived> > 
+{
 public:
   /// Type for set of unique uid values.
   typedef std::set<const std::string*, dereference_lt> id_set;
@@ -80,6 +83,11 @@ protected:
   UniqueId(const std::string& id) : identifier(lookup(id)) { }
   
 public:
+  /// test method for safe_bool
+  bool boolean_test() const {
+    return !identifier->empty();
+  }
+  
   Derived& operator=(const Derived& other) {
     identifier = other->identifier;
   }
@@ -90,6 +98,10 @@ public:
 
   bool operator==(const Derived& other) const {
     return identifier == other.identifier;
+  }
+  
+  bool operator!=(const Derived& other) const {
+    return identifier != other.identifier;
   }
   
   bool operator>(const Derived& other) const {
