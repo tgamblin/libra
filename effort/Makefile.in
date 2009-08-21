@@ -48,8 +48,8 @@ host_triplet = @host@
 #
 @PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la 
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
-	$(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test sample-test approx-timer 
+	$(am__EXEEXT_1) $(am__EXEEXT_2)
+@HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -111,10 +111,9 @@ libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(libcomm_effort_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libcomm_effort_la_rpath = -rpath $(libdir)
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_DEPENDENCIES = libeffort.la
-am__libeffort_runtime_la_SOURCES_DIST = effort_module.C env_config.C \
-	sampling.C
+am__libeffort_runtime_la_SOURCES_DIST = effort_module.C env_config.C
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_OBJECTS = effort_module.lo \
-@PMPI_EFFORT_TRUE@	env_config.lo sampling.lo
+@PMPI_EFFORT_TRUE@	env_config.lo
 libeffort_runtime_la_OBJECTS = $(am_libeffort_runtime_la_OBJECTS)
 libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -173,9 +172,10 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
-@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT) \
-@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	approx-timer$(EXEEXT)
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@am__EXEEXT_1 = sample-test$(EXEEXT) \
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@	approx-timer$(EXEEXT)
+@HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
+@HAVE_MPI_TRUE@	dataset_test$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
@@ -428,6 +428,7 @@ libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
 	effort_params.C string_utils.C Metric.C FrameDB.C \
 	effort_dataset.C s3d_topology.C $(am__append_1) \
 	$(am__append_2)
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@SAMPLE_PROGS = sample-test approx-timer 
 libeffort_la_LDFLAGS = -avoid-version
 libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
@@ -437,8 +438,7 @@ libeffort_la_LIBADD = \
 
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_SOURCES = effort_module.C \
-@PMPI_EFFORT_TRUE@															 env_config.C \
-@PMPI_EFFORT_TRUE@															 sampling.C
+@PMPI_EFFORT_TRUE@															 env_config.C
 
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LIBADD = libeffort.la
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LDFLAGS = -avoid-version 
@@ -940,16 +940,16 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 	uninstall-pnmpiLTLIBRARIES
 
 
-base_wrapper.C: base_wrapper.w
+$(srcdir)/base_wrapper.C: base_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-effort_wrapper.C: effort_wrapper.w
+$(srcdir)/effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-comm_wrapper.C: comm_wrapper.w
+$(srcdir)/comm_wrapper.C: comm_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-waitall_wrapper.C: waitall_wrapper.w
+$(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 # Installs library using PnMPI patcher

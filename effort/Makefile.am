@@ -40,6 +40,7 @@ libeffort_la_SOURCES += parallel_compressor.C \
 
 if HAVE_SPRNG
 libeffort_la_SOURCES += sampling.C ltqnorm.C
+SAMPLE_PROGS = sample-test approx-timer 
 endif
 endif
 
@@ -59,8 +60,7 @@ lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffo
 libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
 libeffort_runtime_la_SOURCES = effort_module.C \
-															 env_config.C \
-															 sampling.C
+															 env_config.C
 
 libeffort_runtime_la_LIBADD = libeffort.la
 libeffort_runtime_la_LDFLAGS = -avoid-version 
@@ -82,9 +82,9 @@ endif
 #
 # Effort utility programs
 #
-bin_PROGRAMS = ef nrmse s3d-topo-test 
+bin_PROGRAMS = ef nrmse s3d-topo-test $(SAMPLE_PROGS)
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test sample-test approx-timer 
+bin_PROGRAMS += tuner bin_test dataset_test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
@@ -110,16 +110,16 @@ CLEANFILES = effort_wrapper.C comm_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
 
-base_wrapper.C: base_wrapper.w
+$(srcdir)/base_wrapper.C: base_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-effort_wrapper.C: effort_wrapper.w
+$(srcdir)/effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-comm_wrapper.C: comm_wrapper.w
+$(srcdir)/comm_wrapper.C: comm_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-waitall_wrapper.C: waitall_wrapper.w
+$(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 

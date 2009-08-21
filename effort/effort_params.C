@@ -83,7 +83,9 @@ namespace effort {
 
 
   void effort_params::parse_keys() {
+#ifdef HAVE_SPRNG
     parse_effort_keys(ampl_guide, inserter(guide_list, guide_list.end()));
+#endif // HAVE_SPRNG
   }
 
 

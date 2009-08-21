@@ -31,7 +31,8 @@ vary_passes_SOURCES = vary_passes.C
 vltest_SOURCES = vltest.C
 
 papicheck_SOURCES = papicheck.C
-papicheck_CPPFLAGS=$(PAPI_CPPFLAGS)
+papicheck_CPPFLAGS = $(PAPI_CPPFLAGS)
+papicheck_LDADD = $(PAPI_LDFLAGS)
 
 swcheck_SOURCES = swcheck.C
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
