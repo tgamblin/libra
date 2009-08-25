@@ -111,9 +111,7 @@ FrameInfo Translator::translate(const FrameId& frame) {
 symtab_info *Translator::get_symtab_info(ModuleId module) {
   Translator::cache::iterator sti = symtabs.find(module);
   if (sti == symtabs.end()) {
-    Symtab *symtab;
     string filename = module.str();
-
     sti = symtabs.insert(Translator::cache::value_type(module, new symtab_info(module.str()))).first;
   }
 
