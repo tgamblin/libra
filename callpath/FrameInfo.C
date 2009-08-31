@@ -42,7 +42,7 @@ void FrameInfo::write(ostream& out, size_t file_line_width, size_t sym_width) co
   } else {
     out << left << setw(sym_width) << sym_name;
   }
-  if (!sym_width) out << " ";
+  out << " ";
 
   out << module ? module.c_str() : "[unknown module]";
   out << offset;

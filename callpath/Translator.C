@@ -24,7 +24,7 @@ Translator::Translator(const string& exe) : executable(exe) { }
 #ifndef HAVE_SYMTAB
 
 // Just retur an empty frameinfo if we don't have symtabAPI
-FrameInfo Translator::translate(const FrameId& frame) {
+FrameInfo Translator::translate(const FrameId& frame) : callsite_mode(true) {
   return FrameInfo(frame.module, frame.offset);
 }
 
@@ -86,6 +86,11 @@ public:
 };
 
 
+void Translator::set_callsite_mode(bool mode) {
+  callsite_mode = mode;
+}
+
+
 FrameInfo Translator::translate(const FrameId& frame) {
   vector<LineNoTuple> lines;
 
@@ -95,12 +100,16 @@ FrameInfo Translator::translate(const FrameId& frame) {
     
   // Subtract one from the offset here, to hackily
   // convert return address to callsite
-  uintptr_t offset = frame.offset ? frame.offset - 1 : frame.offset;
+  uintptr_t offset = frame.offset;
+  uintptr_t translation_offset = offset;
+  if (callsite_mode) {
+    translation_offset = offset ? offset - 1 : offset;
+  }
 
   string name;
   stinfo->getName(offset, name);
 
-  if (stinfo->getSourceLines(lines, offset)) {
+  if (stinfo->getSourceLines(lines, translation_offset)) {
     return FrameInfo(module, offset, lines[0].first, lines[0].second, name);    
   } else {
     return FrameInfo(frame.module, frame.offset, name);
