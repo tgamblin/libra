@@ -383,7 +383,7 @@ class TreeView(QTreeView):
 
         self.setIndentation(12)
         self.contextMenuBuilder = None
-    
+
     def expandFirstLevel(self):
         # expand first level of tree
         childCount = self.model().rowCount(self.rootIndex())
