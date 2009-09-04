@@ -54,7 +54,7 @@ libeffort_la_LIBADD = \
 # Effort runtime library and wrapper libraries
 #
 if PMPI_EFFORT
-lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la 
+lib_LTLIBRARIES += libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
 
 libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 
@@ -72,6 +72,10 @@ libpmpi_effort_la_LDFLAGS = -avoid-version
 libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 libcomm_effort_la_LIBADD = libeffort-runtime.la
 libcomm_effort_la_LDFLAGS = -avoid-version 
+
+libmanual_effort_la_SOURCES = base_wrapper.C
+libmanual_effort_la_LIBADD = libeffort-runtime.la
+libmanual_effort_la_LDFLAGS = -avoid-version 
 
 libtiming_la_SOURCES = timing_module.C
 libtiming_la_LDFLAGS = -avoid-version
