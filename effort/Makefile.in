@@ -46,7 +46,7 @@ host_triplet = @host@
 #
 # Effort runtime library and wrapper libraries
 #
-@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la 
+@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
 	$(am__EXEEXT_1) $(am__EXEEXT_2)
 @HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test
@@ -138,6 +138,15 @@ libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libeffort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@libmanual_effort_la_DEPENDENCIES =  \
+@PMPI_EFFORT_TRUE@	libeffort-runtime.la
+am__libmanual_effort_la_SOURCES_DIST = base_wrapper.C
+@PMPI_EFFORT_TRUE@am_libmanual_effort_la_OBJECTS = base_wrapper.lo
+libmanual_effort_la_OBJECTS = $(am_libmanual_effort_la_OBJECTS)
+libmanual_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libmanual_effort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@am_libmanual_effort_la_rpath = -rpath $(libdir)
 libpcontrol_counter_la_LIBADD =
 am__libpcontrol_counter_la_SOURCES_DIST = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@am_libpcontrol_counter_la_OBJECTS =  \
@@ -222,6 +231,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(libeffort_runtime_la_SOURCES) $(libeffort_la_SOURCES) \
+	$(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
@@ -232,6 +242,7 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_runtime_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
+	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
@@ -448,6 +459,9 @@ libeffort_la_LIBADD = \
 @PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort-runtime.la
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
+@PMPI_EFFORT_TRUE@libmanual_effort_la_SOURCES = base_wrapper.C
+@PMPI_EFFORT_TRUE@libmanual_effort_la_LIBADD = libeffort-runtime.la
+@PMPI_EFFORT_TRUE@libmanual_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libtiming_la_SOURCES = timing_module.C
 @PMPI_EFFORT_TRUE@libtiming_la_LDFLAGS = -avoid-version
 @PMPI_EFFORT_TRUE@libtiming_la_LIBADD = ../libwavelet/libwavelet.la
@@ -586,6 +600,8 @@ libeffort-runtime.la: $(libeffort_runtime_la_OBJECTS) $(libeffort_runtime_la_DEP
 	$(libeffort_runtime_la_LINK) $(am_libeffort_runtime_la_rpath) $(libeffort_runtime_la_OBJECTS) $(libeffort_runtime_la_LIBADD) $(LIBS)
 libeffort.la: $(libeffort_la_OBJECTS) $(libeffort_la_DEPENDENCIES) 
 	$(libeffort_la_LINK) -rpath $(libdir) $(libeffort_la_OBJECTS) $(libeffort_la_LIBADD) $(LIBS)
+libmanual-effort.la: $(libmanual_effort_la_OBJECTS) $(libmanual_effort_la_DEPENDENCIES) 
+	$(libmanual_effort_la_LINK) $(am_libmanual_effort_la_rpath) $(libmanual_effort_la_OBJECTS) $(libmanual_effort_la_LIBADD) $(LIBS)
 libpcontrol-counter.la: $(libpcontrol_counter_la_OBJECTS) $(libpcontrol_counter_la_DEPENDENCIES) 
 	$(CXXLINK) $(am_libpcontrol_counter_la_rpath) $(libpcontrol_counter_la_OBJECTS) $(libpcontrol_counter_la_LIBADD) $(LIBS)
 libpmpi-effort.la: $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_DEPENDENCIES) 
