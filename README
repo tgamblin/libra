@@ -6,57 +6,6 @@
 
 This is Libra, a tool for load-balance analysis in parallel applications.
 
-See below for guidelines for a typical installation.
+Installation and usage instructions can be found in the 'docs' directory.
+
 See the LICENSE file for license and distribution information.  
-
-
-==========================================
- Requirements
-==========================================
-To use libwavelet, you will a C++ compiler and boost, available from
-http://www.boost.org.  Libwavelet uses boost::matrix for its input data.  
-Note that you will only need the headers, not the entire compiled library.
-
-==========================================
- Installation instructions
-==========================================
-Building libwavelet is pretty standard:
-    ./configure
-    make -j8
-    make install
-
-If you have a multicore machine, this will build safely, and probably a whole
-lot faster, if you use make -j. You may need additional options to get 
-things to build.  In particular, if you have a nonstandard boost install,
-use:
-
-    ./configure --with-boost=<path/to/boost>
-
-If you have not officially installed boost, and simply have a dir with headers,
-you can do this instead:
-
-    ./configure CPPFLAGS=-I/path/to/boost
-
-Libwavelet only needs the matrix.hpp files in boost::numeric::ublas, so this
-is safe.  If you want to build libwavelet for parallel applications, you 
-should configure with your favorite MPI C++ compiler, e.g.:
-
-    ./configure CXX=mpicxx
-
-Configure will automatically detect mpi.h and build the parallel transform
-into the library.  If you are using libwavelet with performance tools, or if 
-you do not want its MPI routines to be profiled, you can configure it to use PMPI
-bindings instead.  Simply provide:
-
-    ./configure --with-pmpi
-
-For additional options, run:
-
-    ./configure --help
-
-==========================================
- Documentation 
-==========================================
-All source files are commented with Doxygen, and high-level documentation is 
-coming real soon now.
-

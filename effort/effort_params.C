@@ -3,7 +3,14 @@
 #include <cstring>
 using namespace std;
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifdef HAVE_SPRNG
 #include "sampling.h"
+#endif // HAVE_SPRNG
+
 #include "string_utils.h"
 using namespace stringutils;
 

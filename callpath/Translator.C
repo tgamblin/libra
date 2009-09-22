@@ -17,14 +17,14 @@ using namespace Dyninst::SymtabAPI;
 using wavelet::exists;
 using namespace std;
 
-Translator::Translator(const string& exe) : executable(exe) { }
-
+Translator::Translator(const string& exe) 
+  : executable(exe), callsite_mode(true) { }
 
 
 #ifndef HAVE_SYMTAB
 
-// Just retur an empty frameinfo if we don't have symtabAPI
-FrameInfo Translator::translate(const FrameId& frame) : callsite_mode(true) {
+// Just return an empty frameinfo if we don't have symtabAPI
+FrameInfo Translator::translate(const FrameId& frame) {
   return FrameInfo(frame.module, frame.offset);
 }
 
@@ -194,3 +194,4 @@ void Translator::write_path(ostream& out, const Callpath& path, std::string inde
 void Translator::set_executable(const std::string& exe) {
   executable = ModuleId(exe);
 }
+

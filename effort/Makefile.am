@@ -15,7 +15,9 @@ dist_noinst_HEADERS = \
   effort_dataset.h \
 	FrameDB.h \
 	sampling.h \
-	ltqnorm.h
+	ltqnorm.h \
+	stl_utils.h \
+	s3d_topology.h
 
 lib_LTLIBRARIES = libeffort.la
 
@@ -44,12 +46,11 @@ SAMPLE_PROGS = sample-test approx-timer
 endif
 endif
 
-libeffort_la_LDFLAGS = -avoid-version
 libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la \
-	$(PAPI_LDFLAGS) \
-	$(SPRNG_LDFLAGS)
+	../libwavelet/libwavelet.la
+
+libeffort_la_LDFLAGS = -avoid-version $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
 
 #
 # Effort runtime library and wrapper libraries
@@ -110,8 +111,8 @@ tuner_SOURCES=tuner.C
 bin_test_SOURCES=bin_test.C
 s3d_topo_test_SOURCES=s3d_topo_test.C
 
-CLEANFILES = effort_wrapper.C comm_wrapper.C
-EXTRA_DIST = effort_wrapper.w comm_wrapper.w
+CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
+EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
 
 $(srcdir)/base_wrapper.C: base_wrapper.w
@@ -157,8 +158,8 @@ timing_la_LDFLAGS = -avoid-version -module
 timing_la_LIBADD = ../libwavelet/libwavelet.la
 
 effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
-effort_la_LDFLAGS = -avoid-version -module
+effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
+effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
 
 # Installs library using PnMPI patcher
 install-exec-hook:

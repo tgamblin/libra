@@ -16,8 +16,6 @@ class symtab_info;
 /// Class to turn FrameIds into more useful FrameInfo (with symbol data).
 ///
 class Translator { 
-private:
-  ModuleId executable;
 public:
   /// Construct a translator; optionally provide the location of the executable 
   /// for translating frames with unknown modules.
@@ -42,6 +40,9 @@ public:
   void set_callsite_mode(bool mode);
   
 private:
+  /// Main executable 
+  ModuleId executable;
+
   /// Lookup table for symtabs we've already parsed.
   typedef std::map<ModuleId, symtab_info*> cache;
 
