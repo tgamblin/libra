@@ -17,8 +17,9 @@
 #  This will AC_SUBST the following devel variables for use in Makefile.am: 
 #
 #     PYTHON_CPPFLAGS      Include flags for dir containing Python.h
-#     PYTHON_LDFLAGS       Special flags for compiling python (e.g. -framework, etc.)
-#     PYTHON_LIBS          Linker flags for linking against libpython<PYTHON_VERSION>.so
+#     PYTHON_LDFLAGS       Linker flags for either:
+#                          - Linking against libpython<PYTHON_VERSION>.so on linux
+#                          - Linking against the Python Framework on Mac OS X
 #
 #  Finally, this sets some variables you can use in configure.ac:
 #     have_python          yes if interpreter was found, no otherwise.
@@ -149,15 +150,12 @@ AC_ARG_WITH([python],
          PYTHON_FDIR=`echo ${pyhome} | ${SED} 's_/[[^/]]*\.framework$__'`
 
          PYTHON_CPPFLAGS="-I${pyhome}/Headers"
-         PYTHON_LIBS=""
          PYTHON_LDFLAGS="-F${PYTHON_FDIR} -framework Python"
 
          SAVED_CPPFLAGS="$CPPFLAGS"
-         SAVED_LIBS="$LIBS"
          SAVED_LDFLAGS="$LDFLAGS"
 
          CPPFLAGS="$PYTHON_CPPFLAGS $CPPFLAGS"
-         LIBS="$PYTHON_LIBS $LIBS"
          LDFLAGS="$PYTHON_LDFLAGS $LDFLAGS"
    
          AC_CHECK_HEADER([Python.h],[],
@@ -172,7 +170,6 @@ AC_ARG_WITH([python],
                          have_python_devel=no])
 
          CPPFLAGS="$SAVED_CPPFLAGS"
-         LIBS="$SAVED_LIBS"
          LDFLAGS="$SAVED_LDFLAGS"
 
      else 
@@ -180,15 +177,12 @@ AC_ARG_WITH([python],
          PYTHON_LIBNAME="python${PYTHON_VERSION}"
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
-         PYTHON_LIBS="-L$pyhome/lib -l${PYTHON_LIBNAME}"
-         PYTHON_LDFLAGS=""
+         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME} -Wl,-rpath=$pyhome/lib"
          
          SAVED_CPPFLAGS="$CPPFLAGS"
-         SAVED_LIBS="$LIBS"
          SAVED_LDFLAGS="$LDFLAGS"
          
          CPPFLAGS="$PYTHON_CPPFLAGS $CPPFLAGS"
-         LIBS="$PYTHON_LIBS $LIBS"
          LDFLAGS="$PYTHON_LDFLAGS $LDFLAGS"
          
          AC_CHECK_HEADER([Python.h],[],
@@ -201,13 +195,11 @@ AC_ARG_WITH([python],
                             have_python_devel=no])
          
          CPPFLAGS="$SAVED_CPPFLAGS"
-         LIBS="$SAVED_LIBS"
          LDFLAGS="$SAVED_LDFLAGS"
      fi
 
      AC_SUBST(PYTHON_CPPFLAGS)
      AC_SUBST(PYTHON_LDFLAGS)
-     AC_SUBST(PYTHON_LIBS)
 
      if [[ "x$have_python_devel" != xno ]] ; then
          have_python_devel=yes

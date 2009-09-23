@@ -77,7 +77,7 @@ LTLIBRARIES = $(python_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 _pyeffort_la_DEPENDENCIES = libvtkeffort.la ../effort/libeffort.la \
 	../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am__pyeffort_la_OBJECTS = pyeffort_wrap.lo
 _pyeffort_la_OBJECTS = $(am__pyeffort_la_OBJECTS)
 _pyeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -200,7 +200,6 @@ PYTHON = @PYTHON@
 PYTHON_CPPFLAGS = @PYTHON_CPPFLAGS@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_LDFLAGS = @PYTHON_LDFLAGS@
-PYTHON_LIBS = @PYTHON_LIBS@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
@@ -329,7 +328,6 @@ libvtkeffort_la_LDFLAGS = \
 	-module \
 	-avoid-version \
 	$(VTK_LIBS) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
-	$(PYTHON_LIBS) \
 	$(PYTHON_LDFLAGS)
 
 
@@ -346,8 +344,7 @@ _pyeffort_la_LIBADD = libvtkeffort.la \
 								    		../libwavelet/libwavelet.la \
                         $(VTK_LIBS) \
 										    -lvtkCommonPythonD \
-										    -lvtkGraphicsPythonD \
-                        $(PYTHON_LIBS)
+										    -lvtkGraphicsPythonD
 
 _pyeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
 include_HEADERS = \
@@ -420,9 +417,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  viewer/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  viewer/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  viewer/Makefile
+	  $(AUTOMAKE) --gnu  viewer/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

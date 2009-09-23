@@ -327,7 +327,6 @@ PYTHON = @PYTHON@
 PYTHON_CPPFLAGS = @PYTHON_CPPFLAGS@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_LDFLAGS = @PYTHON_LDFLAGS@
-PYTHON_LIBS = @PYTHON_LIBS@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
@@ -516,9 +515,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  effort/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  effort/Makefile
+	  $(AUTOMAKE) --gnu  effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
