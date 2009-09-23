@@ -22355,7 +22355,8 @@ $as_echo "yes" >&6; }
 
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
-                VTK_LIBS="-L$VTK_PREFIX/lib/vtk$vtk_suffix $VTK_DEFAULT_LIBS"
+                VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
+                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath -Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
 
                 # now, eventually check version
                 if [ -n "5.0.0" ]; then
@@ -23501,24 +23502,37 @@ if test "${with_paradyn+set}" = set; then
 
 # Check whether --with-elf was given.
 if test "${with_elf+set}" = set; then
-  withval=$with_elf; elf_home="$withval/lib"
-else
-  elf_home="$paradyn_lib"
-fi
-
-
-
-  if test "x$elf_home" != x; then
-    ELF_LDFLAGS="-L$elf_home"
+  withval=$with_elf;
+  # If dir param is there, add it to the link line.
+  if test "x$withval/lib" != x; then
+    ELF_LDFLAGS="-L$withval/lib"
   else
     ELF_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x-lelf" != "x"; then
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   else
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in ELF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  ELF_LDFLAGS="ELF_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
@@ -23613,23 +23627,170 @@ fi
 
   LDFLAGS="$OLD_LDFLAGS"
 
+else
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib/lib" != x; then
+    ELF_LDFLAGS="-L$paradyn_lib/lib"
+  else
+    ELF_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x-lelf" != "x"; then
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  else
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in ELF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  ELF_LDFLAGS="ELF_LDFLAGS $RPATHS"
+
+
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:$LINENO: checking for elf_end in -lelf" >&5
+$as_echo_n "checking for elf_end in -lelf... " >&6; }
+if test "${ac_cv_lib_elf_elf_end+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lelf  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char elf_end ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return elf_end ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_elf_elf_end=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_elf_elf_end=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_elf_elf_end" >&5
+$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
+if test "x$ac_cv_lib_elf_elf_end" = x""yes; then
+  have_elf=yes
+else
+  { $as_echo "$as_me:$LINENO: Couldn't find libelf." >&5
+$as_echo "$as_me: Couldn't find libelf." >&6;}
+                     ELF_LDFLAGS=""
+                     have_elf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+fi
+
 
 
 
 # Check whether --with-dwarf was given.
 if test "${with_dwarf+set}" = set; then
   withval=$with_dwarf;
+  # If dir param is there, add it to the link line.
   if test "x$withval/lib" != x; then
     DWARF_LDFLAGS="-L$withval/lib"
   else
     DWARF_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
   else
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in DWARF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  DWARF_LDFLAGS="DWARF_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
@@ -23726,17 +23887,36 @@ fi
 
 else
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     DWARF_LDFLAGS="-L$paradyn_lib"
   else
     DWARF_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
   else
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in DWARF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  DWARF_LDFLAGS="DWARF_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
@@ -23840,17 +24020,36 @@ fi
 # Check whether --with-xml2 was given.
 if test "${with_xml2+set}" = set; then
   withval=$with_xml2;
+  # If dir param is there, add it to the link line.
   if test "x$withval/lib" != x; then
     XML2_LDFLAGS="-L$withval/lib"
   else
     XML2_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x" != "x"; then
     XML2_LDFLAGS="$XML2_LDFLAGS "
   else
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in XML2_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  XML2_LDFLAGS="XML2_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
@@ -23947,17 +24146,36 @@ fi
 
 else
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     XML2_LDFLAGS="-L$paradyn_lib"
   else
     XML2_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x" != "x"; then
     XML2_LDFLAGS="$XML2_LDFLAGS "
   else
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in XML2_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  XML2_LDFLAGS="XML2_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
@@ -24499,17 +24717,36 @@ fi
        fi
 
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     IBERTY_LDFLAGS="-L$paradyn_lib"
   else
     IBERTY_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x" != "x"; then
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
   else
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty_pic"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in IBERTY_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  IBERTY_LDFLAGS="IBERTY_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
@@ -24606,17 +24843,36 @@ fi
 
        if [ "x$have_iberty_pic" = "xno" ]; then
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     IBERTY_LDFLAGS="-L$paradyn_lib"
   else
     IBERTY_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x" != "x"; then
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
   else
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in IBERTY_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  IBERTY_LDFLAGS="IBERTY_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
@@ -24715,17 +24971,36 @@ fi
 
        common_libs="-lcommon $XML2_LDFLAGS $DWARF_LDFLAGS $IBERTY_LDFLAGS"
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     COMMON_LDFLAGS="-L$paradyn_lib"
   else
     COMMON_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x$common_libs" != "x"; then
     COMMON_LDFLAGS="$COMMON_LDFLAGS $common_libs"
   else
     COMMON_LDFLAGS="$COMMON_LDFLAGS -lcommon"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in COMMON_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  COMMON_LDFLAGS="COMMON_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$COMMON_LDFLAGS $LDFLAGS"
@@ -24823,17 +25098,36 @@ fi
 
        symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     SYMTAB_LDFLAGS="-L$paradyn_lib"
   else
     SYMTAB_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x$symtab_libs" != "x"; then
     SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS $symtab_libs"
   else
     SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS -lsymtabAPI"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in SYMTAB_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  SYMTAB_LDFLAGS="SYMTAB_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$SYMTAB_LDFLAGS $LDFLAGS"
@@ -24938,17 +25232,36 @@ fi
            stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
        fi
 
+  # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
     SW_LDFLAGS="-L$paradyn_lib"
   else
     SW_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x$stackwalk_libs" != "x"; then
     SW_LDFLAGS="$SW_LDFLAGS $stackwalk_libs"
   else
     SW_LDFLAGS="$SW_LDFLAGS -lstackwalk"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in SW_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  SW_LDFLAGS="SW_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$SW_LDFLAGS $LDFLAGS"
@@ -25258,17 +25571,36 @@ fi
                  papilibdir="$papidir/lib"
                fi
 
+  # If dir param is there, add it to the link line.
   if test "x$papilibdir" != x; then
     PAPI_LDFLAGS="-L$papilibdir"
   else
     PAPI_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x-lpapi" != "x"; then
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   else
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in PAPI_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  PAPI_LDFLAGS="PAPI_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
@@ -25510,17 +25842,36 @@ fi
   CPPFLAGS="$OLD_CPPFLAGS"
 
 
+  # If dir param is there, add it to the link line.
   if test "x" != x; then
     PAPI_LDFLAGS="-L"
   else
     PAPI_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x-lpapi" != "x"; then
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   else
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in PAPI_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  PAPI_LDFLAGS="PAPI_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
@@ -25827,17 +26178,36 @@ fi
   CPPFLAGS="$OLD_CPPFLAGS"
 
 
+  # If dir param is there, add it to the link line.
   if test "x$pnmpi_lib" != x; then
     PNMPI_LDFLAGS="-L$pnmpi_lib"
   else
     PNMPI_LDFLAGS=""
   fi
 
+  # If extra libraries are supplied, add those too.
   if test "x" != "x"; then
     PNMPI_LDFLAGS="$PNMPI_LDFLAGS "
   else
     PNMPI_LDFLAGS="$PNMPI_LDFLAGS -lpnmpi"
   fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  RPATHS=""
+  for elt in PNMPI_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        path=`echo $elt | sed 's/^-L//'`
+        rpath="-Wl,-rpath -Wl,$path"
+
+        if [ -z "$RPATHS" ]; then
+            RPATHS="$rpath"
+        else
+            RPATHS="$RPATHS $rpath"
+        fi
+     fi
+  done
+  PNMPI_LDFLAGS="PNMPI_LDFLAGS $RPATHS"
+
 
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$PNMPI_LDFLAGS $LDFLAGS"

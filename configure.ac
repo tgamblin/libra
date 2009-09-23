@@ -1,5 +1,5 @@
 #############################################################
-# This is the main autoconf file for building AMPL.  
+# This is the main autoconf file for building Libra.
 #############################################################
 AC_INIT(libwavelet/wt_direct.C)
 AC_CONFIG_AUX_DIR(config)
