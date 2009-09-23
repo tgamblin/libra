@@ -1,0 +1,201 @@
+<html>
+<head>
+    <title>Libra: Scalable Load Balance Analysis</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/~tgamblin/libra/libra.css" type="text/css" />
+    <link rel="shortcut icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/>
+    <link rel="icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/> 
+
+</head>
+
+<body>
+    <div id="banner">
+<img border="0" src="logo.png">
+<br>
+Scalable Load Balance Analysis
+</div>
+<div id="toplinks">
+<a href="index.html">About Libra</a> |
+<a href="install.html">Installing</a> |
+<a href="using.html">Using Libra</a>
+</div>
+
+<h2>Building and Installing</h2>
+Download the Libra tarball and expand it on your machine:
+<pre class="code">
+$ tar xvzf libra-0.9.tar.gz
+</pre>
+
+The directory should look something like this:
+<pre class="code">
+$ cd libra-0.9
+$ ls
+LICENSE      README      callpath/    configure*    hcluster/       m4/
+Makefile.am  aclocal.m4  config/      configure.ac  libra-config.h  tests/
+Makefile.in  build/      config.h.in  effort/       libwavelet/     viewer/
+</pre>
+
+Building is relatively straightforward, as Libra uses GNU autotools.  You <i>could</i> simply
+build as you would a regular autotools project:
+<pre class="code">
+$ ./configure --prefix=/path/to/your/install/directory
+$ make
+$ make install
+</pre>
+
+In practice, you will want to build libra with a number of external libraries to get all the available
+functionality.  Depending on whether you are building the backend libraries or the fronend GUI, you will 
+likely want different options.
+<p>
+Take a look at sample configure lines for Libra by looking in the build directory:
+<pre class="code">
+$ cd libra-0.9/build
+$ ls
+do_configure*        do_configure_bgl*      do_configure_bgp*      do_configure_hikari*
+do_configure_atlas*  do_configure_bgl_fen*  do_configure_bgp_fen*  do_configure_macbookpro*
+</pre>
+Sample configurations include <code>atlas</code>, a Linux cluster at LLNL, Configurations for IBM BlueGene/L and BlueGene/P systems (both frontend and backend), <code>hikari</code>, a Powerbook G4 configuration, and <code>macbookpro</code>, for an Intel MacBook Pro.  Details about <code>configure</code> options are below.
+<p>
+
+<h3>Boost</h3>
+Libra uses <a href="http://boost.org"><code>boost::numberic::ublas::matrix</code></a> to handle performance data in both the backend and the frontend.  You do not need a full boost intall, just the headers.
+<p>
+If your system does not come with boost preinstalled, you can either install boost through your system's package manager, or you can <a href="http://boost.org">download boost</a> and just untar the headers instead of doing a full install.  On Mac OS X, you can install boost through <a href="http://www.macports.org/">MacPorts</a>:
+<pre class="code">
+$ sudo port install boost
+</pre>
+
+<h3>Back-end dependencies</h3>
+If you are building Libra on a cluster to gather data from your application, you will need to build at least the ParaDyn StackwalkerAPI.  If you want to collect hardware counter data, you will also need a recent version of PAPI.
+<p>
+Below are instructions for obtaining and installing each of these.
+
+<h4>StackwalkerAPI</h4>
+Libra uses the ParaDyn StackwalkerAPI to associate measurements with parts of code.  You will need 
+to obtain a tarball of stackwalker, either from me or from the folks at <a href="http://www.cs.wisc.edu/paradyn/">ParaDyn</a>.  Once you have the tarball, expand it like this:
+<pre class="code">
+$ tar xzf sw_beta4.tar.gz
+$ cd sw_beta4/dyninst
+$ emacs make.config.local
+</pre>
+You will need to edit <code>make.config.local</code> to reflect your platform's configuration.  To build Libra, you will need to set appropriate values for libelf and libdwarf locations on your system:
+<pre class="code">
+LIBELF_LIB = $(HOME)/opt/libelf/bgp_cnk/lib
+LIBELF_INC = $(HOME)/opt/libelf/bgp_cnk/include
+
+LIBDWARF_LIB = $(HOME)/opt/libdwarf/bgp_cnk/lib
+LIBDWARF_INC = $(HOME)/opt/libdwarf/bgp_cnk/include
+</pre>
+You can leave other variables in this file blank.  If you need current versions of libelf or libdwarf, you can find links to them on the ParaDyn <a href="http://www.paradyn.org/html/paradyn5.1-software.html">external software page</a>.
+<p>
+For some platforms, you may need to set values for <code>CC</code> and <code>CXX</code> in <code>make.config</code> (e.g. if you are building with special compilers).  These default to <code>gcc</code> and <code>g++</code>.
+<p>
+Once this is done, build stackwalker from <code>sw_beta4/dyninst</code> like this:
+<pre class="code">
+$ make PLATFORM=x86_64-unknown-linux2.4
+</pre>
+Substitute your platform name above.  You can see names of supported platforms by looking through <code>make.config</code>.  If things build successfully, this should create a directory called <code>sw_beta4/$PLATFORM</code>.  This is the directory you will point the Libra build to later.
+
+<h4>PAPI</h4>
+PAPI is already installed at many supercomputer installations, so you may not need to build it yourself.  Consult your system documentation to find the location of a recent version of PAPI.  Alternately, you can download PAPI from the <a href="http://icl.cs.utk.edu/papi/">PAPI webpage</a>.
+
+
+<h3>Front-end GUI dependencies</h3>
+To build and install the Libra GUI, you will need <a href="http://www.qtsoftware.com">Qt 4.3</a> or later, <a href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a>, built to point to your Qt installation, <a href="http://www.python.org/">Python</a> 2.4 or later, <a href="http://numpy.scipy.org/">numpy</a>, and <a href="http://www.vtk.org">VTK</a> 5.3 or later.  Details of each of these are below.
+</ul>
+
+<h4>Qt4</h4>
+You can download Qt4 from the <a href="http://www.qtsoftware.com">Qt website</a> and build it yourself, but it is a standard package in most standard Linux distributions.  On Mac OS X, you can install it through <a href="http://www.macports.org/">MacPorts</a>:
+<pre class="code">
+$ sudo port install qt4-mac
+</pre>
+
+<h4>PyQt4</h4>
+Along with Qt4, you will need a build of PyQt4.  Again, you can <a href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">download</a> and build yourself, but this is a standard package in Linux and MacPorts.  If you build using MacPorts, keep in mind that you MUST use the MacPorts version of python to build PyQt4, or importing PyQt4 will not work properly.  To install:
+<pre class="code">
+$ sudo port install python25
+$ sudo port install python_select
+$ sudo python_select python25
+</pre>
+The python_select step is necessary so that PyQt builds with your MacPorts python installation. Once this is done, you can go ahead and install PyQt4:
+<pre class="code">
+$ sudo port install py25-pyqt4
+</pre>
+
+<h4>numpy</h4>
+Numpy is available from <a href="http://numpy.scipy.org">numpy.scipy.org</a>, or you can install it as a MacPort:
+<pre class="code">
+$ sudo port install py25-numpy
+</pre>
+
+
+<h4>VTK</h4>
+VTK is available from <a href="http://www.vtk.org">vtk.org</a>.  However, it is also available as a MacPorts package. You can either build your own or install like so:
+<pre class="code">
+$ sudo port install vtk5 -x11 -tcltk +carbon +python
+</pre>
+Note that you will need to be sure to provide <code>+python</code> so that the python bindings for VTK are built.
+
+<h4>Final Notes</h4>
+As mentioned above, be sure that you <code>python_select</code> the MacPorts version of python before you build, or your python bindings will <i>not</i> be set up properly.  Likewise, if you chose to build your own libraries with some other version of Python, you will need to be sure that you build everything you use with Libra (PyQt4, VTK, numpy, etc.) with the same version of Python.
+
+<h3>Building Libra</h3>
+Once you've installed the necessary backend and frontend dependencies, you can build Libra itself.  You will need to provide paths to the dependencies via <code>configure</code> parameters.  Documentation on parameters can be obtained by running <code>configure --help</code>:
+<pre class="code">
+$ ./configure --help
+
+  ...
+
+  --with-boost[=DIR]      use boost (default is yes) - it is possible to
+                          specify the root directory for boost (optional)
+  --with-boost-libdir=LIB_DIR
+                          Force given directory for boost libraries. Note that
+                          this will overwrite library path detection, so use
+                          this parameter only if default library detection
+                          fails and you know exactly where your boost
+                          libraries are located.
+  --with-vtk              The prefix where VTK is installed (default is
+                          /usr/local)
+  --with-vtk-version      VTK's include directory name is vtk-suffix, e.g.
+                          vtk-5.0. What's the suffix? (Finds highest available
+                          by default). NOTE YOU MUST INCLUDE THE DASH.
+  --with-python-version   Specify the version of python to use. If not
+                          supplied, defaults to the highest found.
+  --with-python           Specify the location of your python installation.
+                          This can either be a GNU standard install directory
+                          or a path to a Mac OS X .framework directory.
+  --with-paradyn=&lt;dir&gt;    Path to the platform-specific installation directory
+                          of ParaDyn tools. Includes, etc. are inferred.
+  --with-dwarf=&lt;dir&gt;      Path to the installation directory of libdwarf.
+  --with-elf=&lt;dir&gt;        Path to the installation directory of libelf.
+  --with-papi=&lt;dir&gt;       Path to the installation directory of PAPI.
+</pre>
+
+Run <code>configure</code> with arguments corresponding to the dependencies you installed.  Also, on the backend, you should build Libra with CXX set to your MPI compiler wrapper.  This will ensure that parallel instrumentation libraries are built:
+<pre class="code">
+$ ./configure --prefix=/path/to/your/libra/install \
+    CXX=mpicxx \
+    --with-vtk=/path/to/your/vtk \
+    --with-vtk-version=5.3 \
+    --with-papi=/path/to/papi \
+    --with-paradyn=/path/to/stackwalkerapi \
+    --with-boost=/path/to/boost
+</pre>
+Once this is done, you can build and install:
+<pre class="code">
+$ make -j8
+$ make -j8 install
+</pre>
+Libra supports parallel make, so feel free to use the <code>-j</code> option.
+
+    <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+</body>
+</html>

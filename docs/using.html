@@ -1,0 +1,212 @@
+<html>
+<head>
+    <title>Libra: Scalable Load Balance Analysis</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/~tgamblin/libra/libra.css" type="text/css" />
+    <link rel="shortcut icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/>
+    <link rel="icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/> 
+
+</head>
+
+<body>
+    <div id="banner">
+<img border="0" src="logo.png">
+<br>
+Scalable Load Balance Analysis
+</div>
+<div id="toplinks">
+<a href="index.html">About Libra</a> |
+<a href="install.html">Installing</a> |
+<a href="using.html">Using Libra</a>
+</div>
+
+<h2>Using Libra</h2>
+This document assumes that you have already <a href="install.html">built Libra</a> and installed it in a directory, <code>$PREFIX</code>.
+
+<h3>Set up your PATH</h3>
+You will need to set up your paths as follows (this is for bourne shell; adjust appropriately for csh):
+<pre class="code">
+# All systems
+export PATH="${PREFIX}/bin:$PATH"
+export PYTHONPATH="${PREFIX}/lib/python2.5/site-packages:$PYTHONPATH"
+
+# Dynamic load path for UNIX systems
+export LD_LIBRARY_PATH="${PREFIX}/lib:$LD_LIBRARY_PATH"
+
+# Dynamic load path for Mac OS X
+export DYLD_LIBRARY_PATH="${PREFIX}/lib:$DYLD_LIBRARY_PATH"
+</pre>
+Note that you only need to set <code>DYLD_LIBRARY_PATH</code> on Mac OS X.  Also note that if you are using Python 2.4, you will need to change the version number appropriately in <code>PYTHONPATH</code>.
+
+
+<h3>Instrument your code</h3>
+Libra requires that your code have some kind of <i>progress step</i>.  In most codes this corresponds to a timestep, but it's up to you what you set it to.  In general, this needs to be a globally synchronous event, or at least some event that will happen the <b>same</b> number of times on all processes by the end of a run.  
+<p>
+Instrument your code with <code>MPI_Pcontrol(0)</code> where the timestep occurs, for example:
+<pre class="code">
+for (int time=0; time < MAX_TIME; time++) {
+    // solve stuff
+    MPI_Pcontrol(0);    // end of timestep
+}
+</pre>
+
+<h3>Running the Libra backend</h3>
+Running Libra with dynamic libraries is a matter of preloading the Libra instrumentation library when you run an MPI application.  On most systems, this looks something like the following:
+<pre class="code">
+$ env LD_PRELOAD=${PREFIX}/lib/libpmpi-effort.so \
+    mpirun -np $PROCS my_application
+</pre>
+For static executables, you will need to link your application against <code>libpmpi-effort.a</code> before you run.  Add the following libraries to your link line to accomplish this:
+<pre class="code">
+-L$(PREFIX)/lib -lpmpi-effort -leffort -lcallpath -lwavelet
+-L$(SW_PREFIX)/lib -lstackwalk -lsymtabAPI -lcommon   # May omit -lsymtabAPI or -lcommon
+-L$(PAPI_PREFIX)/lib -lpapi                           # If you need PAPI counters
+-lrt                                                  # For Linux timers
+-lstdc++                                              # For Fortran applications only
+</pre>
+Use your own prefixes for Stackwalker and PAPI above where they apply.  Then run your application as before:
+<pre class="code">
+$ mpirun -np $PROCS my_statically_linked_application
+</pre>
+
+If Libra runs correctly, the error output of your application should include something that looks like this:
+<pre class="code">
+========================================================
+   .      Running with Effort Module            
+ _/ \  _  by Todd Gamblin, tgamblin@cs.unc.edu  
+     \/                                         
+
+   metrics            = time
+   pass_limit         = 5
+   scale              = 1024
+   rows_per_process   = 512
+   encoding           = huffman
+   verify             = 0
+   sequential         = 0
+   chop_libc          = 0
+   regions            = comm
+   sampling           = 1
+========================================================
+</pre>
+Below the ASCII logo, there is a list of environment variables you can set to control the way Libra gathers data.  They can be tweaked by exporting custom values as follows:
+<dl>
+<dt>metrics</dt>
+<dd>Comma-separated List of metrics to gather data for.  Standard PAPI metric names and 'time' are valid.</dd>
+
+<dt>pass_limit</dt>
+<dd>Controls compression level.  Default is 5.  Smaller yields higher compression but less accuracy.  Larger gives less compression but more accuracy.  Max is 64.</dd>
+
+<dt>scale</dt>
+<dd>Scaling factor for floating point numbers before quantization.  Use this if you are gathering floating-point valued metrics.  Coarsely controls precision of compressed data (e.g. if you want 3 decimal places preserved, use a scaling factor of 1000)</dd>
+
+<dt>rows_per_process</dt>
+<dd>Controls amount of aggregation of data done before compression and write-out.  Also affects number of concurrent writers.  Must be a power of 2.  Numbers between 32-512 seem to work well.  If compression seems slow on systems smaller than 512 nodes, try setting this lower.</dd>
+
+<dt>chop_libc</dt>
+<dd>Whether to chop libc routines off of stack traces.  If set to 1, will stop at main() in all stacktraces.</dd>
+
+<dt>regions</dt>
+<dd>Control what data is collected.  Three possible values:
+<ul>
+<li><b>effort</b>: Record time spent (and metrics consumed) in regions of code between certain MPI calls.  Measures computational load.
+<li><b>comm</b>: Record time spent in certain MPI calls across all processes and timesteps.
+<li><b>both</b>: Record both communication and computational load.
+</ul>
+
+</dd>
+
+<dt>sampling</dt>
+<dd>Sample timesteps.  <i>e.g.</i> if this is set to 10, will treat every 10 timesteps as one timestep.</dd>
+
+</dl>
+
+<h3>Build symbol database</h3>
+Once your run is over, you should see a directory called <code>effort-N</code> in the directory where you ran your application, where N is the number of processes you ran with:
+<pre class="code">
+$ ls
+my_application     data/     effort-512/
+</pre>
+Change to the effort directory like so:
+<pre class="code">
+$ cd effort-512
+$ ls
+effort-time-0-1     effort-time-0-5     effort-time-0-9     effort-time-0-13
+effort-time-0-2     effort-time-0-6     effort-time-0-10    effort-time-0-14
+effort-time-0-3     effort-time-0-7     effort-time-0-11    times
+effort-time-0-4     effort-time-0-8     effort-time-0-12    
+</pre>
+There may be lots of effort files.  Before you can make sense of this data in the viewer, you need to build symbol data from it.  Run <code>libra-build-viewer-data</code> in this directory like so:
+<pre class="code">
+$ libra-build-viewer-data -e ../my_application -I /path/to/my_application/src
+</pre>
+Supply the path to your executable with the <code>-e</code> option, and supply the path to your application's source with code with -I.  You can supply multiple directories if need be, but -I processes subdirectories recursively, so this may not be necessary.
+<p>
+
+Once this is done, you should see a <code>viewer-data</code> directory alongside your effort files.  This contains symbol information about the Libra data files, as well as copies of source files to display in the GUI.
+
+<h3>ef Tool</h3>
+If you do not want to use the GUI viewer, you can inspect effort files using a tool called <b>ef</b>.  By default, <code>ef</code> prints metadata about effort files:
+<pre class="code">
+$ ef -f effot-time-0-1
+Metric    time
+Type      0
+Start     null_callpath
+
+End       libc-start.c:137      __libc_start_main                    [unknown module](0x149c188)
+          libc-start.c:231      generic_start_main                   [unknown module](0x149bf14)
+          main.f90:32           main                                 [unknown module](0x1067390)
+          io.f90:51             read_input                           [unknown module](0x10cdb7c)
+          io.f90:756            inquire_about_input_file             [unknown module](0x10d2018)
+          topology_m.f90:288    __topology_m_NMOD_check_term_status  [unknown module](0x1005b38)
+          [unknown]             [unknown]                            [unknown module](0x1262b34)
+          effort_wrapper.C:283  MPI_Bcast                            [unknown module](0x1262aa4)
+
+Size      1048576
+Rows      4096
+Cols      256
+Level     7
+Scale     1024
+Mean      -408196649
+Thresh    0x2000000000
+Enc       huffman
+Blocks    8
+Passes    5
+EZW_Size  14854
+RLE_Size  14453
+ENC_Size  11098
+</pre>
+The <code>-f</code> option tells <code>ef</code> to print out function data.  Run <code>ef -h</code> for a list of full options (including dumping raw data and formatting output in formats more usable by command-line tools).
+
+<h3>Python interface</h3>
+There are python classes that you can use to work with effort data.   These are not currently finalized or well-documented, but for more information, please email <a href="mailto:tgamblin_AT_llnl_gov">tgamblin at llnl.gov</a>.
+
+<h3>Run GUI client</h3>
+To view Libra data in the GUI frontend, tar up the <code>effort-N</code> directory on your cluster and copy it to a machine where you can run your front-end. If you built the Libra GUI on the cluster, you can skip this step.
+<p>
+<b>On cluster:</b>
+<pre class="code">
+$ tar cvzf effort-512.tar.gz effort-512
+</pre>
+
+<b>On client:</b>
+<pre class="code">
+$ scp cluster.myschool.edu:effort-512.tar.gz .
+$ tar xzf effort-512.tar.gz
+</pre>
+Once you've moved the data where you want to view it, change to the effort directory and invoke libra:
+<pre class="code">
+$ cd effort-512
+$ libra
+</pre>
+Documentation for the Libra GUI is forthcoming.  Please send feedback to  <a href="mailto:tgamblin_AT_llnl_gov">tgamblin at llnl.gov</a>!
+
+    <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>

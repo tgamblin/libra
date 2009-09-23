@@ -1,0 +1,54 @@
+<html>
+<head>
+    <title>Libra: Scalable Load Balance Analysis</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/~tgamblin/libra/libra.css" type="text/css" />
+    <link rel="shortcut icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/>
+    <link rel="icon" href="http://www.cs.unc.edu/~tgamblin/libra/favicon.ico"/> 
+
+</head>
+
+<body>
+    <div id="banner">
+<img border="0" src="logo.png">
+<br>
+Scalable Load Balance Analysis
+</div>
+<div id="toplinks">
+<a href="index.html">About Libra</a> |
+<a href="install.html">Installing</a> |
+<a href="using.html">Using Libra</a>
+</div>
+
+<h2>About Libra</h2>
+Libra is a tool for load-balance measurement, visualization, and analysis.  It consists of three components:
+<p>
+<img border="0" align="right" src="plot.png">
+<ol>
+<li><b>PMPI Data Collection Layer: </b> Our PMPI tool uses a simple model for load balance to collect per-process traces of time spent in regions between MPI calls.<br><br>
+<li><b>Parallel Compression Layer: </b> We use aggressive wavelet compression to pare down data collected by the PMPI layer to manageable sizes.  Libra can compress application traces with 100:1 to 1000:1 compression, and compression time scales near-constantly with system size.<br><br>
+<li><b>Client-side GUI for analysis and visualization: </b> The Libra GUI supports scalable visualization of libra traces.  Our traces files use a wavelet representation that enables incremental refinement of data.  Users can perform cluster analysis on full traces or on a compact approximation of traces for added speed.  Automated load-imbalance detection is in the works.
+</ol>
+
+
+<h2>Publications</h2>
+<ol>
+<li>Todd Gamblin, Bronis R. de Supinski, Martin Schulz, Robert J. Fowler, and Daniel A. Reed. <b><a href="http://www.cs.unc.edu/~tgamblin/pubs/wavelet-sc08.pdf">Scalable Load-Balance Measurement for SPMD Codes</a></b>.  In <i>Supercomputing 2008 (SC08)</i>.  Austin, Texas.  November 15-21, 2008.
+<p>
+
+<li>Todd Gamblin, Bronis R. de Supinski, Martin Schulz, Robert J. Fowler, and Daniel A. Reed.  <b>System-wide Performance Equivalence Class Detection Using Clustering (Poster)</b>.  In <i>Supercomputing 2008 (SC08)</i>. Austin, Texas.  November 15-21, 2008.
+<p>
+
+<li>Bronis R. de Supinski, Robert J. Fowler, Todd Gamblin, Frank Mueller, Martin Schulz, and Prasun Ratn.  <b>An Open Frameowrk for Scalable, Reconfigurable Analysis.</b> In <i>International Workshop on Scalable Tools for High-End Computing (STHEC08)</i>.  Kos, Greece, June 7-12, 2008.
+</ol>
+
+    <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>
