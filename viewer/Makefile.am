@@ -47,7 +47,6 @@ libvtkeffort_la_LDFLAGS = \
 	-module \
 	-avoid-version \
 	$(VTK_LIBS) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
-	$(PYTHON_LIBS) \
 	$(PYTHON_LDFLAGS)
 
 ###########################################################################
@@ -66,8 +65,8 @@ _pyeffort_la_LIBADD =   libvtkeffort.la \
 								    		../libwavelet/libwavelet.la \
                         $(VTK_LIBS) \
 										    -lvtkCommonPythonD \
-										    -lvtkGraphicsPythonD \
-                        $(PYTHON_LIBS)
+										    -lvtkGraphicsPythonD
+
 _pyeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
 pyeffort.py: _pyeffort.la
 
