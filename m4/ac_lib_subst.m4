@@ -2,14 +2,21 @@
 #  AC_LIB_SUBST (name, symbol, NAME, [dir], [libs])
 #  ------------------------------------------------------------------------
 #  This tests for the presence of a library, given a libname and a symbol.
-#  If found, it uses AC_SUBST to export NAME_LDFLAGS for that library.  
-#  Standard vars like LIBS, LDFLAGS, etc. are unmodified.  If the library
-#  is not found, then have_name is set to "no".
 #  
-#  If <dir> is provided, this will add -L<dir> to the link line.
+#  If the library is found, it uses AC_SUBST to export the following:
+#     <NAME>_LDFLAGS   standard linker args (-L/foo/lib -lname, etc.)
+#     <NAME>_RPATH     rpath arguments for library locations (-Wl,--rpath -Wl,/foo/lib)
+#  
+#  Standard vars like LIBS, LDFLAGS, etc. are unmodified.  If the library
+#  is not found, then have_<name> is set to "no".
+#  
+#  If dir is provided, -L<dir> will be added to the link line and an rpath argument
+#  will be added to the command line.
 #
-#  You can optionally set libs to the ACTUAL "-lfoo -lbar -lbaz" part of the link
-#  line, if it's not just -lname that you want to use.
+#  You can optionally supply specific library names, if the name of the module
+#  does not match the name of the library.  The library name defaults to -l<name>,
+#  but can be overridden by supplying the libs parameter.  This is useful for 
+#  packages with multiple libraries, e.g. "-lfoo -lbar -lbaz".
 #
 AC_DEFUN([AC_LIB_SUBST],
 [
@@ -27,25 +34,28 @@ AC_DEFUN([AC_LIB_SUBST],
     $3_LDFLAGS="$$3_LDFLAGS -l$1"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in $3_LDFLAGS; do
+  $3_RPATH=""
+  for elt in $$3_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [[ -z "$RPATHS" ]]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [[ -z "$$3_RPATH" ]]; then
+            $3_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            $3_RPATH="$$3_RPATH $rpath"
         fi
+     echo $$3_RPATH
+  echo
      fi
   done
-  $3_LDFLAGS="$3_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$$3_LDFLAGS $LDFLAGS"
+  LDFLAGS="$$3_LDFLAGS $$3_RPATH $LDFLAGS"
   
   AC_SAFE_CHECK_LIB([$1], [$2],
                     [have_$1=yes],
@@ -53,7 +63,9 @@ AC_DEFUN([AC_LIB_SUBST],
                      $3_LDFLAGS=""
                      have_$1=no])
 
-  AC_SUBST($3_LDFLAGS)
   LDFLAGS="$OLD_LDFLAGS"
+
+  AC_SUBST($3_LDFLAGS)
+  AC_SUBST($3_RPATH)
 ])
 

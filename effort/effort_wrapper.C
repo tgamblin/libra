@@ -42,7 +42,7 @@ static int in_wrapper = 0;
 
 
 /* Wrapper for splitting routines. */
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Alltoall(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int arg_4, MPI_Datatype arg_5, MPI_Comm arg_6) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Alltoall(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
@@ -58,7 +58,7 @@ _EXTERN_C_ int MPI_Alltoall(void *arg_0, int arg_1, MPI_Datatype arg_2, void *ar
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Alltoall_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -85,10 +85,10 @@ _EXTERN_C_ void mpi_alltoall__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2
     MPI_Alltoall_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Allgather(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int arg_4, MPI_Datatype arg_5, MPI_Comm arg_6) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Allgather(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
@@ -104,7 +104,7 @@ _EXTERN_C_ int MPI_Allgather(void *arg_0, int arg_1, MPI_Datatype arg_2, void *a
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Allgather_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -131,10 +131,10 @@ _EXTERN_C_ void mpi_allgather__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_
     MPI_Allgather_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Allgatherv(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int *arg_4, int *arg_5, MPI_Datatype arg_6, MPI_Comm arg_7) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Allgatherv(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
@@ -150,7 +150,7 @@ _EXTERN_C_ int MPI_Allgatherv(void *arg_0, int arg_1, MPI_Datatype arg_2, void *
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Allgatherv_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *arg_7, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -177,10 +177,10 @@ _EXTERN_C_ void mpi_allgatherv__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg
     MPI_Allgatherv_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Allreduce(void *arg_0, void *arg_1, int arg_2, MPI_Datatype arg_3, MPI_Op arg_4, MPI_Comm arg_5) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Allreduce(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
@@ -196,7 +196,7 @@ _EXTERN_C_ int MPI_Allreduce(void *arg_0, void *arg_1, int arg_2, MPI_Datatype a
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Allreduce_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -223,10 +223,10 @@ _EXTERN_C_ void mpi_allreduce__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_
     MPI_Allreduce_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Barrier(MPI_Comm arg_0) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Barrier(arg_0);
@@ -242,7 +242,7 @@ _EXTERN_C_ int MPI_Barrier(MPI_Comm arg_0) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Barrier_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -269,10 +269,10 @@ _EXTERN_C_ void mpi_barrier__(MPI_Fint *arg_0, MPI_Fint *ierr) {
     MPI_Barrier_fortran_wrapper(arg_0, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Bcast(void *arg_0, int arg_1, MPI_Datatype arg_2, int arg_3, MPI_Comm arg_4) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Bcast(arg_0, arg_1, arg_2, arg_3, arg_4);
@@ -288,7 +288,7 @@ _EXTERN_C_ int MPI_Bcast(void *arg_0, int arg_1, MPI_Datatype arg_2, int arg_3, 
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Bcast_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -315,10 +315,10 @@ _EXTERN_C_ void mpi_bcast__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, M
     MPI_Bcast_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Gather(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int arg_4, MPI_Datatype arg_5, int arg_6, MPI_Comm arg_7) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Gather(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
@@ -334,7 +334,7 @@ _EXTERN_C_ int MPI_Gather(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Gather_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *arg_7, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -361,10 +361,10 @@ _EXTERN_C_ void mpi_gather__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, 
     MPI_Gather_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Gatherv(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int *arg_4, int *arg_5, MPI_Datatype arg_6, int arg_7, MPI_Comm arg_8) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Gatherv(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8);
@@ -380,7 +380,7 @@ _EXTERN_C_ int MPI_Gatherv(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Gatherv_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *arg_7, MPI_Fint *arg_8, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -407,10 +407,10 @@ _EXTERN_C_ void mpi_gatherv__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2,
     MPI_Gatherv_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Reduce(void *arg_0, void *arg_1, int arg_2, MPI_Datatype arg_3, MPI_Op arg_4, int arg_5, MPI_Comm arg_6) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Reduce(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
@@ -426,7 +426,7 @@ _EXTERN_C_ int MPI_Reduce(void *arg_0, void *arg_1, int arg_2, MPI_Datatype arg_
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Reduce_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -453,10 +453,10 @@ _EXTERN_C_ void mpi_reduce__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, 
     MPI_Reduce_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Reduce_scatter(void *arg_0, void *arg_1, int *arg_2, MPI_Datatype arg_3, MPI_Op arg_4, MPI_Comm arg_5) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Reduce_scatter(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
@@ -472,7 +472,7 @@ _EXTERN_C_ int MPI_Reduce_scatter(void *arg_0, void *arg_1, int *arg_2, MPI_Data
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Reduce_scatter_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -499,10 +499,10 @@ _EXTERN_C_ void mpi_reduce_scatter__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint 
     MPI_Reduce_scatter_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Scan(void *arg_0, void *arg_1, int arg_2, MPI_Datatype arg_3, MPI_Op arg_4, MPI_Comm arg_5) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Scan(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
@@ -518,7 +518,7 @@ _EXTERN_C_ int MPI_Scan(void *arg_0, void *arg_1, int arg_2, MPI_Datatype arg_3,
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Scan_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -545,10 +545,10 @@ _EXTERN_C_ void mpi_scan__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MP
     MPI_Scan_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Scatter(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg_3, int arg_4, MPI_Datatype arg_5, int arg_6, MPI_Comm arg_7) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Scatter(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
@@ -564,7 +564,7 @@ _EXTERN_C_ int MPI_Scatter(void *arg_0, int arg_1, MPI_Datatype arg_2, void *arg
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Scatter_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *arg_7, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -591,10 +591,10 @@ _EXTERN_C_ void mpi_scatter__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2,
     MPI_Scatter_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Scatterv(void *arg_0, int *arg_1, int *arg_2, MPI_Datatype arg_3, void *arg_4, int arg_5, MPI_Datatype arg_6, int arg_7, MPI_Comm arg_8) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Scatterv(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8);
@@ -610,7 +610,7 @@ _EXTERN_C_ int MPI_Scatterv(void *arg_0, int *arg_1, int *arg_2, MPI_Datatype ar
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Scatterv_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *arg_4, MPI_Fint *arg_5, MPI_Fint *arg_6, MPI_Fint *arg_7, MPI_Fint *arg_8, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -637,10 +637,10 @@ _EXTERN_C_ void mpi_scatterv__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2
     MPI_Scatterv_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Waitall(int arg_0, MPI_Request *arg_1, MPI_Status *arg_2) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Waitall(arg_0, arg_1, arg_2);
@@ -656,7 +656,7 @@ _EXTERN_C_ int MPI_Waitall(int arg_0, MPI_Request *arg_1, MPI_Status *arg_2) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Waitall_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -698,10 +698,10 @@ _EXTERN_C_ void mpi_waitall__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2,
     MPI_Waitall_fortran_wrapper(arg_0, arg_1, arg_2, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Waitany(int arg_0, MPI_Request *arg_1, int *arg_2, MPI_Status *arg_3) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Waitany(arg_0, arg_1, arg_2, arg_3);
@@ -717,7 +717,7 @@ _EXTERN_C_ int MPI_Waitany(int arg_0, MPI_Request *arg_1, int *arg_2, MPI_Status
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Waitany_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2, MPI_Fint *arg_3, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -755,10 +755,10 @@ _EXTERN_C_ void mpi_waitany__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *arg_2,
     MPI_Waitany_fortran_wrapper(arg_0, arg_1, arg_2, arg_3, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Wait(MPI_Request *arg_0, MPI_Status *arg_1) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Wait(arg_0, arg_1);
@@ -774,7 +774,7 @@ _EXTERN_C_ int MPI_Wait(MPI_Request *arg_0, MPI_Status *arg_1) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Wait_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -807,7 +807,7 @@ _EXTERN_C_ void mpi_wait__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *ierr) {
     MPI_Wait_fortran_wrapper(arg_0, arg_1, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
 

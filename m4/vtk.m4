@@ -55,7 +55,8 @@ AC_DEFUN([AC_PATH_VTK],
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
                 VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
-                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath -Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath"
+                VTK_RPATH="-Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
 
                 # now, eventually check version
                 if [[ -n "$1" ]]; then
@@ -72,7 +73,7 @@ AC_DEFUN([AC_PATH_VTK],
                     OLD_LIBS=$LIBS
 
                     CPPFLAGS="$VTK_CPPFLAGS $CFLAGS"
-                    LIBS="$VTK_LIBS $LIBS"
+                    LIBS="$VTK_LIBS $VTK_RPATH $LIBS"
 
                     # check if the installed VTK is greater or not
                     AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -97,6 +98,7 @@ AC_DEFUN([AC_PATH_VTK],
                     if [[ "$vtkVersion" = "OK" ]]; then
                         AC_SUBST(VTK_CPPFLAGS)
                         AC_SUBST(VTK_LIBS)
+                        AC_SUBST(VTK_RPATH)
                         AC_MSG_RESULT([yes])
                         $2
                     else
@@ -112,6 +114,7 @@ AC_DEFUN([AC_PATH_VTK],
                     # then we can execute here the block action-if-found
                     AC_SUBST(VTK_CPPFLAGS)
                     AC_SUBST(VTK_LIBS)
+                    AC_SUBST(VTK_RPATH)
                     $2
                fi
 

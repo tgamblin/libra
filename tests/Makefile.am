@@ -32,7 +32,7 @@ vltest_SOURCES = vltest.C
 
 papicheck_SOURCES = papicheck.C
 papicheck_CPPFLAGS = $(PAPI_CPPFLAGS)
-papicheck_LDADD = $(PAPI_LDFLAGS)
+papicheck_LDADD = $(PAPI_LDFLAGS) $(PAPI_RPATH)
 
 swcheck_SOURCES = swcheck.C
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)

@@ -42,7 +42,7 @@ static int in_wrapper = 0;
 
 
 /* Wrapper for splitting routines. */
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Barrier(MPI_Comm arg_0) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Barrier(arg_0);
@@ -58,7 +58,7 @@ _EXTERN_C_ int MPI_Barrier(MPI_Comm arg_0) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Barrier_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -85,10 +85,10 @@ _EXTERN_C_ void mpi_barrier__(MPI_Fint *arg_0, MPI_Fint *ierr) {
     MPI_Barrier_fortran_wrapper(arg_0, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Wait(MPI_Request *arg_0, MPI_Status *arg_1) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Wait(arg_0, arg_1);
@@ -104,7 +104,7 @@ _EXTERN_C_ int MPI_Wait(MPI_Request *arg_0, MPI_Status *arg_1) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Wait_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *ierr) { 
     int return_val = 0;
 #if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
@@ -137,7 +137,7 @@ _EXTERN_C_ void mpi_wait__(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *ierr) {
     MPI_Wait_fortran_wrapper(arg_0, arg_1, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_Status_set_elements ================= */
 
 
 

@@ -20,6 +20,7 @@
 #     PYTHON_LDFLAGS       Linker flags for either:
 #                          - Linking against libpython<PYTHON_VERSION>.so on linux
 #                          - Linking against the Python Framework on Mac OS X
+#     PYTHON_RPATH         Rpath arguments for the python directory.
 #
 #  Finally, this sets some variables you can use in configure.ac:
 #     have_python          yes if interpreter was found, no otherwise.
@@ -180,8 +181,9 @@ AC_ARG_WITH([python],
          PYTHON_LIBNAME="python${PYTHON_VERSION}"
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
-         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME} -Wl,-rpath -Wl,$pyhome/lib"
-         
+         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME}"
+         PYTHON_RPATH="-Wl,-rpath -Wl,$pyhome/lib"         
+
          SAVED_CPPFLAGS="$CPPFLAGS"
          SAVED_LDFLAGS="$LDFLAGS"
          
@@ -203,6 +205,7 @@ AC_ARG_WITH([python],
 
      AC_SUBST(PYTHON_CPPFLAGS)
      AC_SUBST(PYTHON_LDFLAGS)
+     AC_SUBST(PYTHON_RPATH)
 
      if [[ "x$have_python_devel" != xno ]] ; then
          have_python_devel=yes

@@ -15,7 +15,9 @@ libcallpath_la_SOURCES = \
 	FrameInfo.C \
 	Translator.C \
 	$(SW_ONLY_SRCS)
-libcallpath_la_LDFLAGS = $(SW_LDFLAGS) -avoid-version
+libcallpath_la_LDFLAGS = \
+  -avoid-version \
+	$(SW_LDFLAGS) $(SW_RPATH)
 
 include_HEADERS = \
 	FrameId.h \

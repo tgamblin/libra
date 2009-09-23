@@ -1,11 +1,12 @@
 #############################################################
 # This is the main autoconf file for building Libra.
 #############################################################
-AC_INIT(libwavelet/wt_direct.C)
+AC_INIT
+AC_CONFIG_SRCDIR([libwavelet/wt_direct.C])
 AC_CONFIG_AUX_DIR(config)
 
 AM_INIT_AUTOMAKE(libra,0.9)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AX_PREFIX_CONFIG_H([libra-config.h])
 
 # Programs we need

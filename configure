@@ -795,6 +795,7 @@ PNMPI_EFFORT_FALSE
 PNMPI_EFFORT_TRUE
 PMPI_EFFORT_FALSE
 PMPI_EFFORT_TRUE
+PNMPI_RPATH
 PNMPI_LDFLAGS
 PNMPI_CPPFLAGS
 pnmpidir
@@ -802,22 +803,30 @@ PNMPI_PATCH
 PNMPI_WRAPPERGEN
 HAVE_PAPI_FALSE
 HAVE_PAPI_TRUE
+PAPI_RPATH
 PAPI_LDFLAGS
 PAPI_CPPFLAGS
 HAVE_SYMTAB_FALSE
 HAVE_SYMTAB_TRUE
 HAVE_SW_FALSE
 HAVE_SW_TRUE
+SW_RPATH
 SW_LDFLAGS
+SYMTAB_RPATH
 SYMTAB_LDFLAGS
+COMMON_RPATH
 COMMON_LDFLAGS
+IBERTY_RPATH
 IBERTY_LDFLAGS
 PARADYN_CPPFLAGS
 COMMON_CPPFLAGS
 SYMTAB_CPPFLAGS
 SW_CPPFLAGS
+XML2_RPATH
 XML2_LDFLAGS
+DWARF_RPATH
 DWARF_LDFLAGS
+ELF_RPATH
 ELF_LDFLAGS
 BUILD_VIEWER_FALSE
 BUILD_VIEWER_TRUE
@@ -825,6 +834,7 @@ SWIG_PYTHON_CPPFLAGS
 SWIG_PYTHON_OPT
 SWIG_LIB
 SWIG
+PYTHON_RPATH
 PYTHON_LDFLAGS
 PYTHON_CPPFLAGS
 pkgpyexecdir
@@ -838,6 +848,7 @@ PYTHON_VERSION
 PYTHON
 VTK_WRAP_PYTHON_INIT
 VTK_WRAP_PYTHON
+VTK_RPATH
 VTK_LIBS
 VTK_CPPFLAGS
 HAVE_MPI_FALSE
@@ -2132,6 +2143,7 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 
 
 ac_aux_dir=
@@ -5089,7 +5101,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5092 "configure"' > conftest.$ac_ext
+  echo '#line 5104 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7689,11 +7701,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7692: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7704: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7696: \$? = $ac_status" >&5
+   echo "$as_me:7708: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7979,11 +7991,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7982: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7994: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7986: \$? = $ac_status" >&5
+   echo "$as_me:7998: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8083,11 +8095,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8086: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8098: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8090: \$? = $ac_status" >&5
+   echo "$as_me:8102: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10483,7 +10495,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10486 "configure"
+#line 10498 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10583,7 +10595,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10586 "configure"
+#line 10598 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12992,11 +13004,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12995: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13007: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12999: \$? = $ac_status" >&5
+   echo "$as_me:13011: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13096,11 +13108,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13099: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13111: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13103: \$? = $ac_status" >&5
+   echo "$as_me:13115: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14679,11 +14691,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14682: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14694: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14686: \$? = $ac_status" >&5
+   echo "$as_me:14698: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14783,11 +14795,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14786: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14798: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14790: \$? = $ac_status" >&5
+   echo "$as_me:14802: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16998,11 +17010,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17001: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17013: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17005: \$? = $ac_status" >&5
+   echo "$as_me:17017: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17288,11 +17300,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17291: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17303: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17295: \$? = $ac_status" >&5
+   echo "$as_me:17307: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17392,11 +17404,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17395: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17407: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17399: \$? = $ac_status" >&5
+   echo "$as_me:17411: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -22356,7 +22368,8 @@ $as_echo "yes" >&6; }
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
                 VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
-                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath -Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath"
+                VTK_RPATH="-Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
 
                 # now, eventually check version
                 if [ -n "5.0.0" ]; then
@@ -22374,7 +22387,7 @@ $as_echo_n "checking if VTK version is at least $maj.$min.$rel... " >&6; }
                     OLD_LIBS=$LIBS
 
                     CPPFLAGS="$VTK_CPPFLAGS $CFLAGS"
-                    LIBS="$VTK_LIBS $LIBS"
+                    LIBS="$VTK_LIBS $VTK_RPATH $LIBS"
 
                     # check if the installed VTK is greater or not
                     cat >conftest.$ac_ext <<_ACEOF
@@ -22446,6 +22459,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
                     if [ "$vtkVersion" = "OK" ]; then
 
 
+
                         { $as_echo "$as_me:$LINENO: result: yes" >&5
 $as_echo "yes" >&6; }
                         { $as_echo "$as_me:$LINENO: Found VTK Library." >&5
@@ -22466,6 +22480,7 @@ $as_echo "$as_me: Couldn't find VTK library." >&6;}
                else
                     # if we don't have to check for minimum version (because the user did not set that option),
                     # then we can execute here the block action-if-found
+
 
 
                     { $as_echo "$as_me:$LINENO: Found VTK Library." >&5
@@ -23023,7 +23038,8 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
          PYTHON_LIBNAME="python${PYTHON_VERSION}"
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
-         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME} -Wl,-rpath -Wl,$pyhome/lib"
+         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME}"
+         PYTHON_RPATH="-Wl,-rpath -Wl,$pyhome/lib"
 
          SAVED_CPPFLAGS="$CPPFLAGS"
          SAVED_LDFLAGS="$LDFLAGS"
@@ -23268,6 +23284,7 @@ fi
          CPPFLAGS="$SAVED_CPPFLAGS"
          LDFLAGS="$SAVED_LDFLAGS"
      fi
+
 
 
 
@@ -23517,25 +23534,28 @@ if test "${with_elf+set}" = set; then
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in ELF_LDFLAGS; do
+  ELF_RPATH=""
+  for elt in $ELF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$ELF_RPATH" ]; then
+            ELF_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            ELF_RPATH="$ELF_RPATH $rpath"
         fi
+     echo $ELF_RPATH
+  echo
      fi
   done
-  ELF_LDFLAGS="ELF_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $ELF_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23624,8 +23644,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 else
 
@@ -23643,25 +23665,28 @@ else
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in ELF_LDFLAGS; do
+  ELF_RPATH=""
+  for elt in $ELF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$ELF_RPATH" ]; then
+            ELF_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            ELF_RPATH="$ELF_RPATH $rpath"
         fi
+     echo $ELF_RPATH
+  echo
      fi
   done
-  ELF_LDFLAGS="ELF_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $ELF_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23750,8 +23775,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 fi
 
@@ -23775,25 +23802,28 @@ if test "${with_dwarf+set}" = set; then
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in DWARF_LDFLAGS; do
+  DWARF_RPATH=""
+  for elt in $DWARF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$DWARF_RPATH" ]; then
+            DWARF_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            DWARF_RPATH="$DWARF_RPATH $rpath"
         fi
+     echo $DWARF_RPATH
+  echo
      fi
   done
-  DWARF_LDFLAGS="DWARF_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $DWARF_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23882,8 +23912,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 else
 
@@ -23901,25 +23933,28 @@ else
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in DWARF_LDFLAGS; do
+  DWARF_RPATH=""
+  for elt in $DWARF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$DWARF_RPATH" ]; then
+            DWARF_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            DWARF_RPATH="$DWARF_RPATH $rpath"
         fi
+     echo $DWARF_RPATH
+  echo
      fi
   done
-  DWARF_LDFLAGS="DWARF_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $DWARF_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24008,8 +24043,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 
 fi
@@ -24034,25 +24071,28 @@ if test "${with_xml2+set}" = set; then
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in XML2_LDFLAGS; do
+  XML2_RPATH=""
+  for elt in $XML2_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$XML2_RPATH" ]; then
+            XML2_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            XML2_RPATH="$XML2_RPATH $rpath"
         fi
+     echo $XML2_RPATH
+  echo
      fi
   done
-  XML2_LDFLAGS="XML2_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $XML2_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24141,8 +24181,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 else
 
@@ -24160,25 +24202,28 @@ else
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in XML2_LDFLAGS; do
+  XML2_RPATH=""
+  for elt in $XML2_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$XML2_RPATH" ]; then
+            XML2_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            XML2_RPATH="$XML2_RPATH $rpath"
         fi
+     echo $XML2_RPATH
+  echo
      fi
   done
-  XML2_LDFLAGS="XML2_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $XML2_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24267,8 +24312,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 fi
 
@@ -24731,25 +24778,28 @@ fi
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty_pic"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in IBERTY_LDFLAGS; do
+  IBERTY_RPATH=""
+  for elt in $IBERTY_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$IBERTY_RPATH" ]; then
+            IBERTY_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            IBERTY_RPATH="$IBERTY_RPATH $rpath"
         fi
+     echo $IBERTY_RPATH
+  echo
      fi
   done
-  IBERTY_LDFLAGS="IBERTY_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $IBERTY_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24838,8 +24888,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
        if [ "x$have_iberty_pic" = "xno" ]; then
 
@@ -24857,25 +24909,28 @@ fi
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in IBERTY_LDFLAGS; do
+  IBERTY_RPATH=""
+  for elt in $IBERTY_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$IBERTY_RPATH" ]; then
+            IBERTY_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            IBERTY_RPATH="$IBERTY_RPATH $rpath"
         fi
+     echo $IBERTY_RPATH
+  echo
      fi
   done
-  IBERTY_LDFLAGS="IBERTY_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $IBERTY_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24964,8 +25019,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
        fi
 
@@ -24985,25 +25042,28 @@ fi
     COMMON_LDFLAGS="$COMMON_LDFLAGS -lcommon"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in COMMON_LDFLAGS; do
+  COMMON_RPATH=""
+  for elt in $COMMON_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$COMMON_RPATH" ]; then
+            COMMON_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            COMMON_RPATH="$COMMON_RPATH $rpath"
         fi
+     echo $COMMON_RPATH
+  echo
      fi
   done
-  COMMON_LDFLAGS="COMMON_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$COMMON_LDFLAGS $LDFLAGS"
+  LDFLAGS="$COMMON_LDFLAGS $COMMON_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25092,8 +25152,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 
        symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
@@ -25112,25 +25174,28 @@ fi
     SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS -lsymtabAPI"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in SYMTAB_LDFLAGS; do
+  SYMTAB_RPATH=""
+  for elt in $SYMTAB_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$SYMTAB_RPATH" ]; then
+            SYMTAB_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            SYMTAB_RPATH="$SYMTAB_RPATH $rpath"
         fi
+     echo $SYMTAB_RPATH
+  echo
      fi
   done
-  SYMTAB_LDFLAGS="SYMTAB_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SYMTAB_LDFLAGS $LDFLAGS"
+  LDFLAGS="$SYMTAB_LDFLAGS $SYMTAB_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25219,8 +25284,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 
        # By the third lib in the chain of dependencies here, this is kind of nasty.
@@ -25231,6 +25298,7 @@ fi
        else
            stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
        fi
+       echo STACKWALK_LIBS ARE: $stackwalk_libs
 
   # If dir param is there, add it to the link line.
   if test "x$paradyn_lib" != x; then
@@ -25246,25 +25314,28 @@ fi
     SW_LDFLAGS="$SW_LDFLAGS -lstackwalk"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in SW_LDFLAGS; do
+  SW_RPATH=""
+  for elt in $SW_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$SW_RPATH" ]; then
+            SW_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            SW_RPATH="$SW_RPATH $rpath"
         fi
+     echo $SW_RPATH
+  echo
      fi
   done
-  SW_LDFLAGS="SW_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SW_LDFLAGS $LDFLAGS"
+  LDFLAGS="$SW_LDFLAGS $SW_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25353,9 +25424,14 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
 
+
+
+
+
+       echo STACKWALK_LDFLAGS ARE: $SW_LDFLAGS
+       echo STACKWALK_RPATH IS: $SW_RPATH
 
      else
        echo "couldn't find ParaDyn headers in $paradyn_include."
@@ -25585,25 +25661,28 @@ fi
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in PAPI_LDFLAGS; do
+  PAPI_RPATH=""
+  for elt in $PAPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$PAPI_RPATH" ]; then
+            PAPI_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            PAPI_RPATH="$PAPI_RPATH $rpath"
         fi
+     echo $PAPI_RPATH
+  echo
      fi
   done
-  PAPI_LDFLAGS="PAPI_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
+  LDFLAGS="$PAPI_LDFLAGS $PAPI_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25692,8 +25771,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 
 else
@@ -25856,25 +25937,28 @@ fi
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in PAPI_LDFLAGS; do
+  PAPI_RPATH=""
+  for elt in $PAPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$PAPI_RPATH" ]; then
+            PAPI_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            PAPI_RPATH="$PAPI_RPATH $rpath"
         fi
+     echo $PAPI_RPATH
+  echo
      fi
   done
-  PAPI_LDFLAGS="PAPI_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
+  LDFLAGS="$PAPI_LDFLAGS $PAPI_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25963,8 +26047,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 fi
 
@@ -26192,25 +26278,28 @@ fi
     PNMPI_LDFLAGS="$PNMPI_LDFLAGS -lpnmpi"
   fi
 
+echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
-  RPATHS=""
-  for elt in PNMPI_LDFLAGS; do
+  PNMPI_RPATH=""
+  for elt in $PNMPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
+     echo $elt
         path=`echo $elt | sed 's/^-L//'`
-        rpath="-Wl,-rpath -Wl,$path"
-
-        if [ -z "$RPATHS" ]; then
-            RPATHS="$rpath"
+        rpath="-R$path"
+     echo $rpath
+        if [ -z "$PNMPI_RPATH" ]; then
+            PNMPI_RPATH="$rpath"
         else
-            RPATHS="$RPATHS $rpath"
+            PNMPI_RPATH="$PNMPI_RPATH $rpath"
         fi
+     echo $PNMPI_RPATH
+  echo
      fi
   done
-  PNMPI_LDFLAGS="PNMPI_LDFLAGS $RPATHS"
-
-
+echo done.
+  # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PNMPI_LDFLAGS $LDFLAGS"
+  LDFLAGS="$PNMPI_LDFLAGS $PNMPI_RPATH $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -26299,8 +26388,10 @@ fi
     LIBS="$OLD_LIBS"
 
 
-
   LDFLAGS="$OLD_LDFLAGS"
+
+
+
 
 
                  if test "x$have_pnmpi" != xno; then

@@ -64,7 +64,11 @@ AC_DEFUN([AC_PARADYN_TOOLS],
        else 
            stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
        fi
+       echo STACKWALK_LIBS ARE: $stackwalk_libs
        AC_LIB_SUBST(stackwalk, _init, SW, [$paradyn_lib], [$stackwalk_libs])         
+
+       echo STACKWALK_LDFLAGS ARE: $SW_LDFLAGS
+       echo STACKWALK_RPATH IS: $SW_RPATH
 
      else
        echo "couldn't find ParaDyn headers in $paradyn_include."

@@ -46,8 +46,8 @@ libvtkeffort_la_LIBADD = \
 libvtkeffort_la_LDFLAGS = \
 	-module \
 	-avoid-version \
-	$(VTK_LIBS) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
-	$(PYTHON_LDFLAGS)
+	$(VTK_LIBS) $(VTK_RPATH) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
+	$(PYTHON_LDFLAGS) $(PYTHON_RPATH)
 
 ###########################################################################
 # pyeffort module needs more things exposed, so we use SWIG to generate
@@ -59,15 +59,17 @@ _pyeffort_la_SOURCES = pyeffort_wrap.C
 pyeffort_wrap.C: pyeffort.i
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
 
-_pyeffort_la_LIBADD =   libvtkeffort.la \
-												../effort/libeffort.la \
-						    				../callpath/libcallpath.la \
-								    		../libwavelet/libwavelet.la \
-                        $(VTK_LIBS) \
-										    -lvtkCommonPythonD \
-										    -lvtkGraphicsPythonD
+_pyeffort_la_LIBADD  = libvtkeffort.la \
+										   ../effort/libeffort.la \
+						    			 ../callpath/libcallpath.la \
+								    	 ../libwavelet/libwavelet.la
 
-_pyeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
+_pyeffort_la_LDFLAGS = \
+	-module \
+	-avoid-version \
+  $(VTK_LIBS) $(VTK_RPATH) -lvtkCommonPythonD -lvtkGraphicsPythonD \
+	$(PYTHON_LDFLAGS) $(PYTHON_RPATH)
+
 pyeffort.py: _pyeffort.la
 
 include_HEADERS = \

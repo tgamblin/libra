@@ -50,7 +50,10 @@ libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
-libeffort_la_LDFLAGS = -avoid-version $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
+libeffort_la_LDFLAGS = \
+	-avoid-version \
+	$(PAPI_LDFLAGS) $(PAPI_RPATH)
+	$(SPRNG_LDFLAGS) $(SPRNG_RPATH)
 
 #
 # Effort runtime library and wrapper libraries
@@ -95,16 +98,18 @@ endif
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 approx_timer_SOURCES = approx_timer.C
-approx_timer_LDADD=libeffort.la ../cluster/libcluster.la
+approx_timer_LDADD = libeffort.la ../cluster/libcluster.la
 
 sample_test_SOURCES = sample_test.C
-sample_test_LDADD=libeffort.la ../cluster/libcluster.la
+sample_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 dataset_test_SOURCES = dataset_test.C
-dataset_test_LDADD=libeffort.la ../cluster/libcluster.la
+dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
-ef_LDADD=libeffort.la $(SYMTAB_LDFLAGS)
+ef_LDADD= libeffort.la 
+ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
+
 
 nrmse_SOURCES=nrmse.C 
 tuner_SOURCES=tuner.C

@@ -196,8 +196,10 @@ dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
 dataset_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
-am__DEPENDENCIES_1 =
-ef_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1)
+ef_DEPENDENCIES = libeffort.la
+ef_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(ef_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
@@ -267,6 +269,7 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 COMMON_CPPFLAGS = @COMMON_CPPFLAGS@
 COMMON_LDFLAGS = @COMMON_LDFLAGS@
+COMMON_RPATH = @COMMON_RPATH@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -278,12 +281,14 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DSYMUTIL = @DSYMUTIL@
 DWARF_LDFLAGS = @DWARF_LDFLAGS@
+DWARF_RPATH = @DWARF_RPATH@
 ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 ELF_LDFLAGS = @ELF_LDFLAGS@
+ELF_RPATH = @ELF_RPATH@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FC = @FC@
@@ -292,6 +297,7 @@ FCLIBS = @FCLIBS@
 FFLAGS = @FFLAGS@
 GREP = @GREP@
 IBERTY_LDFLAGS = @IBERTY_LDFLAGS@
+IBERTY_RPATH = @IBERTY_RPATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -316,12 +322,14 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PAPI_CPPFLAGS = @PAPI_CPPFLAGS@
 PAPI_LDFLAGS = @PAPI_LDFLAGS@
+PAPI_RPATH = @PAPI_RPATH@
 PARADYN_CPPFLAGS = @PARADYN_CPPFLAGS@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PMPI_INIT = @PMPI_INIT@
 PNMPI_CPPFLAGS = @PNMPI_CPPFLAGS@
 PNMPI_LDFLAGS = @PNMPI_LDFLAGS@
 PNMPI_PATCH = @PNMPI_PATCH@
+PNMPI_RPATH = @PNMPI_RPATH@
 PNMPI_WRAPPERGEN = @PNMPI_WRAPPERGEN@
 PYTHON = @PYTHON@
 PYTHON_CPPFLAGS = @PYTHON_CPPFLAGS@
@@ -329,6 +337,7 @@ PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_LDFLAGS = @PYTHON_LDFLAGS@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
+PYTHON_RPATH = @PYTHON_RPATH@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -343,14 +352,18 @@ SWIG_PYTHON_CPPFLAGS = @SWIG_PYTHON_CPPFLAGS@
 SWIG_PYTHON_OPT = @SWIG_PYTHON_OPT@
 SW_CPPFLAGS = @SW_CPPFLAGS@
 SW_LDFLAGS = @SW_LDFLAGS@
+SW_RPATH = @SW_RPATH@
 SYMTAB_CPPFLAGS = @SYMTAB_CPPFLAGS@
 SYMTAB_LDFLAGS = @SYMTAB_LDFLAGS@
+SYMTAB_RPATH = @SYMTAB_RPATH@
 VERSION = @VERSION@
 VTK_CPPFLAGS = @VTK_CPPFLAGS@
 VTK_LIBS = @VTK_LIBS@
+VTK_RPATH = @VTK_RPATH@
 VTK_WRAP_PYTHON = @VTK_WRAP_PYTHON@
 VTK_WRAP_PYTHON_INIT = @VTK_WRAP_PYTHON_INIT@
 XML2_LDFLAGS = @XML2_LDFLAGS@
+XML2_RPATH = @XML2_RPATH@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -443,7 +456,10 @@ libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
-libeffort_la_LDFLAGS = -avoid-version $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
+libeffort_la_LDFLAGS = \
+	-avoid-version \
+	$(PAPI_LDFLAGS) $(PAPI_RPATH)
+
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_SOURCES = effort_module.C \
 @PMPI_EFFORT_TRUE@															 env_config.C
@@ -470,7 +486,8 @@ sample_test_LDADD = libeffort.la ../cluster/libcluster.la
 dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 ef_SOURCES = ef.C
-ef_LDADD = libeffort.la $(SYMTAB_LDFLAGS)
+ef_LDADD = libeffort.la 
+ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 nrmse_SOURCES = nrmse.C 
 tuner_SOURCES = tuner.C
 bin_test_SOURCES = bin_test.C
@@ -646,7 +663,7 @@ dataset_test$(EXEEXT): $(dataset_test_OBJECTS) $(dataset_test_DEPENDENCIES)
 	$(CXXLINK) $(dataset_test_OBJECTS) $(dataset_test_LDADD) $(LIBS)
 ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES) 
 	@rm -f ef$(EXEEXT)
-	$(CXXLINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
+	$(ef_LINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
@@ -952,6 +969,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-pnmpiLTLIBRARIES
 
+	$(SPRNG_LDFLAGS) $(SPRNG_RPATH)
 
 $(srcdir)/base_wrapper.C: base_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
