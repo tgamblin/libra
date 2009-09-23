@@ -86,11 +86,6 @@ public:
 };
 
 
-void Translator::set_callsite_mode(bool mode) {
-  callsite_mode = mode;
-}
-
-
 FrameInfo Translator::translate(const FrameId& frame) {
   vector<LineNoTuple> lines;
 
@@ -195,3 +190,6 @@ void Translator::set_executable(const std::string& exe) {
   executable = ModuleId(exe);
 }
 
+void Translator::set_callsite_mode(bool mode) {
+  callsite_mode = mode;
+}

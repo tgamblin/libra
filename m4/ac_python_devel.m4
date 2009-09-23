@@ -48,10 +48,13 @@ AC_ARG_WITH([python],
      pyhome="$withval"
 
      # Need this so that we can check for frameworks properly.
+     echo $ECHO_N "checking if Python is a Mac OS X Framework... $ECHO_C"
      SYS_TYPE=`uname -s`
      if test "x$SYS_TYPE" = "xDarwin" && (echo $pyhome | grep -q '\.framework$'); then
+         echo yes
          py_is_framework=yes
      else
+         echo no
          py_is_framework=no
      fi
 
@@ -177,7 +180,7 @@ AC_ARG_WITH([python],
          PYTHON_LIBNAME="python${PYTHON_VERSION}"
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
-         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME} -Wl,-rpath=$pyhome/lib"
+         PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME} -Wl,-rpath -Wl,$pyhome/lib"
          
          SAVED_CPPFLAGS="$CPPFLAGS"
          SAVED_LDFLAGS="$LDFLAGS"
