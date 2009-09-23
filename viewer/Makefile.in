@@ -84,8 +84,7 @@ _pyeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(_pyeffort_la_LDFLAGS) $(LDFLAGS) -o $@
 libvtkeffort_la_DEPENDENCIES = ../effort/libeffort.la \
-	../callpath/libcallpath.la ../libwavelet/libwavelet.la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	../callpath/libcallpath.la ../libwavelet/libwavelet.la
 am__objects_1 = vtkEffortData.lo vtkEffortSource.lo \
 	vtkZValueScalars.lo
 am__objects_2 = libvtkeffortPythonInit.lo vtkEffortDataPython.lo \
@@ -322,16 +321,17 @@ libvtkeffort_la_SOURCES = \
 	$(VTKEFFORT_PYTHON_SOURCES)
 
 libvtkeffort_la_LIBADD = \
-										../effort/libeffort.la \
-										../callpath/libcallpath.la \
-										../libwavelet/libwavelet.la \
-										-lvtkCommonPythonD \
-								    -lvtkGraphicsPythonD \
-										-lvtkFilteringPythonD \
-                    $(VTK_LIBS) \
-                    $(PYTHON_LIBS)
+	../effort/libeffort.la \
+	../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 
-libvtkeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
+libvtkeffort_la_LDFLAGS = \
+	-module \
+	-avoid-version \
+	$(VTK_LIBS) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
+	$(PYTHON_LIBS) \
+	$(PYTHON_LDFLAGS)
+
 
 ###########################################################################
 # pyeffort module needs more things exposed, so we use SWIG to generate

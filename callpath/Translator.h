@@ -16,8 +16,6 @@ class symtab_info;
 /// Class to turn FrameIds into more useful FrameInfo (with symbol data).
 ///
 class Translator { 
-private:
-  ModuleId executable;
 public:
   /// Construct a translator; optionally provide the location of the executable 
   /// for translating frames with unknown modules.
@@ -36,7 +34,15 @@ public:
   /// Set the executable.
   void set_executable(const std::string& exe);
   
+  /// Should be true if frames contain the return address and not the actual callsite.
+  /// This will cause the translator to subtract one from the address when translating, to
+  /// get the line info for the callsite instead of the line just after it.
+  void set_callsite_mode(bool mode);
+  
 private:
+  /// Main executable 
+  ModuleId executable;
+
   /// Lookup table for symtabs we've already parsed.
   typedef std::map<ModuleId, symtab_info*> cache;
 
@@ -48,6 +54,9 @@ private:
 
   /// Cleans up symtab info
   void cleanup_symtab_info();
+
+  /// whether we're in callsitemode (see set_callsite_mode()).  Defaults to true.
+  bool callsite_mode;
 }; // Translator
 
 #endif // CALLPATH_TRANSLATOR_H

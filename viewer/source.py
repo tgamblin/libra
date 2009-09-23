@@ -35,8 +35,7 @@ class SymData:
 #
 def loadSymtab(symfile="viewer-data/symtab"):
   global symtab
-  if symtab != None:
-    return
+  if symtab: return
 
   # Check for a symtab if we do not have it already
   symtab = {}    # This is the global map of symbols
@@ -53,7 +52,7 @@ def loadSymtab(symfile="viewer-data/symtab"):
       
       if mapping.match(line):
         original, new = map(str.strip, line.split("=>"))
-        modmap[new] = original
+        modmap[original] = new
 
       else:
         data = SymData(*line.split("|"))

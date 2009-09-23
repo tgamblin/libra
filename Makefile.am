@@ -17,7 +17,15 @@ dist_noinst_SCRIPTS = \
 	build/do_configure_bgp_fen \
 	build/do_configure_macbookpro
 
-EXTRA_DIST = LICENSE README
+EXTRA_DIST = \
+	LICENSE \
+	README \
+	docs/index.html \
+	docs/install.html \
+  docs/libra.css \
+	docs/logo.png \
+	docs/plot.png \
+	docs/using.html
 
 SUBDIRS=libwavelet callpath cluster effort $(VIEWER_DIRS) tests
 

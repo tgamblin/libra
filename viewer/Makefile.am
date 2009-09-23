@@ -39,15 +39,16 @@ libvtkeffort_la_SOURCES = \
 	$(VTKEFFORT_PYTHON_SOURCES)
 
 libvtkeffort_la_LIBADD = \
-										../effort/libeffort.la \
-										../callpath/libcallpath.la \
-										../libwavelet/libwavelet.la \
-										-lvtkCommonPythonD \
-								    -lvtkGraphicsPythonD \
-										-lvtkFilteringPythonD \
-                    $(VTK_LIBS) \
-                    $(PYTHON_LIBS)
-libvtkeffort_la_LDFLAGS = -module -avoid-version $(PYTHON_LDFLAGS)
+	../effort/libeffort.la \
+	../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
+
+libvtkeffort_la_LDFLAGS = \
+	-module \
+	-avoid-version \
+	$(VTK_LIBS) -lvtkCommonPythonD -lvtkGraphicsPythonD -lvtkFilteringPythonD \
+	$(PYTHON_LIBS) \
+	$(PYTHON_LDFLAGS)
 
 ###########################################################################
 # pyeffort module needs more things exposed, so we use SWIG to generate

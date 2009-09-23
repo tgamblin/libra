@@ -10,12 +10,13 @@ FLAGS="-g -O2 -fno-omit-frame-pointer -DMPICH_IGNORE_CXX_SEEK -DVTK_EXCLUDE_STRS
     CXX=mpiCC \
     CXXFLAGS="$FLAGS" \
     --prefix=${HOME}/opt/libra/${SYS_TYPE} \
-    --with-paradyn=/usr/local/tools/stackwalker-0.6.1 \
+    --with-paradyn=${HOME}/projects/dawn-sw/sw_beta5/x86_64-unknown-linux2.4 \
     --with-dwarf=/usr/local/tools/libdwarf-2008.10.13 \
     --with-papi=/usr/local/tools/papi \
     --with-python=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
     --with-python-version=2.5 \
-    --with-vtk=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5 \
-    --disable-static
+    --with-vtk=/usr/gapps/python/chaos_4_x86_64_ib/opt-2.5
 
+#    --with-sprng=${HOME}/opt/sprng/${SYS_TYPE}
+#    --disable-static
 #    --with-pnmpi=/usr/global/tools/pnmpi/${SYS_TYPE} \

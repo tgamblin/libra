@@ -28,11 +28,13 @@ src_dir="#{data_dir}/src"
 FileUtils::mkdir_p(src_dir)
 
 # Path map maps directories in path to sequential dir names
-i=0
+# Directory names are created and generated on first access.
+src_dir_id=0
 path.map! {|dir| Dir.glob("#{dir}/**/") }.flatten!
-path_map = Hash.new {|hash, dir| i+=1; hash[dir] = "#{src_dir}/%03d" % i}
-path.each do |dir| 
-  FileUtils::mkdir_p(path_map[dir])
+path_map = Hash.new do |hash, dir| 
+  src_dir_id += 1;
+  hash[dir] = "#{src_dir}/%03d" % src_dir_id
+  FileUtils::mkdir_p(hash[dir])
 end
 
 

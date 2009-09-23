@@ -17,13 +17,13 @@ using namespace Dyninst::SymtabAPI;
 using wavelet::exists;
 using namespace std;
 
-Translator::Translator(const string& exe) : executable(exe) { }
-
+Translator::Translator(const string& exe) 
+  : executable(exe), callsite_mode(true) { }
 
 
 #ifndef HAVE_SYMTAB
 
-// Just retur an empty frameinfo if we don't have symtabAPI
+// Just return an empty frameinfo if we don't have symtabAPI
 FrameInfo Translator::translate(const FrameId& frame) {
   return FrameInfo(frame.module, frame.offset);
 }
@@ -86,6 +86,11 @@ public:
 };
 
 
+void Translator::set_callsite_mode(bool mode) {
+  callsite_mode = mode;
+}
+
+
 FrameInfo Translator::translate(const FrameId& frame) {
   vector<LineNoTuple> lines;
 
@@ -95,12 +100,16 @@ FrameInfo Translator::translate(const FrameId& frame) {
     
   // Subtract one from the offset here, to hackily
   // convert return address to callsite
-  uintptr_t offset = frame.offset ? frame.offset - 1 : frame.offset;
+  uintptr_t offset = frame.offset;
+  uintptr_t translation_offset = offset;
+  if (callsite_mode) {
+    translation_offset = offset ? offset - 1 : offset;
+  }
 
   string name;
   stinfo->getName(offset, name);
 
-  if (stinfo->getSourceLines(lines, offset)) {
+  if (stinfo->getSourceLines(lines, translation_offset)) {
     return FrameInfo(module, offset, lines[0].first, lines[0].second, name);    
   } else {
     return FrameInfo(frame.module, frame.offset, name);
@@ -111,9 +120,7 @@ FrameInfo Translator::translate(const FrameId& frame) {
 symtab_info *Translator::get_symtab_info(ModuleId module) {
   Translator::cache::iterator sti = symtabs.find(module);
   if (sti == symtabs.end()) {
-    Symtab *symtab;
     string filename = module.str();
-
     sti = symtabs.insert(Translator::cache::value_type(module, new symtab_info(module.str()))).first;
   }
 
@@ -187,3 +194,4 @@ void Translator::write_path(ostream& out, const Callpath& path, std::string inde
 void Translator::set_executable(const std::string& exe) {
   executable = ModuleId(exe);
 }
+

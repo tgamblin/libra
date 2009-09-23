@@ -38,9 +38,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@PNMPI_EFFORT_TRUE@am__append_1 = callpath_module.h
 subdir = callpath
-DIST_COMMON = $(am__include_HEADERS_DIST) $(srcdir)/Makefile.am \
+DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_detect_bluegene.m4 \
@@ -70,24 +69,10 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pnmpidir)" \
-	"$(DESTDIR)$(includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
-pnmpiLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(lib_LTLIBRARIES) $(pnmpi_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-@PNMPI_EFFORT_TRUE@callpath_la_DEPENDENCIES = libcallpath.la \
-@PNMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1)
-am__callpath_la_SOURCES_DIST = callpath_module.C
-@PNMPI_EFFORT_TRUE@am_callpath_la_OBJECTS = callpath_module.lo
-@PNMPI_EFFORT_TRUE@nodist_callpath_la_OBJECTS = callpath_wrapper.lo
-callpath_la_OBJECTS = $(am_callpath_la_OBJECTS) \
-	$(nodist_callpath_la_OBJECTS)
-callpath_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(callpath_la_LDFLAGS) $(LDFLAGS) -o $@
-@PNMPI_EFFORT_TRUE@am_callpath_la_rpath = -rpath $(pnmpidir)
-libcallpath_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+LTLIBRARIES = $(lib_LTLIBRARIES)
+libcallpath_la_LIBADD =
 am__libcallpath_la_SOURCES_DIST = Callpath.C FrameId.C ModuleId.C \
 	FrameInfo.C Translator.C CallpathRuntime.C
 @HAVE_SW_TRUE@am__objects_1 = CallpathRuntime.lo
@@ -109,22 +94,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-SOURCES = $(callpath_la_SOURCES) $(nodist_callpath_la_SOURCES) \
-	$(libcallpath_la_SOURCES)
-DIST_SOURCES = $(am__callpath_la_SOURCES_DIST) \
-	$(am__libcallpath_la_SOURCES_DIST)
-am__include_HEADERS_DIST = FrameId.h Callpath.h CallpathRuntime.h \
-	UniqueId.h ModuleId.h FrameInfo.h Translator.h \
-	callpath_module.h
+SOURCES = $(libcallpath_la_SOURCES)
+DIST_SOURCES = $(am__libcallpath_la_SOURCES_DIST)
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
@@ -297,25 +268,22 @@ libcallpath_la_SOURCES = \
 	Translator.C \
 	$(SW_ONLY_SRCS)
 
-libcallpath_la_LIBADD = $(SW_LDFLAGS)
-libcallpath_la_LDFLAGS = -avoid-version 
-include_HEADERS = FrameId.h Callpath.h CallpathRuntime.h UniqueId.h \
-	ModuleId.h FrameInfo.h Translator.h $(am__append_1)
-INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
+libcallpath_la_LDFLAGS = $(SW_LDFLAGS) -avoid-version
+include_HEADERS = \
+	FrameId.h \
+	Callpath.h \
+	CallpathRuntime.h \
+  UniqueId.h \
+	ModuleId.h \
+	FrameInfo.h \
+	Translator.h \
+	safe_bool.h
 
-#
-# Below section builds a PnMPI module to trace callpaths using
-# the Callpath class.
-#
-@PNMPI_EFFORT_TRUE@pnmpi_LTLIBRARIES = callpath.la
-@PNMPI_EFFORT_TRUE@nodist_callpath_la_SOURCES = callpath_wrapper.c
-@PNMPI_EFFORT_TRUE@callpath_la_SOURCES = callpath_module.C
-@PNMPI_EFFORT_TRUE@callpath_la_LDFLAGS = -module -avoid-version
-@PNMPI_EFFORT_TRUE@callpath_la_LIBADD = libcallpath.la $(SW_LDFLAGS)
+INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .C .c .lo .o .obj
+.SUFFIXES: .C .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -372,35 +340,6 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-install-pnmpiLTLIBRARIES: $(pnmpi_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(pnmpidir)" || $(MKDIR_P) "$(DESTDIR)$(pnmpidir)"
-	@list='$(pnmpi_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(pnmpiLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(pnmpidir)/$$f'"; \
-	    $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(pnmpiLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(pnmpidir)/$$f"; \
-	  else :; fi; \
-	done
-
-uninstall-pnmpiLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(pnmpi_LTLIBRARIES)'; for p in $$list; do \
-	  p=$(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(pnmpidir)/$$p'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(pnmpidir)/$$p"; \
-	done
-
-clean-pnmpiLTLIBRARIES:
-	-test -z "$(pnmpi_LTLIBRARIES)" || rm -f $(pnmpi_LTLIBRARIES)
-	@list='$(pnmpi_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-callpath.la: $(callpath_la_OBJECTS) $(callpath_la_DEPENDENCIES) 
-	$(callpath_la_LINK) $(am_callpath_la_rpath) $(callpath_la_OBJECTS) $(callpath_la_LIBADD) $(LIBS)
 libcallpath.la: $(libcallpath_la_OBJECTS) $(libcallpath_la_DEPENDENCIES) 
 	$(libcallpath_la_LINK) -rpath $(libdir) $(libcallpath_la_OBJECTS) $(libcallpath_la_LIBADD) $(LIBS)
 
@@ -416,8 +355,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ModuleId.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Translator.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callpath_module.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callpath_wrapper.Plo@am__quote@
 
 .C.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -439,27 +376,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
-
-.c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
-
-.c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -561,7 +477,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pnmpidir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -588,11 +504,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@PNMPI_EFFORT_FALSE@install-exec-hook:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-pnmpiLTLIBRARIES mostlyclean-am
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -610,13 +525,11 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS install-pnmpiLTLIBRARIES
+install-data-am: install-includeHEADERS
 
 install-dvi: install-dvi-am
 
 install-exec-am: install-libLTLIBRARIES
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 
 install-html: install-html-am
 
@@ -648,36 +561,25 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pnmpiLTLIBRARIES
+uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
 
-.MAKE: install-am install-exec-am install-strip
+.MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-pnmpiLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-exec-hook install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-pnmpiLTLIBRARIES install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pnmpiLTLIBRARIES
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-includeHEADERS install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-includeHEADERS \
+	uninstall-libLTLIBRARIES
 
-
-@PNMPI_EFFORT_TRUE@install-exec-hook:
-@PNMPI_EFFORT_TRUE@	$(PNMPI_PATCH) .libs/callpath.so .libs/callpath-patched.so
-@PNMPI_EFFORT_TRUE@	chmod u+x .libs/callpath-patched.so
-@PNMPI_EFFORT_TRUE@	mv -f .libs/callpath-patched.so .libs/callpath.so
-
-@PNMPI_EFFORT_TRUE@callpath_wrapper.c: callpath_wrapper.w
-@PNMPI_EFFORT_TRUE@	$(PNMPI_WRAPPERGEN) -w $< -o $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

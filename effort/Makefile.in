@@ -46,10 +46,10 @@ host_triplet = @host@
 #
 # Effort runtime library and wrapper libraries
 #
-@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la 
+@PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
-	$(am__EXEEXT_1)
-@HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test sample-test approx-timer 
+	$(am__EXEEXT_1) $(am__EXEEXT_2)
+@HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -88,11 +88,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pnmpidir)" \
 libLTLIBRARIES_INSTALL = $(INSTALL)
 pnmpiLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES) $(pnmpi_LTLIBRARIES)
-am__DEPENDENCIES_1 =
 @PNMPI_EFFORT_TRUE@effort_la_DEPENDENCIES =  \
 @PNMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
-@PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la \
-@PNMPI_EFFORT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la
 am__effort_la_SOURCES_DIST = effort_wrapper.C
 @PNMPI_EFFORT_TRUE@am_effort_la_OBJECTS = effort_wrapper.lo
 effort_la_OBJECTS = $(am_effort_la_OBJECTS)
@@ -111,18 +109,16 @@ libcomm_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(libcomm_effort_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libcomm_effort_la_rpath = -rpath $(libdir)
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_DEPENDENCIES = libeffort.la
-am__libeffort_runtime_la_SOURCES_DIST = effort_module.C env_config.C \
-	sampling.C
+am__libeffort_runtime_la_SOURCES_DIST = effort_module.C env_config.C
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_OBJECTS = effort_module.lo \
-@PMPI_EFFORT_TRUE@	env_config.lo sampling.lo
+@PMPI_EFFORT_TRUE@	env_config.lo
 libeffort_runtime_la_OBJECTS = $(am_libeffort_runtime_la_OBJECTS)
 libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libeffort_runtime_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_rpath = -rpath $(libdir)
 libeffort_la_DEPENDENCIES = ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	../libwavelet/libwavelet.la
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_data.C effort_params.C string_utils.C Metric.C \
 	FrameDB.C effort_dataset.C s3d_topology.C \
@@ -139,6 +135,15 @@ libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libeffort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@libmanual_effort_la_DEPENDENCIES =  \
+@PMPI_EFFORT_TRUE@	libeffort-runtime.la
+am__libmanual_effort_la_SOURCES_DIST = base_wrapper.C
+@PMPI_EFFORT_TRUE@am_libmanual_effort_la_OBJECTS = base_wrapper.lo
+libmanual_effort_la_OBJECTS = $(am_libmanual_effort_la_OBJECTS)
+libmanual_effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libmanual_effort_la_LDFLAGS) $(LDFLAGS) -o $@
+@PMPI_EFFORT_TRUE@am_libmanual_effort_la_rpath = -rpath $(libdir)
 libpcontrol_counter_la_LIBADD =
 am__libpcontrol_counter_la_SOURCES_DIST = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@am_libpcontrol_counter_la_OBJECTS =  \
@@ -173,9 +178,10 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
-@HAVE_MPI_TRUE@am__EXEEXT_1 = tuner$(EXEEXT) bin_test$(EXEEXT) \
-@HAVE_MPI_TRUE@	dataset_test$(EXEEXT) sample-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	approx-timer$(EXEEXT)
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@am__EXEEXT_1 = sample-test$(EXEEXT) \
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@	approx-timer$(EXEEXT)
+@HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
+@HAVE_MPI_TRUE@	dataset_test$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
@@ -190,6 +196,7 @@ dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
 dataset_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
+am__DEPENDENCIES_1 =
 ef_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1)
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
@@ -222,6 +229,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(libeffort_runtime_la_SOURCES) $(libeffort_la_SOURCES) \
+	$(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
@@ -232,6 +240,7 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_runtime_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
+	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
@@ -417,7 +426,9 @@ dist_noinst_HEADERS = \
   effort_dataset.h \
 	FrameDB.h \
 	sampling.h \
-	ltqnorm.h
+	ltqnorm.h \
+	stl_utils.h \
+	s3d_topology.h
 
 lib_LTLIBRARIES = libeffort.la $(am__append_3)
 
@@ -428,17 +439,15 @@ libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
 	effort_params.C string_utils.C Metric.C FrameDB.C \
 	effort_dataset.C s3d_topology.C $(am__append_1) \
 	$(am__append_2)
-libeffort_la_LDFLAGS = -avoid-version
+@HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@SAMPLE_PROGS = sample-test approx-timer 
 libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la \
-	$(PAPI_LDFLAGS) \
-	$(SPRNG_LDFLAGS)
+	../libwavelet/libwavelet.la
 
+libeffort_la_LDFLAGS = -avoid-version $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_SOURCES = effort_module.C \
-@PMPI_EFFORT_TRUE@															 env_config.C \
-@PMPI_EFFORT_TRUE@															 sampling.C
+@PMPI_EFFORT_TRUE@															 env_config.C
 
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LIBADD = libeffort.la
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LDFLAGS = -avoid-version 
@@ -448,6 +457,9 @@ libeffort_la_LIBADD = \
 @PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort-runtime.la
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
+@PMPI_EFFORT_TRUE@libmanual_effort_la_SOURCES = base_wrapper.C
+@PMPI_EFFORT_TRUE@libmanual_effort_la_LIBADD = libeffort-runtime.la
+@PMPI_EFFORT_TRUE@libmanual_effort_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libtiming_la_SOURCES = timing_module.C
 @PMPI_EFFORT_TRUE@libtiming_la_LDFLAGS = -avoid-version
 @PMPI_EFFORT_TRUE@libtiming_la_LIBADD = ../libwavelet/libwavelet.la
@@ -464,8 +476,8 @@ nrmse_SOURCES = nrmse.C
 tuner_SOURCES = tuner.C
 bin_test_SOURCES = bin_test.C
 s3d_topo_test_SOURCES = s3d_topo_test.C
-CLEANFILES = effort_wrapper.C comm_wrapper.C
-EXTRA_DIST = effort_wrapper.w comm_wrapper.w
+CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
+EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
 LDADD = libeffort.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
@@ -489,8 +501,8 @@ INCLUDES = -I$(top_srcdir)/libwavelet \
 @PNMPI_EFFORT_TRUE@timing_la_LDFLAGS = -avoid-version -module
 @PNMPI_EFFORT_TRUE@timing_la_LIBADD = ../libwavelet/libwavelet.la
 @PNMPI_EFFORT_TRUE@effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-@PNMPI_EFFORT_TRUE@effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
-@PNMPI_EFFORT_TRUE@effort_la_LDFLAGS = -avoid-version -module
+@PNMPI_EFFORT_TRUE@effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
+@PNMPI_EFFORT_TRUE@effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -586,6 +598,8 @@ libeffort-runtime.la: $(libeffort_runtime_la_OBJECTS) $(libeffort_runtime_la_DEP
 	$(libeffort_runtime_la_LINK) $(am_libeffort_runtime_la_rpath) $(libeffort_runtime_la_OBJECTS) $(libeffort_runtime_la_LIBADD) $(LIBS)
 libeffort.la: $(libeffort_la_OBJECTS) $(libeffort_la_DEPENDENCIES) 
 	$(libeffort_la_LINK) -rpath $(libdir) $(libeffort_la_OBJECTS) $(libeffort_la_LIBADD) $(LIBS)
+libmanual-effort.la: $(libmanual_effort_la_OBJECTS) $(libmanual_effort_la_DEPENDENCIES) 
+	$(libmanual_effort_la_LINK) $(am_libmanual_effort_la_rpath) $(libmanual_effort_la_OBJECTS) $(libmanual_effort_la_LIBADD) $(LIBS)
 libpcontrol-counter.la: $(libpcontrol_counter_la_OBJECTS) $(libpcontrol_counter_la_DEPENDENCIES) 
 	$(CXXLINK) $(am_libpcontrol_counter_la_rpath) $(libpcontrol_counter_la_OBJECTS) $(libpcontrol_counter_la_LIBADD) $(LIBS)
 libpmpi-effort.la: $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_DEPENDENCIES) 
@@ -940,16 +954,16 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
 	uninstall-pnmpiLTLIBRARIES
 
 
-base_wrapper.C: base_wrapper.w
+$(srcdir)/base_wrapper.C: base_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-effort_wrapper.C: effort_wrapper.w
+$(srcdir)/effort_wrapper.C: effort_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-comm_wrapper.C: comm_wrapper.w
+$(srcdir)/comm_wrapper.C: comm_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
-waitall_wrapper.C: waitall_wrapper.w
+$(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 # Installs library using PnMPI patcher

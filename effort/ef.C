@@ -73,9 +73,9 @@ void usage() {
 }
 
 
-bool exists(const char *filename) {
+bool exists(string filename) {
   struct stat st;
-  return !stat(filename, &st);
+  return !stat(filename.c_str(), &st);
 }
 
 /// Uses getopt to read in arguments.
@@ -112,8 +112,15 @@ void get_args(int *argc, char ***argv) {
       translate = true;
       break;
     case 'e':
-      translate = true;
-      translator.set_executable(string(optarg));
+      {
+        translate = true;
+        string exe(optarg);
+        if (!exists(exe)) {
+          cerr << exe << ": No such file or directory." << endl;
+          exit(1);
+        }
+        translator.set_executable(exe);
+      }
       break;
     case 'h':
     default:
@@ -252,6 +259,7 @@ int main(int argc, char **argv) {
   }
 
   get_args(&argc, &argv);
+  translator.set_callsite_mode(true);  // translate callsites, not raw addrs.
 
   for (int i=0; i < argc; i++) {
     ifstream comp_file(argv[i]);
@@ -266,13 +274,7 @@ int main(int argc, char **argv) {
       string dir(dirname(argv[i]));
       ostringstream path;
       path << dir << "/viewer-data/symtab";
-
-      cerr << "loading " << path.str() << endl;
       frames.reset(FrameDB::load_from_file(path.str()));
-      if (!frames.get()) {
-        cerr << "ERROR: -f requires either generated viewer-data or SymtabAPI." << endl;
-        exit(1);
-      }
     }
 
     effort_key key;
