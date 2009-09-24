@@ -108,7 +108,7 @@ dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
 ef_LDADD= libeffort.la 
-#ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
+ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 
 
 nrmse_SOURCES=nrmse.C 
