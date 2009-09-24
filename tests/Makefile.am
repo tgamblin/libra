@@ -36,6 +36,7 @@ papicheck_LDADD = $(PAPI_LDFLAGS) $(PAPI_RPATH)
 
 swcheck_SOURCES = swcheck.C
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
+swcheck_LDADD =  ../callpath/libcallpath.la  ../libwavelet/libwavelet.la
 
 partest_SOURCES = partest.C
 parezwtest_SOURCES = parezwtest.C
@@ -59,5 +60,5 @@ delitter:
 
 clean-local: delitter
 
-LDADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la
+LDADD = ../libwavelet/libwavelet.la
 INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort

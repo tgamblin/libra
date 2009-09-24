@@ -216,9 +216,6 @@ dataset_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
 ef_DEPENDENCIES = libeffort.la
-ef_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(ef_LDFLAGS) \
-	$(LDFLAGS) -o $@
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
@@ -513,7 +510,7 @@ dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 ef_SOURCES = ef.C
 ef_LDADD = libeffort.la 
-ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
+#ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 nrmse_SOURCES = nrmse.C 
 tuner_SOURCES = tuner.C
 bin_test_SOURCES = bin_test.C
@@ -713,7 +710,7 @@ dataset_test$(EXEEXT): $(dataset_test_OBJECTS) $(dataset_test_DEPENDENCIES)
 	$(CXXLINK) $(dataset_test_OBJECTS) $(dataset_test_LDADD) $(LIBS)
 ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES) 
 	@rm -f ef$(EXEEXT)
-	$(ef_LINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
+	$(CXXLINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
