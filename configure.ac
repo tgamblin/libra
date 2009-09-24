@@ -6,7 +6,7 @@ AC_CONFIG_SRCDIR([libwavelet/wt_direct.C])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE(libra,0.9)
+AM_INIT_AUTOMAKE(libra,1.0)
 AC_CONFIG_HEADERS([config.h])
 AX_PREFIX_CONFIG_H([libra-config.h])
 
