@@ -5,7 +5,7 @@
 #  
 #  If the library is found, it uses AC_SUBST to export the following:
 #     <NAME>_LDFLAGS   standard linker args (-L/foo/lib -lname, etc.)
-#     <NAME>_RPATH     rpath arguments for library locations (-Wl,--rpath -Wl,/foo/lib)
+#     <NAME>_RPATH     rpath arguments for library locations (-R /foo/lib, etc.)
 #  
 #  Standard vars like LIBS, LDFLAGS, etc. are unmodified.  If the library
 #  is not found, then have_<name> is set to "no".
@@ -34,28 +34,22 @@ AC_DEFUN([AC_LIB_SUBST],
     $3_LDFLAGS="$$3_LDFLAGS -l$1"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   $3_RPATH=""
   for elt in $$3_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [[ -z "$$3_RPATH" ]]; then
             $3_RPATH="$rpath"
         else
             $3_RPATH="$$3_RPATH $rpath"
         fi
-     echo $$3_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$$3_LDFLAGS $$3_RPATH $LDFLAGS"
+  LDFLAGS="$$3_LDFLAGS $LDFLAGS"
   
   AC_SAFE_CHECK_LIB([$1], [$2],
                     [have_$1=yes],

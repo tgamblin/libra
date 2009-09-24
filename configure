@@ -22368,8 +22368,8 @@ $as_echo "yes" >&6; }
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
                 VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
-                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath"
-                VTK_RPATH="-Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_LIBS="-L$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_RPATH="-R $VTK_LIB_PATH"
 
                 # now, eventually check version
                 if [ -n "5.0.0" ]; then
@@ -23039,7 +23039,7 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
          PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME}"
-         PYTHON_RPATH="-Wl,-rpath -Wl,$pyhome/lib"
+         PYTHON_RPATH="-R $pyhome/lib"
 
          SAVED_CPPFLAGS="$CPPFLAGS"
          SAVED_LDFLAGS="$LDFLAGS"
@@ -23534,28 +23534,22 @@ if test "${with_elf+set}" = set; then
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   ELF_RPATH=""
   for elt in $ELF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$ELF_RPATH" ]; then
             ELF_RPATH="$rpath"
         else
             ELF_RPATH="$ELF_RPATH $rpath"
         fi
-     echo $ELF_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $ELF_RPATH $LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23665,28 +23659,22 @@ else
     ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   ELF_RPATH=""
   for elt in $ELF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$ELF_RPATH" ]; then
             ELF_RPATH="$rpath"
         else
             ELF_RPATH="$ELF_RPATH $rpath"
         fi
-     echo $ELF_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $ELF_RPATH $LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23802,28 +23790,22 @@ if test "${with_dwarf+set}" = set; then
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   DWARF_RPATH=""
   for elt in $DWARF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$DWARF_RPATH" ]; then
             DWARF_RPATH="$rpath"
         else
             DWARF_RPATH="$DWARF_RPATH $rpath"
         fi
-     echo $DWARF_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $DWARF_RPATH $LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -23933,28 +23915,22 @@ else
     DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   DWARF_RPATH=""
   for elt in $DWARF_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$DWARF_RPATH" ]; then
             DWARF_RPATH="$rpath"
         else
             DWARF_RPATH="$DWARF_RPATH $rpath"
         fi
-     echo $DWARF_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $DWARF_RPATH $LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24071,28 +24047,22 @@ if test "${with_xml2+set}" = set; then
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   XML2_RPATH=""
   for elt in $XML2_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$XML2_RPATH" ]; then
             XML2_RPATH="$rpath"
         else
             XML2_RPATH="$XML2_RPATH $rpath"
         fi
-     echo $XML2_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $XML2_RPATH $LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24202,28 +24172,22 @@ else
     XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   XML2_RPATH=""
   for elt in $XML2_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$XML2_RPATH" ]; then
             XML2_RPATH="$rpath"
         else
             XML2_RPATH="$XML2_RPATH $rpath"
         fi
-     echo $XML2_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $XML2_RPATH $LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24778,28 +24742,22 @@ fi
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty_pic"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   IBERTY_RPATH=""
   for elt in $IBERTY_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$IBERTY_RPATH" ]; then
             IBERTY_RPATH="$rpath"
         else
             IBERTY_RPATH="$IBERTY_RPATH $rpath"
         fi
-     echo $IBERTY_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $IBERTY_RPATH $LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -24909,28 +24867,22 @@ fi
     IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   IBERTY_RPATH=""
   for elt in $IBERTY_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$IBERTY_RPATH" ]; then
             IBERTY_RPATH="$rpath"
         else
             IBERTY_RPATH="$IBERTY_RPATH $rpath"
         fi
-     echo $IBERTY_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $IBERTY_RPATH $LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25042,28 +24994,22 @@ fi
     COMMON_LDFLAGS="$COMMON_LDFLAGS -lcommon"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   COMMON_RPATH=""
   for elt in $COMMON_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$COMMON_RPATH" ]; then
             COMMON_RPATH="$rpath"
         else
             COMMON_RPATH="$COMMON_RPATH $rpath"
         fi
-     echo $COMMON_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$COMMON_LDFLAGS $COMMON_RPATH $LDFLAGS"
+  LDFLAGS="$COMMON_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25174,28 +25120,22 @@ fi
     SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS -lsymtabAPI"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   SYMTAB_RPATH=""
   for elt in $SYMTAB_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$SYMTAB_RPATH" ]; then
             SYMTAB_RPATH="$rpath"
         else
             SYMTAB_RPATH="$SYMTAB_RPATH $rpath"
         fi
-     echo $SYMTAB_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SYMTAB_LDFLAGS $SYMTAB_RPATH $LDFLAGS"
+  LDFLAGS="$SYMTAB_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25314,28 +25254,22 @@ fi
     SW_LDFLAGS="$SW_LDFLAGS -lstackwalk"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   SW_RPATH=""
   for elt in $SW_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$SW_RPATH" ]; then
             SW_RPATH="$rpath"
         else
             SW_RPATH="$SW_RPATH $rpath"
         fi
-     echo $SW_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SW_LDFLAGS $SW_RPATH $LDFLAGS"
+  LDFLAGS="$SW_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25661,28 +25595,22 @@ fi
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   PAPI_RPATH=""
   for elt in $PAPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$PAPI_RPATH" ]; then
             PAPI_RPATH="$rpath"
         else
             PAPI_RPATH="$PAPI_RPATH $rpath"
         fi
-     echo $PAPI_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PAPI_LDFLAGS $PAPI_RPATH $LDFLAGS"
+  LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -25937,28 +25865,22 @@ fi
     PAPI_LDFLAGS="$PAPI_LDFLAGS -lpapi"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   PAPI_RPATH=""
   for elt in $PAPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$PAPI_RPATH" ]; then
             PAPI_RPATH="$rpath"
         else
             PAPI_RPATH="$PAPI_RPATH $rpath"
         fi
-     echo $PAPI_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PAPI_LDFLAGS $PAPI_RPATH $LDFLAGS"
+  LDFLAGS="$PAPI_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"
@@ -26278,28 +26200,22 @@ fi
     PNMPI_LDFLAGS="$PNMPI_LDFLAGS -lpnmpi"
   fi
 
-echo rpathing:
   # search the link line for -Lwhatever and add rpath args for each one.
   PNMPI_RPATH=""
   for elt in $PNMPI_LDFLAGS; do
      if echo $elt | grep -q '^-L'; then
-     echo $elt
-        path=`echo $elt | sed 's/^-L//'`
-        rpath="-R$path"
-     echo $rpath
+        rpath=`echo $elt | sed 's/^-L/-R /'`
         if [ -z "$PNMPI_RPATH" ]; then
             PNMPI_RPATH="$rpath"
         else
             PNMPI_RPATH="$PNMPI_RPATH $rpath"
         fi
-     echo $PNMPI_RPATH
-  echo
      fi
   done
-echo done.
+
   # Do the actual check to determine if we can link against this library.
   OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$PNMPI_LDFLAGS $PNMPI_RPATH $LDFLAGS"
+  LDFLAGS="$PNMPI_LDFLAGS $LDFLAGS"
 
 
     OLD_LIBS="$LIBS"

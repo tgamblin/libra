@@ -55,8 +55,8 @@ AC_DEFUN([AC_PATH_VTK],
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
                 VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
-                VTK_LIBS="-L$VTK_LIB_PATH -Wl,-rpath"
-                VTK_RPATH="-Wl,$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_LIBS="-L$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
+                VTK_RPATH="-R $VTK_LIB_PATH"
 
                 # now, eventually check version
                 if [[ -n "$1" ]]; then

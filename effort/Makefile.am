@@ -52,7 +52,7 @@ libeffort_la_LIBADD = \
 
 libeffort_la_LDFLAGS = \
 	-avoid-version \
-	$(PAPI_LDFLAGS) $(PAPI_RPATH)
+	$(PAPI_LDFLAGS) $(PAPI_RPATH) \
 	$(SPRNG_LDFLAGS) $(SPRNG_RPATH)
 
 #

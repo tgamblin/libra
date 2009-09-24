@@ -182,7 +182,7 @@ AC_ARG_WITH([python],
 
          PYTHON_CPPFLAGS="-I$pyhome/include/python${PYTHON_VERSION}"
          PYTHON_LDFLAGS="-L$pyhome/lib -l${PYTHON_LIBNAME}"
-         PYTHON_RPATH="-Wl,-rpath -Wl,$pyhome/lib"         
+         PYTHON_RPATH="-R $pyhome/lib"
 
          SAVED_CPPFLAGS="$CPPFLAGS"
          SAVED_LDFLAGS="$LDFLAGS"
