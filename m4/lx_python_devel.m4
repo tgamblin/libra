@@ -1,5 +1,5 @@
 #
-#  AC_PYTHON_DEVEL
+#  LX_PYTHON_DEVEL
 #  ------------------------------------------------------------------------
 #  Adds --with-python= and --with-python-version= to configure and searches
 #  for a python binary, Python.h, and a python lib directory.  Properly 
@@ -26,13 +26,8 @@
 #     have_python          yes if interpreter was found, no otherwise.
 #     have_python_devel    yes if dev libs and headers were found, no otherwise.
 # 
-AC_DEFUN([AC_PYTHON_DEVEL],
+AC_DEFUN([LX_PYTHON_DEVEL],
 [
-# We need sed to do some of the tests below, so check for it here if we don't have it.
-if [[ "x$SED" = x ]]; then
-    AC_PATH_PROGS(SED,[sed], [AC_MSG_ERROR([Couldn't find sed.])])
-fi
-
 AC_ARG_WITH([python-version],
             AS_HELP_STRING([--with-python-version], [Specify the version of python to use.  If not supplied, defaults to the highest found.]),
             [PYTHON_VERSION="$withval"])
@@ -86,7 +81,7 @@ AC_ARG_WITH([python],
               AC_MSG_ERROR([Could not find python${PYTHON_VERSION}.])
               have_python=no
           else
-              actualversion=`${PYTHON} -V 2>&1 | ${SED} 's_^[[A-Za-z]]* \([[0-9]]\.[[0-9]]\).*$_\1_'`
+              actualversion=`${PYTHON} -V 2>&1 | sed 's_^[[A-Za-z]]* \([[0-9]]\.[[0-9]]\).*$_\1_'`
               if [[ "x$actualversion" != "x$PYTHON_VERSION" ]]; then
                   have_python=no
                   AC_MSG_ERROR([Python version $PYTHON_VERSION not found.])
@@ -107,7 +102,7 @@ AC_ARG_WITH([python],
 
       if [[ "x$have_python" = xyes ]]; then
           # Infer python home directory from the executable's location, as it was autodetected
-          pyhome=`echo ${PYTHON} | ${SED} 's_/bin/[[^/]]*\$__'`
+          pyhome=`echo ${PYTHON} | sed 's_/bin/[[^/]]*\$__'`
           AC_MSG_NOTICE([Assuming python home directory is "$pyhome".])
           if [[ "x$SYS_TYPE" = "xDarwin" ]]; then
               echo "  NOTE: On Mac OS X, you may need to explicitly supply"
@@ -119,7 +114,7 @@ AC_ARG_WITH([python],
  AC_SUBST(PYTHON)
  if [[ have_python != xno -a "x${PYTHON_VERSION}" = x ]]; then
      # Make sure the version is set before continuing.
-     PYTHON_VERSION=`${PYTHON} -V 2>&1 | ${SED} 's_^[[A-Za-z]]* \([[0-9]]\.[[0-9]]\).*$_\1_'`
+     PYTHON_VERSION=`${PYTHON} -V 2>&1 | sed 's_^[[A-Za-z]]* \([[0-9]]\.[[0-9]]\).*$_\1_'`
  fi
  AC_SUBST(PYTHON_VERSION)
 
@@ -151,7 +146,7 @@ AC_ARG_WITH([python],
      
      # Then set up devel flags either for a framework or for standard GNU install
      if [[ "x$py_is_framework" = xyes ]]; then
-         PYTHON_FDIR=`echo ${pyhome} | ${SED} 's_/[[^/]]*\.framework$__'`
+         PYTHON_FDIR=`echo ${pyhome} | sed 's_/[[^/]]*\.framework$__'`
 
          PYTHON_CPPFLAGS="-I${pyhome}/Headers"
          PYTHON_LDFLAGS="-F${PYTHON_FDIR} -framework Python"
@@ -194,7 +189,7 @@ AC_ARG_WITH([python],
                          [AC_MSG_NOTICE([Couldn't find Python.h.])
                           have_python_devel=no])
          
-         AC_SAFE_CHECK_LIB([${PYTHON_LIBNAME}],
+         LX_SAFE_CHECK_LIB([${PYTHON_LIBNAME}],
                            [_PyObject_New],[],
                            [AC_MSG_NOTICE([Couldn't find lib${PYTHON_LIBNAME}.])
                             have_python_devel=no])

@@ -1,5 +1,5 @@
 #
-# AC_PARADYN_TOOLS
+# LX_PARADYN_TOOLS
 #  ------------------------------------------------------------------------
 # Tests for everything needed for paradyn tools API: dwarf, xml2, symtabAPI,
 # and DynStackwalkerAPI.  Sets have_symtab, have_stackwalk if either is found.
@@ -7,7 +7,7 @@
 # infrastucture:
 # have_stackwalk, have_symtabAPI, have_common
 #
-AC_DEFUN([AC_PARADYN_TOOLS],
+AC_DEFUN([LX_PARADYN_TOOLS],
 [
   AC_ARG_WITH(
      [paradyn],
@@ -28,33 +28,33 @@ AC_DEFUN([AC_PARADYN_TOOLS],
 
      if [[ -d "$paradyn_include" ]]; then
        if [[ "x$paradyn_platform" != "xppc32_bgcompute" ]]; then
-         AC_LIB_ELF([$paradyn_lib])
-         AC_LIB_DWARF([$paradyn_lib])
-         AC_LIB_XML2([$paradyn_lib])
+         LX_LIB_ELF([$paradyn_lib])
+         LX_LIB_DWARF([$paradyn_lib])
+         LX_LIB_XML2([$paradyn_lib])
        fi
 
        # Adding boost headers here, just in case we need them (current version of
        # Stackwalker wants them, but Matt tells me it's not a permanent dependence)
        paradyn_headers="-I$paradyn_include ${BOOST_CPPFLAGS}"
-       AC_HEADER_SUBST(stackwalk, [walker.h],   SW,     [$paradyn_headers])
-       AC_HEADER_SUBST(symtabAPI, [Symtab.h],   SYMTAB, [$paradyn_headers])
-       AC_HEADER_SUBST(common,    [dyntypes.h], COMMON, [$paradyn_headers])
+       LX_HEADER_SUBST(stackwalk, [walker.h],   SW,     [$paradyn_headers])
+       LX_HEADER_SUBST(symtabAPI, [Symtab.h],   SYMTAB, [$paradyn_headers])
+       LX_HEADER_SUBST(common,    [dyntypes.h], COMMON, [$paradyn_headers])
 
        if [[ "x${SW}${SYMTAB}${COMMON}" != x ]]; then 
          PARADYN_CPPFLAGS="$paradyn_headers"
          AC_SUBST(PARADYN_CPPFLAGS)
        fi
 
-       AC_LIB_SUBST(iberty_pic, _init, IBERTY, [$paradyn_lib])
+       LX_LIB_SUBST(iberty_pic, _init, IBERTY, [$paradyn_lib])
        if [[ "x$have_iberty_pic" = "xno" ]]; then
-           AC_LIB_SUBST(iberty, _init, IBERTY, [$paradyn_lib])
+           LX_LIB_SUBST(iberty, _init, IBERTY, [$paradyn_lib])
        fi
 
        common_libs="-lcommon $XML2_LDFLAGS $DWARF_LDFLAGS $IBERTY_LDFLAGS"
-       AC_LIB_SUBST(common, _init, COMMON, [$paradyn_lib], [$common_libs])
+       LX_LIB_SUBST(common, _init, COMMON, [$paradyn_lib], [$common_libs])
 
        symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
-       AC_LIB_SUBST(symtabAPI, _init, SYMTAB, [$paradyn_lib], [$symtab_libs])
+       LX_LIB_SUBST(symtabAPI, _init, SYMTAB, [$paradyn_lib], [$symtab_libs])
 
        # By the third lib in the chain of dependencies here, this is kind of nasty.
        # Need this if statement for the case where we have common but not symtab.
@@ -64,11 +64,7 @@ AC_DEFUN([AC_PARADYN_TOOLS],
        else 
            stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
        fi
-       echo STACKWALK_LIBS ARE: $stackwalk_libs
-       AC_LIB_SUBST(stackwalk, _init, SW, [$paradyn_lib], [$stackwalk_libs])         
-
-       echo STACKWALK_LDFLAGS ARE: $SW_LDFLAGS
-       echo STACKWALK_RPATH IS: $SW_RPATH
+       LX_LIB_SUBST(stackwalk, _init, SW, [$paradyn_lib], [$stackwalk_libs])         
 
      else
        echo "couldn't find ParaDyn headers in $paradyn_include."

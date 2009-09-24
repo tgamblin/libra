@@ -1,5 +1,5 @@
 #
-# AC_DETECT_BLUEGENE
+# LX_DETECT_BLUEGENE
 #
 # Defines some compile-time tests to detect BlueGene architectures.
 # This will AC_DEFINE the following macros if detected:
@@ -7,7 +7,7 @@
 #    BLUEGENE_L      If BlueGene/L architecture is detected
 #    BLUEGENE_P      If BlueGene/P architecture is detected
 #
-AC_DEFUN([AC_DETECT_BLUEGENE],
+AC_DEFUN([LX_DETECT_BLUEGENE],
 [
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifndef __blrts__
 #error "not BlueGene/L"

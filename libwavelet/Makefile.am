@@ -57,7 +57,6 @@ include_HEADERS = \
 	io_utils.h \
 	matrix_utils.h \
 	obitstream.h \
-	par_ezw_encoder.h \
 	timing.h \
 	Timer.h \
 	vector_ibitstream.h \
@@ -66,8 +65,7 @@ include_HEADERS = \
 	wt_2d.h \
 	wt_direct.h \
 	wt_1d_direct.h \
-	wt_lift.h \
-	wt_parallel.h
+	wt_lift.h
 
 dist_noinst_HEADERS = \
   arithmetic_codec.h \
@@ -82,8 +80,7 @@ dist_noinst_HEADERS = \
 # Parallel wt headers, only if we found MPI.
 #
 if HAVE_MPI
-  include_HEADERS += wt_parallel.h
-  include_HEADERS += par_ezw_encoder.h
+  include_HEADERS += wt_parallel.h par_ezw_encoder.h
 endif
 
 #

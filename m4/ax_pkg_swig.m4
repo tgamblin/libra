@@ -1,5 +1,5 @@
 # ===========================================================================
-#              http://autoconf-archive.cryp.to/ac_pkg_swig.html
+#           http://www.nongnu.org/autoconf-archive/ax_pkg_swig.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -20,15 +20,11 @@
 #   In configure.in, use as:
 #
 #     AC_PROG_SWIG(1.3.17)
-#     SWIG_ENABLE_CXX
-#     SWIG_MULTI_MODULE_SUPPORT
-#     SWIG_PYTHON
+#     AX_SWIG_ENABLE_CXX
+#     AX_SWIG_MULTI_MODULE_SUPPORT
+#     AX_SWIG_PYTHON
 #
-# LAST MODIFICATION
-#
-#   2008-04-12
-#
-# COPYLEFT
+# LICENSE
 #
 #   Copyright (c) 2008 Sebastian Huber <sebastian-huber@web.de>
 #   Copyright (c) 2008 Alan W. Irwin <irwin@beluga.phys.uvic.ca>
@@ -57,9 +53,9 @@
 #   all other use of the material that constitutes the Autoconf Macro.
 #
 #   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Macro Archive. When you make and
-#   distribute a modified version of the Autoconf Macro, you may extend this
-#   special exception to the GPL to apply to your modified version as well.
+#   Macro released by the Autoconf Archive. When you make and distribute a
+#   modified version of the Autoconf Macro, you may extend this special
+#   exception to the GPL to apply to your modified version as well.
 
 AC_DEFUN([AC_PROG_SWIG],[
         AC_PATH_PROG([SWIG],[swig])

@@ -1,5 +1,5 @@
 #
-#  AC_LIB_SUBST (name, symbol, NAME, [dir], [libs])
+#  LX_LIB_SUBST (name, symbol, NAME, [dir], [libs])
 #  ------------------------------------------------------------------------
 #  This tests for the presence of a library, given a libname and a symbol.
 #  
@@ -18,7 +18,7 @@
 #  but can be overridden by supplying the libs parameter.  This is useful for 
 #  packages with multiple libraries, e.g. "-lfoo -lbar -lbaz".
 #
-AC_DEFUN([AC_LIB_SUBST],
+AC_DEFUN([LX_LIB_SUBST],
 [
   # If dir param is there, add it to the link line.
   if test "x$4" != x; then
@@ -51,7 +51,7 @@ AC_DEFUN([AC_LIB_SUBST],
   OLD_LDFLAGS="$LDFLAGS"
   LDFLAGS="$$3_LDFLAGS $LDFLAGS"
   
-  AC_SAFE_CHECK_LIB([$1], [$2],
+  LX_SAFE_CHECK_LIB([$1], [$2],
                     [have_$1=yes],
                     [AC_MSG_NOTICE([Couldn't find lib$1.])
                      $3_LDFLAGS=""

@@ -1,11 +1,11 @@
 #
-#  AC_PNMPI ([action-if-found], [action-if-not-found])
+#  LX_PNMPI ([action-if-found], [action-if-not-found])
 #  ------------------------------------------------------------------------
 #  Adds --with-pnmpi=<dir> to the configure help message.  
 #  If not found , have_pnmpi is set to "no".  If found, exports 
 #  PNMPI_LDFLAGS and PNMPI_CPPFLAGS with AC_SUBST.
 #
-AC_DEFUN([AC_PNMPI],
+AC_DEFUN([LX_PNMPI],
 [
     AC_ARG_WITH([pnmpi],
         # Help string
@@ -53,8 +53,8 @@ AC_DEFUN([AC_PNMPI],
                  AC_SUBST(pnmpidir)
                   
                  # Export PNMPI_CPPFLAGS and PNMPI_LDFLAGS
-                 AC_HEADER_SUBST(pnmpi, pnmpi.h, PNMPI, [-I$pnmpi_include])
-                 AC_LIB_SUBST(pnmpi, PNMPI_Service_RegisterService, PNMPI, [$pnmpi_lib])
+                 LX_HEADER_SUBST(pnmpi, pnmpi.h, PNMPI, [-I$pnmpi_include])
+                 LX_LIB_SUBST(pnmpi, PNMPI_Service_RegisterService, PNMPI, [$pnmpi_lib])
                   
                  if test "x$have_pnmpi" != xno; then
                      $1
