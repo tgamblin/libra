@@ -174,15 +174,17 @@ class Region(Node):
         start = region.start()
         end = region.end()
         self._region = region
-        self._firstFrame = FrameNode(start, end, 0, self._region.dataFor("time"), all_total)
+        firstMetric = self._region.firstMetric()
+        self._firstFrame = FrameNode(start, end, 0, self._region.dataFor(firstMetric), all_total)
         Node.__init__(self, self._firstFrame.name(), parent)
 
         maxpath = max(len(start), len(end))
         for i in xrange(1, maxpath):
-            self.addChild(FrameNode(start, end, i, self._region.dataFor("time"), 0))
+            self.addChild(FrameNode(start, end, i, self._region.dataFor(firstMetric), 0))
         
     def sortKey(self):
-        return -self.region().dataFor("time").total()
+        firstMetric = self._region.firstMetric()
+        return -self.region().dataFor(firstMetric).total()
 
     def data(self, index):
         return self._firstFrame.data(index)
@@ -437,7 +439,7 @@ class TreeView(QTreeView):
             metrics.update(r.metrics())
 
         list = []
-        if "time" in metrics:
+        if "time" in metrics:   # Put time first in metric lists.
             metrics.remove("time")
             list.append("time")
         for m in metrics:
