@@ -413,7 +413,7 @@ class MetricViewer(QFrame):
         self.toolBar.addWidget(QLabel("Metric:"))
         self.metricSelector = QComboBox(self)
         self.metricSelector.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-        self.connect(self.metricSelector, SIGNAL("currentIndexChanged(int)"), self.metricBoxChanged)
+        self.connect(self.metricSelector, SIGNAL("activated(int)"), self.userChangedMetricBox)
 
         self.toolBar.addWidget(self.metricSelector)
         self.toolBar.addSeparator()
@@ -488,7 +488,7 @@ class MetricViewer(QFrame):
             if self.dock:
                 self.dock.setWindowTitle(str(metric))
 
-    def metricBoxChanged(self, index):
+    def userChangedMetricBox(self, index):
         self.setMetric(str(self.metricSelector.itemText(index)))
 
     def __getattr__(self, attr):
@@ -518,14 +518,13 @@ class MetricViewer(QFrame):
 
         self.rankBounds.setAllowedRange(0, surface.rows())
         self.stepBounds.setAllowedRange(0, surface.cols())
-        if self.isNew:
-            self.isNew = False
-            self.rankBounds.setRange(0, surface.rows())
-            self.stepBounds.setRange(0, surface.cols())
-        else:
+        self.rankBounds.setRange(0, surface.rows())
+        self.stepBounds.setRange(0, surface.cols())
+
+        if dataList:
             surface.setRowRange(self.rankBounds.min(), self.rankBounds.max())
             surface.setColRange(self.stepBounds.min(), self.stepBounds.max())
-            
+
         self.renderFrame.setSurface(surface)
 
     def setEffortRegions(self, regions):
@@ -536,7 +535,7 @@ class MetricViewer(QFrame):
 
         # If we don't have a metric set already, grab the first one.
         if not self.metric and self.regions:
-            self.setMetric(self.regions[0].firstMetric())
+            self.metric = self.regions[0].firstMetric()
 
         # Add any metrics in the selected regions that ARE NOT in the
         # combo box.  Prefer that time's on top.
@@ -544,20 +543,23 @@ class MetricViewer(QFrame):
         for r in self.regions:
             metrics.update(r.metrics())
 
-        existing = set()
-        for i in xrange(0, self.metricSelector.count()):
-            existing.add(str(self.metricSelector.itemText(i)))
-
-        diff = metrics.difference(existing)
-        if "time" in diff:  # make time first
-            diff.remove("time")
+        self.metricSelector.clear()
+        if "time" in metrics:  # make time first
+            metrics.remove("time")
             self.metricSelector.addItem("time")
-        for m in diff:
+
+        for m in metrics:
             self.metricSelector.addItem(m)
 
         # Make selection persist.
         mIndex = self.metricSelector.findText(self.metric)
+
+        if mIndex < 0: 
+            mIndex = 0
+            self.metric = str(self.metricSelector.itemText(mIndex))
+
         self.metricSelector.setCurrentIndex(mIndex)
+        
         self.render()        
 
 #

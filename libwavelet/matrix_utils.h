@@ -30,9 +30,15 @@ bool read_matrix(const char *filename, boost::numeric::ublas::matrix<double>& ma
 
 template <typename T>
 void output(const boost::numeric::ublas::matrix<T>& mat, std::ostream& out = std::cout) {
+  const size_t width = 12;
+
   for (size_t i=0; i < mat.size1(); i++) {
-    for (size_t j=0; j < mat.size2(); j++) {
-      out << std::setw(12) << mat(i,j);
+    if (mat.size2()) {
+      out << std::setw(width) << mat(i,0);
+    }
+
+    for (size_t j=1; j < mat.size2(); j++) {
+      out << " " << std::setw(width) << mat(i,j);
     }
     out << std::endl;
   }
