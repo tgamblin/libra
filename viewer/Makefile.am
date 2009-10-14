@@ -57,7 +57,7 @@ libvtkeffort_la_LDFLAGS = \
 ###########################################################################
 _pyeffort_la_SOURCES = pyeffort_wrap.C
 pyeffort_wrap.C: pyeffort.i
-	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
+	$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
 
 _pyeffort_la_LIBADD  = libvtkeffort.la \
 										   ../effort/libeffort.la \

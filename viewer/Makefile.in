@@ -894,7 +894,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_iconDATA \
 $(VTKEFFORT_PYTHON_SOURCES): $(VTKEFFORT_H_FILES)
 	$(SHELL) $(srcdir)/wrap_vtk.sh $(VTK_WRAP_PYTHON) $(VTK_WRAP_PYTHON_INIT) $(srcdir) $(VTKEFFORT_PYTHON_SOURCES)
 pyeffort_wrap.C: pyeffort.i
-	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
+	$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
 
 pyeffort.py: _pyeffort.la
 

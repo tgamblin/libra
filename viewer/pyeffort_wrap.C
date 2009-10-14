@@ -4090,7 +4090,13 @@ SWIGINTERN PyObject *_wrap_new_Callpath__SWIG_0(PyObject *SWIGUNUSEDPARM(self), 
   Callpath *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)":new_Callpath")) SWIG_fail;
-  result = (Callpath *)new Callpath();
+  {
+    try {
+      result = (Callpath *)new Callpath();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Callpath, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4115,7 +4121,13 @@ SWIGINTERN PyObject *_wrap_new_Callpath__SWIG_1(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Callpath" "', argument " "1"" of type '" "Callpath const &""'"); 
   }
   arg1 = reinterpret_cast< Callpath * >(argp1);
-  result = (Callpath *)new Callpath((Callpath const &)*arg1);
+  {
+    try {
+      result = (Callpath *)new Callpath((Callpath const &)*arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Callpath, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4164,8 +4176,14 @@ SWIGINTERN PyObject *_wrap_delete_Callpath(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Callpath" "', argument " "1"" of type '" "Callpath *""'"); 
   }
   arg1 = reinterpret_cast< Callpath * >(argp1);
-  delete arg1;
-  
+  {
+    try {
+      delete arg1;
+      
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4178,7 +4196,13 @@ SWIGINTERN PyObject *_wrap_Callpath_null(PyObject *SWIGUNUSEDPARM(self), PyObjec
   Callpath result;
   
   if (!PyArg_ParseTuple(args,(char *)":Callpath_null")) SWIG_fail;
-  result = Callpath::null();
+  {
+    try {
+      result = Callpath::null();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -4210,8 +4234,14 @@ SWIGINTERN PyObject *_wrap_Callpath___getitem__(PyObject *SWIGUNUSEDPARM(self), 
   } 
   arg2 = static_cast< size_t >(val2);
   {
-    FrameId const &_result_ref = ((Callpath const *)arg1)->get(arg2);
-    result = (FrameId *) &_result_ref;
+    try {
+      {
+        FrameId const &_result_ref = ((Callpath const *)arg1)->get(arg2);
+        result = (FrameId *) &_result_ref;
+      }
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
   }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, 0 |  0 );
   return resultobj;
@@ -4234,7 +4264,13 @@ SWIGINTERN PyObject *_wrap_Callpath___len__(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callpath___len__" "', argument " "1"" of type '" "Callpath const *""'"); 
   }
   arg1 = reinterpret_cast< Callpath * >(argp1);
-  result = ((Callpath const *)arg1)->size();
+  {
+    try {
+      result = ((Callpath const *)arg1)->size();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -4267,7 +4303,13 @@ SWIGINTERN PyObject *_wrap_Callpath_write_out(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Callpath_write_out" "', argument " "2"" of type '" "std::ostream &""'"); 
   }
   arg2 = reinterpret_cast< std::ostream * >(argp2);
-  (arg1)->write_out(*arg2);
+  {
+    try {
+      (arg1)->write_out(*arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4292,7 +4334,13 @@ SWIGINTERN PyObject *_wrap_Callpath_read_in(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Callpath_read_in" "', argument " "1"" of type '" "std::istream &""'"); 
   }
   arg1 = reinterpret_cast< std::istream * >(argp1);
-  result = Callpath::read_in(*arg1);
+  {
+    try {
+      result = Callpath::read_in(*arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -4332,7 +4380,13 @@ SWIGINTERN PyObject *_wrap_Callpath_slice__SWIG_0(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Callpath_slice" "', argument " "3"" of type '" "size_t""'");
   } 
   arg3 = static_cast< size_t >(val3);
-  result = (arg1)->slice(arg2,arg3);
+  {
+    try {
+      result = (arg1)->slice(arg2,arg3);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -4363,7 +4417,13 @@ SWIGINTERN PyObject *_wrap_Callpath_slice__SWIG_1(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Callpath_slice" "', argument " "2"" of type '" "size_t""'");
   } 
   arg2 = static_cast< size_t >(val2);
-  result = (arg1)->slice(arg2);
+  {
+    try {
+      result = (arg1)->slice(arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -4438,7 +4498,13 @@ SWIGINTERN PyObject *_wrap_Callpath___str__(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Callpath___str__" "', argument " "1"" of type '" "Callpath *""'"); 
   }
   arg1 = reinterpret_cast< Callpath * >(argp1);
-  result = Callpath___str__(arg1);
+  {
+    try {
+      result = Callpath___str__(arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -4469,7 +4535,13 @@ SWIGINTERN PyObject *_wrap_Callpath___eq__(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Callpath___eq__" "', argument " "2"" of type '" "Callpath const *""'"); 
   }
   arg2 = reinterpret_cast< Callpath * >(argp2);
-  result = (bool)Callpath___eq__(arg1,(Callpath const *)arg2);
+  {
+    try {
+      result = (bool)Callpath___eq__(arg1,(Callpath const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -4500,7 +4572,13 @@ SWIGINTERN PyObject *_wrap_Callpath___lt__(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Callpath___lt__" "', argument " "2"" of type '" "Callpath const *""'"); 
   }
   arg2 = reinterpret_cast< Callpath * >(argp2);
-  result = (bool)Callpath___lt__(arg1,(Callpath const *)arg2);
+  {
+    try {
+      result = (bool)Callpath___lt__(arg1,(Callpath const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -4531,7 +4609,13 @@ SWIGINTERN PyObject *_wrap_Callpath___gt__(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Callpath___gt__" "', argument " "2"" of type '" "Callpath const *""'"); 
   }
   arg2 = reinterpret_cast< Callpath * >(argp2);
-  result = (bool)Callpath___gt__(arg1,(Callpath const *)arg2);
+  {
+    try {
+      result = (bool)Callpath___gt__(arg1,(Callpath const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -5187,7 +5271,13 @@ SWIGINTERN PyObject *_wrap_new_ezw_header__SWIG_0(PyObject *SWIGUNUSEDPARM(self)
   ezw_header *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)":new_ezw_header")) SWIG_fail;
-  result = (ezw_header *)new ezw_header();
+  {
+    try {
+      result = (ezw_header *)new ezw_header();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ezw_header, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5305,7 +5395,13 @@ SWIGINTERN PyObject *_wrap_new_ezw_header__SWIG_1(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "new_ezw_header" "', argument " "9"" of type '" "size_t""'");
   } 
   arg9 = static_cast< size_t >(val9);
-  result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
+  {
+    try {
+      result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ezw_header, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5414,7 +5510,13 @@ SWIGINTERN PyObject *_wrap_new_ezw_header__SWIG_2(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "new_ezw_header" "', argument " "8"" of type '" "size_t""'");
   } 
   arg8 = static_cast< size_t >(val8);
-  result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+  {
+    try {
+      result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ezw_header, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5514,7 +5616,13 @@ SWIGINTERN PyObject *_wrap_new_ezw_header__SWIG_3(PyObject *SWIGUNUSEDPARM(self)
       if (SWIG_IsNewObj(res7)) delete temp;
     }
   }
-  result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+  {
+    try {
+      result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ezw_header, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5597,7 +5705,13 @@ SWIGINTERN PyObject *_wrap_new_ezw_header__SWIG_4(PyObject *SWIGUNUSEDPARM(self)
       if (SWIG_IsNewObj(res6)) delete temp;
     }
   }
-  result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6);
+  {
+    try {
+      result = (ezw_header *)new ezw_header(arg1,arg2,arg3,arg4,arg5,arg6);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ezw_header, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5825,7 +5939,13 @@ SWIGINTERN PyObject *_wrap_ezw_header_write_out(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ezw_header_write_out" "', argument " "2"" of type '" "std::ostream &""'"); 
   }
   arg2 = reinterpret_cast< std::ostream * >(argp2);
-  result = (arg1)->write_out(*arg2);
+  {
+    try {
+      result = (arg1)->write_out(*arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -5861,7 +5981,13 @@ SWIGINTERN PyObject *_wrap_ezw_header_read_in(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ezw_header_read_in" "', argument " "2"" of type '" "ezw_header &""'"); 
   }
   arg2 = reinterpret_cast< ezw_header * >(argp2);
-  ezw_header::read_in(*arg1,*arg2);
+  {
+    try {
+      ezw_header::read_in(*arg1,*arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5883,7 +6009,13 @@ SWIGINTERN PyObject *_wrap_ezw_header___str__(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ezw_header___str__" "', argument " "1"" of type '" "ezw_header *""'"); 
   }
   arg1 = reinterpret_cast< ezw_header * >(argp1);
-  result = ezw_header___str__(arg1);
+  {
+    try {
+      result = ezw_header___str__(arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -5904,8 +6036,14 @@ SWIGINTERN PyObject *_wrap_delete_ezw_header(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ezw_header" "', argument " "1"" of type '" "ezw_header *""'"); 
   }
   arg1 = reinterpret_cast< ezw_header * >(argp1);
-  delete arg1;
-  
+  {
+    try {
+      delete arg1;
+      
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5934,7 +6072,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getHeader(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getHeader" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getHeader();
+  {
+    try {
+      result = (arg1)->getHeader();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new ezw_header(static_cast< const ezw_header& >(result))), SWIGTYPE_p_ezw_header, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -5956,7 +6100,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getFilename(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getFilename" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getFilename();
+  {
+    try {
+      result = (arg1)->getFilename();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -5978,7 +6128,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getStart(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getStart" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getStart();
+  {
+    try {
+      result = (arg1)->getStart();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -6000,7 +6156,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getEnd(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getEnd" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getEnd();
+  {
+    try {
+      result = (arg1)->getEnd();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj((new Callpath(static_cast< const Callpath& >(result))), SWIGTYPE_p_Callpath, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -6022,7 +6184,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getType(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getType" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (int)(arg1)->getType();
+  {
+    try {
+      result = (int)(arg1)->getType();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -6044,7 +6212,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getMetric(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getMetric" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getMetric();
+  {
+    try {
+      result = (arg1)->getMetric();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -6074,7 +6248,13 @@ SWIGINTERN PyObject *_wrap_EffortData_setApproximationLevel(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EffortData_setApproximationLevel" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
-  (arg1)->setApproximationLevel(arg2);
+  {
+    try {
+      (arg1)->setApproximationLevel(arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6104,7 +6284,13 @@ SWIGINTERN PyObject *_wrap_EffortData_setPassLimit(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EffortData_setPassLimit" "', argument " "2"" of type '" "size_t""'");
   } 
   arg2 = static_cast< size_t >(val2);
-  (arg1)->setPassLimit(arg2);
+  {
+    try {
+      (arg1)->setPassLimit(arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6125,7 +6311,13 @@ SWIGINTERN PyObject *_wrap_EffortData_load(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_load" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  ((EffortData const *)arg1)->load();
+  {
+    try {
+      ((EffortData const *)arg1)->load();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6147,7 +6339,13 @@ SWIGINTERN PyObject *_wrap_EffortData_rows(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_rows" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->rows();
+  {
+    try {
+      result = (arg1)->rows();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -6169,7 +6367,13 @@ SWIGINTERN PyObject *_wrap_EffortData_cols(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_cols" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->cols();
+  {
+    try {
+      result = (arg1)->cols();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -6191,7 +6395,13 @@ SWIGINTERN PyObject *_wrap_EffortData_steps(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_steps" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->steps();
+  {
+    try {
+      result = (arg1)->steps();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -6213,7 +6423,13 @@ SWIGINTERN PyObject *_wrap_EffortData_processes(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_processes" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->processes();
+  {
+    try {
+      result = (arg1)->processes();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_size_t(static_cast< size_t >(result));
   return resultobj;
 fail:
@@ -6253,7 +6469,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getValue(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EffortData_getValue" "', argument " "3"" of type '" "size_t""'");
   } 
   arg3 = static_cast< size_t >(val3);
-  result = (double)(arg1)->getValue(arg2,arg3);
+  {
+    try {
+      result = (double)(arg1)->getValue(arg2,arg3);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6280,7 +6502,13 @@ SWIGINTERN PyObject *_wrap_new_EffortData(PyObject *SWIGUNUSEDPARM(self), PyObje
     }
     arg1 = ptr;
   }
-  result = (EffortData *)new EffortData((std::string const &)*arg1);
+  {
+    try {
+      result = (EffortData *)new EffortData((std::string const &)*arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_EffortData, SWIG_POINTER_NEW |  0 );
   if (SWIG_IsNewObj(res1)) delete arg1;
   return resultobj;
@@ -6303,8 +6531,14 @@ SWIGINTERN PyObject *_wrap_delete_EffortData(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_EffortData" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  delete arg1;
-  
+  {
+    try {
+      delete arg1;
+      
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6335,7 +6569,13 @@ SWIGINTERN PyObject *_wrap_EffortData_rmse(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EffortData_rmse" "', argument " "2"" of type '" "EffortData *""'"); 
   }
   arg2 = reinterpret_cast< EffortData * >(argp2);
-  result = (double)(arg1)->rmse(arg2);
+  {
+    try {
+      result = (double)(arg1)->rmse(arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6366,7 +6606,13 @@ SWIGINTERN PyObject *_wrap_EffortData_wtrmse(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EffortData_wtrmse" "', argument " "2"" of type '" "EffortData *""'"); 
   }
   arg2 = reinterpret_cast< EffortData * >(argp2);
-  result = (double)(arg1)->wtrmse(arg2);
+  {
+    try {
+      result = (double)(arg1)->wtrmse(arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6388,7 +6634,13 @@ SWIGINTERN PyObject *_wrap_EffortData_getVTKEffortData(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_getVTKEffortData" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (arg1)->getVTKEffortData();
+  {
+    try {
+      result = (arg1)->getVTKEffortData();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -6410,7 +6662,13 @@ SWIGINTERN PyObject *_wrap_EffortData_mean(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_mean" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->mean();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->mean();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6432,7 +6690,13 @@ SWIGINTERN PyObject *_wrap_EffortData_max(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_max" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->max();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->max();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6454,7 +6718,13 @@ SWIGINTERN PyObject *_wrap_EffortData_min(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_min" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->min();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->min();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6476,7 +6746,13 @@ SWIGINTERN PyObject *_wrap_EffortData_total(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_total" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->total();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->total();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6498,7 +6774,13 @@ SWIGINTERN PyObject *_wrap_EffortData_count(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_count" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->count();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->count();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6520,7 +6802,13 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowDeviation(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->meanRowDeviation();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->meanRowDeviation();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6542,7 +6830,13 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowDeviation(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->maxRowDeviation();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->maxRowDeviation();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6564,7 +6858,13 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowDeviation(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->minRowDeviation();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->minRowDeviation();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6586,7 +6886,13 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowVariance(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->meanRowVariance();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->meanRowVariance();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6608,7 +6914,13 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowVariance(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->maxRowVariance();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->maxRowVariance();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6630,7 +6942,13 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowVariance(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->minRowVariance();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->minRowVariance();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6652,7 +6970,13 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowSkew(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->meanRowSkew();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->meanRowSkew();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6674,7 +6998,13 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowSkew(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->maxRowSkew();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->maxRowSkew();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6696,7 +7026,13 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowSkew(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->minRowSkew();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->minRowSkew();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6718,7 +7054,13 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowKurtosis(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->meanRowKurtosis();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->meanRowKurtosis();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6740,7 +7082,13 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowKurtosis(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->maxRowKurtosis();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->maxRowKurtosis();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6762,7 +7110,13 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowKurtosis(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
-  result = (double)((EffortData const *)arg1)->minRowKurtosis();
+  {
+    try {
+      result = (double)((EffortData const *)arg1)->minRowKurtosis();
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -6816,7 +7170,13 @@ SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_0(PyObject *SWIGUNUSEDPARM(self), P
       if (SWIG_IsNewObj(res2)) delete temp;
     }
   }
-  result = (FrameId *)new FrameId(arg1,arg2);
+  {
+    try {
+      result = (FrameId *)new FrameId(arg1,arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -6860,7 +7220,13 @@ SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_1(PyObject *SWIGUNUSEDPARM(self), P
       if (SWIG_IsNewObj(res2)) delete temp;
     }
   }
-  result = (FrameId *)new FrameId((std::string const &)*arg1,arg2);
+  {
+    try {
+      result = (FrameId *)new FrameId((std::string const &)*arg1,arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
   if (SWIG_IsNewObj(res1)) delete arg1;
   return resultobj;
@@ -6887,7 +7253,13 @@ SWIGINTERN PyObject *_wrap_new_FrameId__SWIG_2(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FrameId" "', argument " "1"" of type '" "FrameId const &""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
-  result = (FrameId *)new FrameId((FrameId const &)*arg1);
+  {
+    try {
+      result = (FrameId *)new FrameId((FrameId const &)*arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FrameId, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -6957,8 +7329,14 @@ SWIGINTERN PyObject *_wrap_delete_FrameId(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FrameId" "', argument " "1"" of type '" "FrameId *""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
-  delete arg1;
-  
+  {
+    try {
+      delete arg1;
+      
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6980,7 +7358,13 @@ SWIGINTERN PyObject *_wrap_FrameId___str__(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId___str__" "', argument " "1"" of type '" "FrameId *""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
-  result = FrameId___str__(arg1);
+  {
+    try {
+      result = FrameId___str__(arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -7011,7 +7395,13 @@ SWIGINTERN PyObject *_wrap_FrameId___eq__(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FrameId___eq__" "', argument " "2"" of type '" "FrameId const *""'"); 
   }
   arg2 = reinterpret_cast< FrameId * >(argp2);
-  result = (bool)FrameId___eq__(arg1,(FrameId const *)arg2);
+  {
+    try {
+      result = (bool)FrameId___eq__(arg1,(FrameId const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7042,7 +7432,13 @@ SWIGINTERN PyObject *_wrap_FrameId___lt__(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FrameId___lt__" "', argument " "2"" of type '" "FrameId const *""'"); 
   }
   arg2 = reinterpret_cast< FrameId * >(argp2);
-  result = (bool)FrameId___lt__(arg1,(FrameId const *)arg2);
+  {
+    try {
+      result = (bool)FrameId___lt__(arg1,(FrameId const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7073,7 +7469,13 @@ SWIGINTERN PyObject *_wrap_FrameId___gt__(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FrameId___gt__" "', argument " "2"" of type '" "FrameId const *""'"); 
   }
   arg2 = reinterpret_cast< FrameId * >(argp2);
-  result = (bool)FrameId___gt__(arg1,(FrameId const *)arg2);
+  {
+    try {
+      result = (bool)FrameId___gt__(arg1,(FrameId const *)arg2);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7096,8 +7498,14 @@ SWIGINTERN PyObject *_wrap_FrameId__module(PyObject *SWIGUNUSEDPARM(self), PyObj
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
   {
-    std::string const &_result_ref = FrameId__module(arg1);
-    result = (std::string *) &_result_ref;
+    try {
+      {
+        std::string const &_result_ref = FrameId__module(arg1);
+        result = (std::string *) &_result_ref;
+      }
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
   }
   resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
   return resultobj;
@@ -7120,7 +7528,13 @@ SWIGINTERN PyObject *_wrap_FrameId__offset(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FrameId__offset" "', argument " "1"" of type '" "FrameId *""'"); 
   }
   arg1 = reinterpret_cast< FrameId * >(argp1);
-  result = (unsigned long long)FrameId__offset(arg1);
+  {
+    try {
+      result = (unsigned long long)FrameId__offset(arg1);
+    } catch (const std::exception& e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+  }
   resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
   return resultobj;
 fail:
