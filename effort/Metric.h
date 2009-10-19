@@ -10,6 +10,7 @@ namespace effort {
   class Metric : public UniqueId<Metric> {
   public:
     Metric(const std::string& id);
+    Metric() : UniqueId<Metric>("") { }
 
     /// Time metric provided for convenience here.
     static const Metric& time() {

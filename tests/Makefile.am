@@ -44,7 +44,7 @@ parspeedbench_SOURCES = parspeedbench.C
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libeffort-runtime.la
+bunny_LDADD = ../effort/libpmpi-effort.la
 
 
 #

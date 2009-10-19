@@ -87,6 +87,10 @@ namespace effort {
       return metric_to_index[m];
     }
 
+    bool has_metric(Metric m) {
+      return metric_to_index.count(m);
+    }
+
     size_t num_metrics() {
       if (!parsed) parse();
       return all_metrics.size() + (have_time ? 1 : 0);
