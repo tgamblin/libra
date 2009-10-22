@@ -131,7 +131,7 @@ namespace wavelet {
     int base = (rank / m) * m;  // base rank of the set we're in
 
     if (rank % m == set) {
-      mat.resize(m, local.size());            // allocate space for remote data
+      mat.resize(m, local.size());            // allocate space for received data
       
       for (int i=0; i < m; i++) {
         if (i == set) continue;

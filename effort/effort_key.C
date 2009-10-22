@@ -102,22 +102,22 @@ namespace effort {
 #endif // LIBRA_HAVE_MPI
 
   bool effort_key_full_lt::operator()(const effort_key& lhs, const effort_key& rhs) {
-    if (lhs.metric != rhs.metric) {
-      return lhs.metric < rhs.metric;
+    if (lhs.metric.str() != rhs.metric.str()) {
+      return lhs.metric.str() < rhs.metric.str();
       
     } else if (lhs.type != rhs.type) {
       return lhs.type < rhs.type;
       
-    } else if (lt(lhs.start_path, rhs.start_path)) {
+    } else if (path_lt(lhs.start_path, rhs.start_path)) {
       return true;
       
-    } else if (lt(rhs.start_path, lhs.start_path)) {
+    } else if (path_lt(rhs.start_path, lhs.start_path)) {
       return false;
       
-    } else if (lt(lhs.end_path, rhs.end_path)) {
+    } else if (path_lt(lhs.end_path, rhs.end_path)) {
       return true;
       
-    } else if (lt(rhs.end_path, lhs.end_path)) {
+    } else if (path_lt(rhs.end_path, lhs.end_path)) {
       return false;
       
     } else {

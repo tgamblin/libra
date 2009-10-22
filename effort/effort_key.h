@@ -76,7 +76,8 @@ namespace effort {
   /// Full (string, frame by frame) compare of effort keys.  Use this to make
   /// Order consistent across nodes.
   struct effort_key_full_lt {
-    callpath_path_lt lt;
+    callpath_path_lt path_lt;
+    dereference_lt metric_lt;
     bool operator()(const effort_key& lhs, const effort_key& rhs);
   };
   

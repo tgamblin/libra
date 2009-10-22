@@ -44,6 +44,23 @@ int main(int argc, char **argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+  const char* metrics[] = {"Bunny", "BunnyFlipped", "Bunny2x", "Bunny0.5x"};
+  const size_t num_metrics = sizeof(metrics) / sizeof(char*);
+  init_metrics(num_metrics, metrics);
+
+  // allow -p <num> to print out a particular matrix
+  int print = -1;
+  if (argc > 1 && string(argv[1]) == "-p") {
+    if (argc > 2) {
+      print = atoi(argv[2]);
+      if (print >= num_metrics) {
+        print = 0;
+      } else if (print < 0) {
+        print = -1;
+      }
+    }
+  }
+
   // read in file with bunny image.
   wt_matrix bunny;
 
@@ -59,11 +76,12 @@ int main(int argc, char **argv) {
   // figure out scaling factor from image size (128x128) to (size x size)
   double scale = ((double)bunny.size1() / size);
   double x = rank * scale;  
-
-  const char* metrics[] = {"Bunny", "BunnyFlipped", "Bunny2x", "Bunny0.5x"};
-  init_metrics(4, metrics);
   
-  double values[4];
+  if (print >= 0 && rank == 0) {
+    cerr << metrics[print] << ":" << endl;
+  }
+
+  double values[num_metrics];
   for (int i = 0; i < size; i++) {
     double y = i * scale;
 
@@ -74,6 +92,21 @@ int main(int argc, char **argv) {
     values[1] = interp_bilinear(bunny, y, x);
     values[2] = 2.0 * values[0];
     values[3] = 0.5 * values[0];
+
+
+    if (print >= 0) {
+      double val = values[print];
+      double vals[size];
+      MPI_Gather(&val, 1, MPI_DOUBLE,
+                 vals, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+      
+      if (rank == 0) {
+        for (size_t i=0; i < size; i++) {
+          cerr << setw(5) << vals[i] << " ";
+        }
+        cerr << endl;
+      }
+    }
 
     record_effort(values);
     progress_step();

@@ -103,6 +103,9 @@ struct effort_module {
   vector<long long> counters;   /// HW counter value storage for PAPI
   int event_set;                /// PAPI event set.
 
+  // Storage for user counters
+  vector<Metric> user_metrics;
+
 #ifdef HAVE_SPRNG
   // AMPL support
   sampling_module sampler;
@@ -175,7 +178,7 @@ struct effort_module {
       cerr << endl;
       cerr << params;
       cerr << "========================================================" << endl;
-    }    
+    }
   }
   
 
@@ -337,30 +340,20 @@ struct effort_module {
   void init_metrics(size_t metric_count, const char **metric_names) {
     if (!metric_count) return;
 
-    ostringstream joined;
-    joined << metric_names[0];
-    for (size_t i=1; i < metric_count; i++) {
-      joined << "," << metric_names[i];
+    user_metrics.resize(metric_count);
+    for (size_t i=0; i < metric_count; i++) {
+      Metric m(metric_names[i]);
+      if (params.has_metric(m)) {
+        cerr << "WARNING: User metric " << m << " conflicts with PAPI or builtin metric" << endl;
+      }
+      user_metrics[i] = m;
     }
-
-    params.metrics = strdup(joined.str().c_str());
-    params.parse_metrics();
-    counters.resize(metric_count);
   }
 
 
-  inline void record_effort(double *counter_values) {
-    const vector<Metric>& metrics = params.get_metrics();
-
-    size_t val = 0;
-    if (params.keep_time()) {
-      record_metric(Callpath(), Callpath(), Metric::time(), counter_values[val]);
-      val++;
-    }
-
-    for (size_t i=0; i < metrics.size(); i++) {
-      record_metric(Callpath(), Callpath(), metrics[i], counter_values[val]);
-      val++;
+  void record_effort(const double *counter_values) {
+    for (size_t i=0; i < user_metrics.size(); i++) {
+      record_metric(Callpath(), Callpath(), user_metrics[i], counter_values[i]);
     }
   }
 
@@ -581,7 +574,7 @@ void effort_finalize() {
   module().finalize();  
 }
 
-void record_effort(double *counter_values) {
+void record_effort(const double *counter_values) {
   module().record_effort(counter_values);
 }
 

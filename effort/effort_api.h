@@ -20,14 +20,11 @@ extern "C" {
   void progress_step();
 
   /// Inits manual effort library with a list of metric names.
-  /// This needs to be called before effort initialization (before MPI_Init())
   void init_metrics(size_t metric_count, const char **metric_names);
 
-  /// This should be called within progress steps to accumulate elapsed metrics in effort regions.
-  /// Metrics are assumed to be positionally correlated with the names passed to init_effort, and
-  /// metric_values is assumed to have at least as many elements as the metric_count passed to 
-  /// init_effort.
-  void record_effort(double *metric_values);
+  /// This should be called within progress steps to accumulate user metrics.
+  /// Metrics should correspond to the names passed to init_metrics().
+  void record_effort(const double *metric_values);
   
 #ifdef __cplusplus
 }
