@@ -20184,9 +20184,9 @@ fi
 
 
     OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -liberty_pic" >&5
-$as_echo_n "checking for _init in -liberty_pic... " >&6; }
-if test "${ac_cv_lib_iberty_pic__init+set}" = set; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty_pic" >&5
+$as_echo_n "checking for cplus_demangle in -liberty_pic... " >&6; }
+if test "${ac_cv_lib_iberty_pic_cplus_demangle+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -20200,7 +20200,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char _init ();
+char cplus_demangle ();
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -20212,23 +20212,23 @@ char _init ();
 int
 main ()
 {
-return _init ();
+return cplus_demangle ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_iberty_pic__init=yes
+  ac_cv_lib_iberty_pic_cplus_demangle=yes
 else
-  ac_cv_lib_iberty_pic__init=no
+  ac_cv_lib_iberty_pic_cplus_demangle=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_pic__init" >&5
-$as_echo "$ac_cv_lib_iberty_pic__init" >&6; }
-if test "x$ac_cv_lib_iberty_pic__init" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_pic_cplus_demangle" >&5
+$as_echo "$ac_cv_lib_iberty_pic_cplus_demangle" >&6; }
+if test "x$ac_cv_lib_iberty_pic_cplus_demangle" = x""yes; then :
   have_iberty_pic=yes
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty_pic." >&5
@@ -20280,9 +20280,9 @@ fi
 
 
     OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -liberty" >&5
-$as_echo_n "checking for _init in -liberty... " >&6; }
-if test "${ac_cv_lib_iberty__init+set}" = set; then :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty" >&5
+$as_echo_n "checking for cplus_demangle in -liberty... " >&6; }
+if test "${ac_cv_lib_iberty_cplus_demangle+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -20296,7 +20296,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char _init ();
+char cplus_demangle ();
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -20308,23 +20308,23 @@ char _init ();
 int
 main ()
 {
-return _init ();
+return cplus_demangle ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_iberty__init=yes
+  ac_cv_lib_iberty_cplus_demangle=yes
 else
-  ac_cv_lib_iberty__init=no
+  ac_cv_lib_iberty_cplus_demangle=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty__init" >&5
-$as_echo "$ac_cv_lib_iberty__init" >&6; }
-if test "x$ac_cv_lib_iberty__init" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_cplus_demangle" >&5
+$as_echo "$ac_cv_lib_iberty_cplus_demangle" >&6; }
+if test "x$ac_cv_lib_iberty_cplus_demangle" = x""yes; then :
   have_iberty=yes
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty." >&5
