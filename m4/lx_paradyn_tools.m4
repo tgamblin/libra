@@ -45,9 +45,9 @@ AC_DEFUN([LX_PARADYN_TOOLS],
          AC_SUBST(PARADYN_CPPFLAGS)
        fi
 
-       LX_LIB_SUBST(iberty_pic, _init, IBERTY, [$paradyn_lib])
+       LX_LIB_SUBST(iberty_pic, cplus_demangle, IBERTY, [$paradyn_lib])
        if [[ "x$have_iberty_pic" = "xno" ]]; then
-           LX_LIB_SUBST(iberty, _init, IBERTY, [$paradyn_lib])
+           LX_LIB_SUBST(iberty, cplus_demangle, IBERTY, [$paradyn_lib])
        fi
 
        common_libs="-lcommon $XML2_LDFLAGS $DWARF_LDFLAGS $IBERTY_LDFLAGS"

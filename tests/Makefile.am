@@ -3,6 +3,8 @@ noinst_PROGRAMS = compress_matfile  vary_passes \
 
 TESTS = seqtest ezwtest insert_bits_test vltest
 
+EXTRA_DIST = bunny.dat
+
 if HAVE_MPI
 noinst_PROGRAMS += partest parezwtest parspeedbench
 TESTS += parezwtest partest 
