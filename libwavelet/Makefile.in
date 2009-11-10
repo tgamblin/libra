@@ -39,7 +39,10 @@ host_triplet = @host@
 #
 # Parallel sources for wavelet library, if we have MPI.
 #
-@HAVE_MPI_TRUE@am__append_1 = wt_parallel.C par_ezw_encoder.C
+@HAVE_MPI_TRUE@am__append_1 = \
+@HAVE_MPI_TRUE@	wt_parallel.C \
+@HAVE_MPI_TRUE@	par_ezw_encoder.C
+
 
 #
 # Parallel wt headers, only if we found MPI.
