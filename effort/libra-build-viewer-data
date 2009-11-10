@@ -1,93 +1,139 @@
-#!/usr/bin/env ruby
-# -*- ruby -*-
+#!/usr/bin/env python
 #
-require 'set'
-require 'optparse'
-require 'fileutils'
-require 'pathname'
+usage_string = \
+"""Usage: libra-build-viewer-data [-I src_dir]
+  -e, --executable EXE         Add a directory to search for source files
+  -I, --include DIR            Use FILE for symtab information (use when Stackwalker can't determine modules)
 
-# Allow user to specify dirs to search for source.
+  by Todd Gamblin, tgamblin@llnl.gov
+"""
+
+import getopt, sys, os, subprocess, re, shutil, glob
+
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "I:e:", ["include=", "executable="])
+except getopt.GetoptError, err:
+    print str(err)
+    print usage_string
+    sys.exit(2)
+
+
+# Allow user to specify executable and dirs to search for source 
 path = []
-exefile = nil
-OptionParser.new do |opts|
-  opts.banner="Usage: libra-build-viewer-data [-I src_dir]"
-  opts.on("-I", "--include DIR", "Add a directory to search for source files.") do |v|
-    path.push(v)
-  end
-  opts.on("-e", "--executable FILE", "Use FILE for symbtab information (use when Stackwalker can't determine modules)") do |exe|
-    exefile = Pathname(exe).realpath
-  end
-end.parse!
+exefile = None
+for o, a in opts:
+    if o in ("-e", "--executable"):
+        exefile = os.path.abspath(a)
+    elif o in ("-I", "--include"):
+        path.append(a)
+    else:
+        print "Invalid option: '%s'" % o
+        print usage_string
+        sys.exit(2)
+
+def flatten(seq):
+    """Converts an arbitrarily deep list of lists into a single flat list"""
+    res = []
+    for item in seq:
+        if (isinstance(item, (tuple, list))):
+            res.extend(flatten(item))
+        else:
+            res.append(item)
+    return res
+
+
+def rglob(dir):
+    """Returns a list including dir and its recursively enumerated children."""
+    subdirs=[dir]
+    for root, dirs, files in os.walk(os.path.expanduser(dir)):
+        if root != dir:
+            subdirs.append(root)
+    return subdirs
+
+# Get a glob of all subdirectories of dirs in path, then add them to the path.
+path = flatten(map(lambda dir: rglob(dir), path))
 
 # Directory where viewer-related files should be put.
-data_dir="viewer-data"
-FileUtils::mkdir_p(data_dir)
+data_dir = "viewer-data"
+if os.path.exists(data_dir):
+    shutil.rmtree(data_dir)
+os.makedirs(data_dir)
 
 # Directory where we'll put dirs in the source search path
-src_dir="#{data_dir}/src"
-FileUtils::mkdir_p(src_dir)
+src_dir = "%s/src" % data_dir
+if not os.path.exists(src_dir):
+    os.makedirs(src_dir)
 
-# Path map maps directories in path to sequential dir names
-# Directory names are created and generated on first access.
-src_dir_id=0
-path.map! {|dir| Dir.glob("#{dir}/**/") }.flatten!
-path_map = Hash.new do |hash, dir| 
-  src_dir_id += 1;
-  hash[dir] = "#{src_dir}/%03d" % src_dir_id
-  FileUtils::mkdir_p(hash[dir])
-end
+# Map directories in path to sequential directory names in the viewer
+# data folder.  Directories are created  when get_dest_dir() is called
+# with a new name.
+path_map = {}
+src_dir_id = 0
+def get_src_dir(dir):
+    global path_map, src_dir_id
+    if not dir in path_map:
+        src_dir_id += 1
+        path_map[dir] = "%s/%03d" % (src_dir, src_dir_id)
+        print "creating %s" % path_map[dir]
+        os.makedirs(path_map[dir])
+    return path_map[dir]
 
+# Run ef on all the effort files (at once, for speed) and get symtab data 
+# for making sense of callpaths into a single file. 
+in_path = False
+lines = set()
 
-# Run ef on all the effort files (at once, for speed)
-# and get symtab data for making sense of callpaths
-# into a single file.
-in_path=false    # whether we're currently inside a callpath while parsing the output from ef.
-lines = Set.new
-opt = exefile ? "-e #{exefile}" : "-f"
+cmd = ['ef', '-f']
+if exefile: cmd = ['ef', '-e', exefile]
+cmd.extend(glob.glob('effort-*'))
 
-pipe = IO.popen("ef #{opt} effort-*")
-pipe.each do |line|
-  line.chomp!
-  startend = line.sub!(/^(Start|End)/, "")
-  line.lstrip!
+pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+if not pipe.stdout:
+    print "Couldn't find effort files."
+    sys.exit(1)
 
-  if line.empty? then
-    in_path = false
-  elsif startend
-    in_path = true
-  end
+# Parse ef output, create symbol mappings, and copy source files to libra directory.
+for line in pipe.stdout:
+    line = line.rstrip("\n")
 
-  if in_path then
-    if parts = line.match(/^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)/)
-      # parse this part of the callpath and dump a |-separated version into the lines set
-      file, lnum, fun, lib, offset = parts[1..-1]
-      lines.add(parts[1..-1].join("|"))
+    start_end_re = '^(Start|End)'
+    startend = re.search(start_end_re, line)
+    if startend: line = re.sub(start_end_re, "", line)
+    line = line.strip()
 
-      # Copy all the relevant source files into the src dir so we can look at them.
-      path.each do |dir|
-        source_file = "#{dir}/#{file}"
-        if File::exists?(source_file) then
-          dest_file = "#{path_map[dir]}/#{file}"
-          FileUtils::cp(source_file, dest_file)
-        end
-      end
+    if not line:
+        in_path = False
+    elif startend:
+        in_path = True
 
-    elsif parts = line.match(/^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)/)
-      lib, offset = parts[1..-1]
-      lines.add("?|?|?|#{lib}|#{offset}")
-    end
-  end
-end
+    if in_path:
+        match = re.search('^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)', line)
+        if match:
+            # parse this part of the callpath and dump a |-separated version into the lines set.
+            [file, lnum, fun, lib, offset] = match.groups()
+            lines.add("|".join(match.groups()))
+            
+            # Copy all the relevant source files into the src dir so we can look at them.
+            for dir in path:
+                source_file = "%s/%s" % (dir, file)
+                if os.path.exists(source_file):
+                    dest_file = "%s/%s" %  (get_src_dir(dir), file)
+                    shutil.copyfile(source_file, dest_file)
+
+        else:
+            match = re.search('^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)', line)
+            if match:
+                lib, offset = match.groups()
+                lines.add("?|?|?|#{lib}|#{offset}")
 
 # Output all the unique addresses found in the callpaths to a file.
-output = File.open("#{data_dir}/symtab", "w")
+output = open("%s/symtab" % data_dir, "w")
 
-# Kuldge to map unknown modules to exe file.
-if exefile
-  output.puts "[unknown module] => #{exefile}"
-end
+# Kludge to map unknown modules to exe file.
+if exefile:
+  output.write("[unknown module] => %s" % exefile)
 
-lines.each do |l|
-  output.puts l
-end
+for l in lines:
+  output.write("%s\n" % l)
 
