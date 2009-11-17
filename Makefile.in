@@ -346,7 +346,9 @@ EXTRA_DIST = \
   docs/libra.css \
 	docs/logo.png \
 	docs/plot.png \
-	docs/using.html
+	docs/using.html \
+	config/powerpc-bgl-linux-gnu \
+	config/powerpc-bgp-linux-gnu
 
 SUBDIRS = libwavelet callpath cluster effort $(VIEWER_DIRS) tests
 all: config.h
