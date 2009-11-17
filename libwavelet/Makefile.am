@@ -35,8 +35,9 @@ libwavelet_la_LDFLAGS=-avoid-version
 # Parallel sources for wavelet library, if we have MPI.
 #
 if HAVE_MPI
-  libwavelet_la_SOURCES += wt_parallel.C
-  libwavelet_la_SOURCES += par_ezw_encoder.C
+libwavelet_la_SOURCES += \
+	wt_parallel.C \
+	par_ezw_encoder.C
 endif
 
 #
@@ -80,7 +81,7 @@ dist_noinst_HEADERS = \
 # Parallel wt headers, only if we found MPI.
 #
 if HAVE_MPI
-  include_HEADERS += wt_parallel.h par_ezw_encoder.h
+include_HEADERS += wt_parallel.h par_ezw_encoder.h
 endif
 
 #

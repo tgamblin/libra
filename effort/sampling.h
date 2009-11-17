@@ -10,7 +10,6 @@
 
 #include "effort_data.h"
 #include "effort_key.h"
-#include "RNGenerator.h"
 #include "Callpath.h"
 #include "string_utils.h"
 
@@ -51,7 +50,7 @@ namespace effort {
     bool stats;                  /// record summary stats or not
     bool trace;                  /// write trace files or not
 
-    std::ofstream trace_file;   /// Per-process trace file.
+    std::ofstream trace_file;    /// Per-process trace file.
     std::string trace_filename;  /// Name of trace file, so we can open and close.
 
     Sprng *rng;                  /// Uniform parallel RN generator
