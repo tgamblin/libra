@@ -132,7 +132,8 @@ output = open("%s/symtab" % data_dir, "w")
 
 # Kludge to map unknown modules to exe file.
 if exefile:
-  output.write("[unknown module] => %s" % exefile)
+  output.write("[unknown module] => %s\n" % exefile)
+  output.write(" => %s\n" % exefile)
 
 for l in lines:
   output.write("%s\n" % l)

@@ -52,7 +52,7 @@ def loadSymtab(symfile="viewer-data/symtab"):
       
       if mapping.match(line):
         original, new = map(str.strip, line.split("=>"))
-        modmap[original] = new
+        modmap[new] = original
 
       else:
         data = SymData(*line.split("|"))
