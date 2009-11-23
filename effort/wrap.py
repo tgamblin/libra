@@ -77,7 +77,7 @@ mpi_array_calls = {
 
 
 def write_fortran_init_flag():
-    output.write("static int fortran_init = 0;\n")
+    output.write("static void (*fortran_init)(MPI_Fint*) = NULL;\n")
 
 def once(function):
     if not hasattr(function, "did_once"):
@@ -471,7 +471,7 @@ class FortranDelegation:
         if mpich_call == mpi2_call and not (self.temps or self.copies or self.writebacks):
             out.write(mpich_call)
         else:
-            out.write("#if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */\n")
+            out.write("#if (!defined(MPICH_HAS_C2F) && defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */\n")
             out.write(mpich_call)
             out.write("#else /* MPI-2 safe call */\n")
             out.write(joinlines(self.temps))
@@ -502,10 +502,16 @@ def write_fortran_wrappers(out, decl, return_val):
         out.write("}\n\n")
     
         # Write out various bindings that delegate to the main fortran wrapper
-        write_fortran_binding(out, decl, delegate_name, "MPI_INIT",   ["fortran_init = 1;"])
-        write_fortran_binding(out, decl, delegate_name, "mpi_init",   ["fortran_init = 2;"])
-        write_fortran_binding(out, decl, delegate_name, "mpi_init_",  ["fortran_init = 3;"])
-        write_fortran_binding(out, decl, delegate_name, "mpi_init__", ["fortran_init = 4;"])
+        def dlsym(fun):
+            return ['fortran_init = (void(*)(MPI_Fint*))dlsym(RTLD_NEXT, "%s");' % fun,
+                    'if (!fortran_init) {',
+                    '    fprintf(stderr, "ERROR: Couldn\'t find fortran %s function.  Link against static library instead.\\n");' % fun,
+                    '    exit(1);',
+                    '}']
+        write_fortran_binding(out, decl, delegate_name, "MPI_INIT",   dlsym("PMPI_INIT"))
+        write_fortran_binding(out, decl, delegate_name, "mpi_init",   dlsym("pmpi_init"))
+        write_fortran_binding(out, decl, delegate_name, "mpi_init_",  dlsym("pmpi_init_"))
+        write_fortran_binding(out, decl, delegate_name, "mpi_init__", dlsym("pmpi_init__"))
         return
 
     # This look processes the rest of the call for all other routines.
@@ -674,15 +680,7 @@ def fn(out, scope, args, children):
                 # to rely on input from the user via pmpi_init_binding and the -i option.
                 out.write("    if (fortran_init) {\n")
                 out.write("#ifdef PIC\n")
-                out.write("        switch (fortran_init) {\n")
-                out.write("        case 1: PMPI_INIT(&return_val); break;\n")
-                out.write("        case 2: pmpi_init(&return_val); break;\n")
-                out.write("        case 3: pmpi_init_(&return_val); break;\n")
-                out.write("        case 4: pmpi_init__(&return_val); break;\n")
-                out.write("        default:\n")
-                out.write("            fprintf(stderr, \"NO SUITABLE FORTRAN MPI_INIT BINDING\\n\");\n")
-                out.write("            break;\n")
-                out.write("        }\n")
+                out.write("        fortran_init(&return_val);\n")
                 out.write("#else /* !PIC */\n")
                 out.write("        %s(&return_val);\n" % pmpi_init_binding)
                 out.write("#endif /* !PIC */\n")
@@ -848,28 +846,7 @@ output.write('''
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#ifdef PIC
-/* For shared libraries, declare these weak and figure out which one was linked
-   based on which init wrapper was called.  See mpi_init wrappers.  */
-#pragma weak pmpi_init
-#pragma weak PMPI_INIT
-#pragma weak pmpi_init_
-#pragma weak pmpi_init__
-#endif /* PIC */
-
-    void pmpi_init(MPI_Fint *ierr);
-    void PMPI_INIT(MPI_Fint *ierr);
-    void pmpi_init_(MPI_Fint *ierr);
-    void pmpi_init__(MPI_Fint *ierr);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+#include <dlfcn.h>
 
 #ifndef _EXTERN_C_
 #ifdef __cplusplus
@@ -878,6 +855,15 @@ extern "C" {
 #define _EXTERN_C_ 
 #endif /* __cplusplus */
 #endif /* _EXTERN_C_ */
+
+#ifdef MPICH_HAS_C2F
+_EXTERN_C_ void *MPIR_ToPointer(int);
+#endif // MPICH_HAS_C2F
+
+_EXTERN_C_ void pmpi_init(MPI_Fint *ierr);
+_EXTERN_C_ void PMPI_INIT(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init_(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init__(MPI_Fint *ierr);
 ''')
 
 if output_guards:

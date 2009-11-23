@@ -2,28 +2,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#ifdef PIC
-/* For shared libraries, declare these weak and figure out which one was linked
-   based on which init wrapper was called.  See mpi_init wrappers.  */
-#pragma weak pmpi_init
-#pragma weak PMPI_INIT
-#pragma weak pmpi_init_
-#pragma weak pmpi_init__
-#endif /* PIC */
-
-    void pmpi_init(MPI_Fint *ierr);
-    void PMPI_INIT(MPI_Fint *ierr);
-    void pmpi_init_(MPI_Fint *ierr);
-    void pmpi_init__(MPI_Fint *ierr);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+#include <dlfcn.h>
 
 #ifndef _EXTERN_C_
 #ifdef __cplusplus
@@ -32,6 +11,15 @@ extern "C" {
 #define _EXTERN_C_ 
 #endif /* __cplusplus */
 #endif /* _EXTERN_C_ */
+
+#ifdef MPICH_HAS_C2F
+_EXTERN_C_ void *MPIR_ToPointer(int);
+#endif // MPICH_HAS_C2F
+
+_EXTERN_C_ void pmpi_init(MPI_Fint *ierr);
+_EXTERN_C_ void PMPI_INIT(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init_(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init__(MPI_Fint *ierr);
 static int in_wrapper = 0;
 /* -*- C++ -*- */
 
@@ -61,7 +49,7 @@ _EXTERN_C_ int MPI_Barrier(MPI_Comm arg_0) {
 /* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Barrier_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *ierr) { 
     int return_val = 0;
-#if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
+#if (!defined(MPICH_HAS_C2F) && defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
     return_val = MPI_Barrier((MPI_Comm)(*arg_0));
 #else /* MPI-2 safe call */
     return_val = MPI_Barrier(MPI_Comm_f2c(*arg_0));
@@ -107,7 +95,7 @@ _EXTERN_C_ int MPI_Wait(MPI_Request *arg_0, MPI_Status *arg_1) {
 /* =============== Fortran Wrappers for MPI_Status_set_elements =============== */
 static void MPI_Wait_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *arg_1, MPI_Fint *ierr) { 
     int return_val = 0;
-#if (defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
+#if (!defined(MPICH_HAS_C2F) && defined(MPICH_NAME) && (MPICH_NAME == 1)) /* MPICH test */
     return_val = MPI_Wait((MPI_Request*)arg_0, (MPI_Status*)arg_1);
 #else /* MPI-2 safe call */
     MPI_Request temp_arg_0;
