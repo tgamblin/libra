@@ -6308,12 +6308,12 @@ SWIGINTERN PyObject *_wrap_EffortData_load(PyObject *SWIGUNUSEDPARM(self), PyObj
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_load",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_load" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_load" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      ((EffortData const *)arg1)->load();
+      (arg1)->load();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6659,12 +6659,12 @@ SWIGINTERN PyObject *_wrap_EffortData_mean(PyObject *SWIGUNUSEDPARM(self), PyObj
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_mean",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_mean" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_mean" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->mean();
+      result = (double)(arg1)->mean();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6687,12 +6687,12 @@ SWIGINTERN PyObject *_wrap_EffortData_max(PyObject *SWIGUNUSEDPARM(self), PyObje
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_max",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_max" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_max" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->max();
+      result = (double)(arg1)->max();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6715,12 +6715,12 @@ SWIGINTERN PyObject *_wrap_EffortData_min(PyObject *SWIGUNUSEDPARM(self), PyObje
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_min",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_min" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_min" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->min();
+      result = (double)(arg1)->min();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6743,12 +6743,12 @@ SWIGINTERN PyObject *_wrap_EffortData_total(PyObject *SWIGUNUSEDPARM(self), PyOb
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_total",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_total" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_total" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->total();
+      result = (double)(arg1)->total();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6771,12 +6771,12 @@ SWIGINTERN PyObject *_wrap_EffortData_count(PyObject *SWIGUNUSEDPARM(self), PyOb
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_count",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_count" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_count" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->count();
+      result = (double)(arg1)->count();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6799,12 +6799,12 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowDeviation(PyObject *SWIGUNUSEDPARM(
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowDeviation" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->meanRowDeviation();
+      result = (double)(arg1)->meanRowDeviation();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6827,12 +6827,12 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowDeviation(PyObject *SWIGUNUSEDPARM(s
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowDeviation" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->maxRowDeviation();
+      result = (double)(arg1)->maxRowDeviation();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6855,12 +6855,12 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowDeviation(PyObject *SWIGUNUSEDPARM(s
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowDeviation",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowDeviation" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowDeviation" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->minRowDeviation();
+      result = (double)(arg1)->minRowDeviation();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6883,12 +6883,12 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowVariance(PyObject *SWIGUNUSEDPARM(s
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowVariance",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowVariance" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->meanRowVariance();
+      result = (double)(arg1)->meanRowVariance();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6911,12 +6911,12 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowVariance(PyObject *SWIGUNUSEDPARM(se
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowVariance",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowVariance" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->maxRowVariance();
+      result = (double)(arg1)->maxRowVariance();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6939,12 +6939,12 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowVariance(PyObject *SWIGUNUSEDPARM(se
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowVariance",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowVariance" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowVariance" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->minRowVariance();
+      result = (double)(arg1)->minRowVariance();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6967,12 +6967,12 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowSkew(PyObject *SWIGUNUSEDPARM(self)
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowSkew",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowSkew" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->meanRowSkew();
+      result = (double)(arg1)->meanRowSkew();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -6995,12 +6995,12 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowSkew(PyObject *SWIGUNUSEDPARM(self),
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowSkew",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowSkew" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->maxRowSkew();
+      result = (double)(arg1)->maxRowSkew();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -7023,12 +7023,12 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowSkew(PyObject *SWIGUNUSEDPARM(self),
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowSkew",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowSkew" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowSkew" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->minRowSkew();
+      result = (double)(arg1)->minRowSkew();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -7051,12 +7051,12 @@ SWIGINTERN PyObject *_wrap_EffortData_meanRowKurtosis(PyObject *SWIGUNUSEDPARM(s
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_meanRowKurtosis",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_meanRowKurtosis" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->meanRowKurtosis();
+      result = (double)(arg1)->meanRowKurtosis();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -7079,12 +7079,12 @@ SWIGINTERN PyObject *_wrap_EffortData_maxRowKurtosis(PyObject *SWIGUNUSEDPARM(se
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_maxRowKurtosis",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_maxRowKurtosis" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->maxRowKurtosis();
+      result = (double)(arg1)->maxRowKurtosis();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }
@@ -7107,12 +7107,12 @@ SWIGINTERN PyObject *_wrap_EffortData_minRowKurtosis(PyObject *SWIGUNUSEDPARM(se
   if (!PyArg_ParseTuple(args,(char *)"O:EffortData_minRowKurtosis",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EffortData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowKurtosis" "', argument " "1"" of type '" "EffortData const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EffortData_minRowKurtosis" "', argument " "1"" of type '" "EffortData *""'"); 
   }
   arg1 = reinterpret_cast< EffortData * >(argp1);
   {
     try {
-      result = (double)((EffortData const *)arg1)->minRowKurtosis();
+      result = (double)(arg1)->minRowKurtosis();
     } catch (const std::exception& e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }

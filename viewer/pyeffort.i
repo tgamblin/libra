@@ -156,7 +156,7 @@ public:
   std::string getMetric();
   void setApproximationLevel(int level);
   void setPassLimit(size_t limit);
-  void load() const;
+  void load();
 
   size_t rows();
   size_t cols();
@@ -171,27 +171,27 @@ public:
   double wtrmse(EffortData *other);
   std::string getVTKEffortData();
 
-  double mean() const;
-  double max() const;
-  double min() const;
-  double total() const;
-  double count() const;
+  double mean();
+  double max();
+  double min();
+  double total();
+  double count();
 
-  double meanRowDeviation() const;
-  double maxRowDeviation() const;
-  double minRowDeviation() const;
+  double meanRowDeviation();
+  double maxRowDeviation();
+  double minRowDeviation();
 
-  double meanRowVariance() const;
-  double maxRowVariance() const;
-  double minRowVariance() const;
+  double meanRowVariance();
+  double maxRowVariance();
+  double minRowVariance();
 
-  double meanRowSkew() const;
-  double maxRowSkew() const;
-  double minRowSkew() const;
+  double meanRowSkew();
+  double maxRowSkew();
+  double minRowSkew();
   
-  double meanRowKurtosis() const;
-  double maxRowKurtosis() const;
-  double minRowKurtosis() const;
+  double meanRowKurtosis();
+  double maxRowKurtosis();
+  double minRowKurtosis();
 
 %pythoncode %{
   def __getitem__(self, key):

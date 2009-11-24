@@ -14,7 +14,7 @@ public:
   vtkTypeRevisionMacro(vtkEffortData, vtkObject);
 
   /// Sets the effort region this will delegate to.
-  virtual void setEffortData(const EffortData *del) {
+  virtual void setEffortData(EffortData *del) {
     delegate = del;
   }
 
@@ -36,7 +36,7 @@ private:
   vtkEffortData(const vtkEffortData& other);            // not implemented
   vtkEffortData& operator=(const vtkEffortData& other); // not implemented
 
-  const EffortData *delegate;
+  EffortData *delegate;
 };
 
 

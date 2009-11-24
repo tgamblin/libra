@@ -44,7 +44,7 @@ string EffortData::getVTKEffortData() {
 }
 
 
-void EffortData::load_from_file() const {
+void EffortData::load_from_file() {
   ifstream in(filename.c_str());
   if (in.fail()) {
     cerr << "Couldn't open file: " << filename << endl;
@@ -57,6 +57,12 @@ void EffortData::load_from_file() const {
   effort_key::read_in(in, key);
   ezw_header::read_in(in, hdr);
 
+  // if the caller set the approximation level too high (e.g. we don't have enough 
+  // data for that resolution), then adjust things here.
+  if (approximation_level > (int)hdr.level) {
+    approximation_level = hdr.level;
+  }
+
   // here we read in wavelet coefficients from the ezw stream.
   ezw_decoder decoder;
   decoder.set_pass_limit(pass_limit);
@@ -68,19 +74,20 @@ void EffortData::load_from_file() const {
   dwt.iwt_2d(mat, level);
   
   // scale up based on approximation level
-  mat *= (1<<(header.level - approximation_level));
+  int scale = (1<<(header.level - approximation_level));
+  mat *= scale;
   
   summary.set_matrix(mat);
   loaded = true;
 }
 
-const wt_matrix& EffortData::getData() const {
+const wt_matrix& EffortData::getData() {
   load();
   return mat;
 }
 
 
-const wt_matrix& EffortData::getCoefficients() const {
+const wt_matrix& EffortData::getCoefficients() {
   load();
   return wt;
 }

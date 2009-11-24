@@ -132,7 +132,7 @@ class DB:
         self._regions = []
         self.approximationLevel = approx
         self.passLimit = passes
-        self.totalTime = 0
+        self.totalTime = 0                 # total time in nanoseconds
 
     #
     # Loads a directory full of effort files into the regions map.
@@ -168,7 +168,7 @@ class DB:
 
             elif file == "times":
                 f = open(file)
-                self.totalTime = float(float(f.next().split()[1]))
+                self.totalTime = float(f.next().split()[1]) * 1e9 # sec -> ns
                 f.close()
 
         # Dump map into list when done.

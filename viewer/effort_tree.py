@@ -80,12 +80,12 @@ class Node:
 # callframes of start and end paths.
 #
 class FrameNode(Node):
-    def __init__(self, start, end, index, data, all_total, parent=None):
+    def __init__(self, start, end, index, data, db, parent=None):
         Node.__init__(self, index, parent)
         self._start = effort.FrameViewWrapper.fromIndex(start, index)
         self._end = effort.FrameViewWrapper.fromIndex(end, index)
         self._data = data
-        self._all_total = float(all_total)
+        self._db = db
 
     def data(self, index):
         return {
@@ -108,8 +108,8 @@ class FrameNode(Node):
 
     def total(self):
         if not self.parent():
-            total = self._data.total()
-            return "%g (%.2f%%)" % (total, (100.0 * total / self._all_total))
+            mean_total = self._data.total() / self._db.vprocs
+            return "%g (%.1f%%)" % (mean_total, (100.0 * mean_total / self._db.totalTime))
         else:
             return None
     
@@ -170,12 +170,12 @@ class FrameNode(Node):
 # Select one of these to plot just the effort from that file.
 #
 class Region(Node):
-    def __init__(self, region, all_total, parent=None):
+    def __init__(self, region, db, parent=None):
         start = region.start()
         end = region.end()
         self._region = region
         firstMetric = self._region.firstMetric()
-        self._firstFrame = FrameNode(start, end, 0, self._region.dataFor(firstMetric), all_total)
+        self._firstFrame = FrameNode(start, end, 0, self._region.dataFor(firstMetric), db)
         Node.__init__(self, self._firstFrame.name(), parent)
 
         maxpath = max(len(start), len(end))
@@ -225,14 +225,11 @@ def build_from(regionsDB):
     root = Node("All")
     phases = {}
 
-    # total cpu time (for all procs) in nanoseconds
-    all_total = float(regionsDB.totalTime * 1e9 * regionsDB.vprocs)
-
     for region in regionsDB:
         id = str(region.type())
         if not id in phases:
             phases[id] = Node(id, root)
-        phases[id].addChild(Region(region, all_total))
+        phases[id].addChild(Region(region, regionsDB))
             
     root.sort()
 
@@ -247,7 +244,7 @@ def build_from(regionsDB):
 #
 class EffortTreeModel(QAbstractItemModel):
 #    columns = ["Start", "End", "Start Module", "End Module"]
-    columns = ["Start", "End", "TotalTime", "Deviation", "MeanSkew", "MeanKurtosis"]
+    columns = ["Start", "End", "MeanTime (ns)", "Deviation", "MeanSkew", "MeanKurtosis"]
 
     # Set up  tree model with at least a root.  User can provide
     # Their own root, too.

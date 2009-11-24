@@ -71,7 +71,7 @@ public:
   }
 
   /// Forces data to load from file.
-  void load() const {
+  void load() {
     if (!loaded) {
       load_from_file(); // sets loaded to true.
     }
@@ -87,33 +87,33 @@ public:
   // other C++ classes to use.
   // ------------------------------------------------------ //
   /// Get data matrix.  This will lazily load data from the file.
-  const wavelet::wt_matrix& getData() const;
+  const wavelet::wt_matrix& getData();
   
   /// Get coefficients matrix.  Lazily loads data from file.
-  const wavelet::wt_matrix& getCoefficients() const;
+  const wavelet::wt_matrix& getCoefficients();
 
   // summary statistics
-  double mean()  const { load(); return summary.mean();  }
-  double max()   const { load(); return summary.max();   }
-  double min()   const { load(); return summary.min();   }
-  double total() const { load(); return summary.total(); }
-  double count() const { load(); return summary.count(); }
+  double mean()             { load(); return summary.mean();  }
+  double max()              { load(); return summary.max();   }
+  double min()              { load(); return summary.min();   }
+  double total()            { load(); return summary.total(); }
+  double count()            { load(); return summary.count(); }
 
-  double meanRowDeviation() const { load(); return summary.meanRowDeviation(); }
-  double maxRowDeviation() const  { load(); return summary.maxRowDeviation();  }
-  double minRowDeviation() const  { load(); return summary.minRowDeviation();  }
+  double meanRowDeviation() { load(); return summary.meanRowDeviation(); }
+  double maxRowDeviation()  { load(); return summary.maxRowDeviation();  }
+  double minRowDeviation()  { load(); return summary.minRowDeviation();  }
 
-  double meanRowVariance() const { load(); return summary.meanRowVariance(); }
-  double maxRowVariance()  const { load(); return summary.maxRowVariance(); }
-  double minRowVariance()  const { load(); return summary.minRowVariance(); }
+  double meanRowVariance()  { load(); return summary.meanRowVariance(); }
+  double maxRowVariance()   { load(); return summary.maxRowVariance(); }
+  double minRowVariance()   { load(); return summary.minRowVariance(); }
 
-  double meanRowSkew() const { load(); return summary.meanRowSkew(); }
-  double maxRowSkew()  const { load(); return summary.maxRowSkew();  }
-  double minRowSkew()  const { load(); return summary.minRowSkew();  }
+  double meanRowSkew()      { load(); return summary.meanRowSkew(); }
+  double maxRowSkew()       { load(); return summary.maxRowSkew();  }
+  double minRowSkew()       { load(); return summary.minRowSkew();  }
   
-  double meanRowKurtosis() const { load(); return summary.meanRowKurtosis(); }
-  double maxRowKurtosis()  const { load(); return summary.maxRowKurtosis();  }
-  double minRowKurtosis()  const { load(); return summary.minRowKurtosis();  }
+  double meanRowKurtosis()  { load(); return summary.meanRowKurtosis(); }
+  double maxRowKurtosis()   { load(); return summary.maxRowKurtosis();  }
+  double minRowKurtosis()   { load(); return summary.minRowKurtosis();  }
 
 
 private:
@@ -126,12 +126,12 @@ private:
   EffortData(const EffortData& other);            // not implemented
   EffortData& operator=(const EffortData& other); // not implemented
 
-  void load_from_file() const;        /// Reads in matrix from file and does decompression
+  void load_from_file();              /// Reads in matrix from file and does decompression
 
-  mutable wavelet::wt_matrix mat;     /// Spatial data (lazily loaded)
-  mutable wavelet::wt_matrix wt;      /// Wavelet coefficients from file (lazily loaded).
-  mutable bool loaded;                /// Whether matrices have been read in yet.
-  mutable Summary summary;
+  wavelet::wt_matrix mat;     /// Spatial data (lazily loaded)
+  wavelet::wt_matrix wt;      /// Wavelet coefficients from file (lazily loaded).
+  bool loaded;                /// Whether matrices have been read in yet.
+  Summary summary;
 };
 
 
