@@ -2,7 +2,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #ifndef _EXTERN_C_
 #ifdef __cplusplus
@@ -16,10 +15,20 @@
 _EXTERN_C_ void *MPIR_ToPointer(int);
 #endif // MPICH_HAS_C2F
 
+#ifdef PIC
+/* For shared libraries, declare these weak and figure out which one was linked
+   based on which init wrapper was called.  See mpi_init wrappers.  */
+#pragma weak pmpi_init
+#pragma weak PMPI_INIT
+#pragma weak pmpi_init_
+#pragma weak pmpi_init__
+#endif /* PIC */
+
 _EXTERN_C_ void pmpi_init(MPI_Fint *ierr);
 _EXTERN_C_ void PMPI_INIT(MPI_Fint *ierr);
 _EXTERN_C_ void pmpi_init_(MPI_Fint *ierr);
 _EXTERN_C_ void pmpi_init__(MPI_Fint *ierr);
+
 static int in_wrapper = 0;
 /* -*- C++ -*- */
 
@@ -75,7 +84,7 @@ _EXTERN_C_ void mpi_pcontrol__(MPI_Fint *arg_0, MPI_Fint *ierr) {
 
 
 /* Init effort librarypcontrol records effort */
-static void (*fortran_init)(MPI_Fint*) = NULL;
+static int fortran_init = 0;
 /* ================== C Wrappers for MPI_Status_set_elements ================== */
 _EXTERN_C_ int MPI_Init(int *arg_0, char ***arg_1) { 
     int return_val = 0;
@@ -85,7 +94,18 @@ _EXTERN_C_ int MPI_Init(int *arg_0, char ***arg_1) {
     effort_preinit();
         if (fortran_init) {
 #ifdef PIC
-        fortran_init(&return_val);
+        if (!PMPI_INIT && !pmpi_init && !pmpi_init_ && !pmpi_init__) {
+            fprintf(stderr, "ERROR: Couldn't find fortran pmpi_init function.  Link against static library instead.\n");
+            exit(1);
+        }        switch (fortran_init) {
+        case 1: PMPI_INIT(&return_val); break;
+        case 2: pmpi_init(&return_val); break;
+        case 3: pmpi_init_(&return_val); break;
+        case 4: pmpi_init__(&return_val); break;
+        default:
+            fprintf(stderr, "NO SUITABLE FORTRAN MPI_INIT BINDING\n");
+            break;
+        }
 #else /* !PIC */
         pmpi_init_(&return_val);
 #endif /* !PIC */
@@ -108,38 +128,22 @@ static void MPI_Init_fortran_wrapper(MPI_Fint *ierr) {
 }
 
 _EXTERN_C_ void MPI_INIT(MPI_Fint *ierr) { 
-    fortran_init = (void(*)(MPI_Fint*))dlsym(RTLD_NEXT, "PMPI_INIT");
-    if (!fortran_init) {
-        fprintf(stderr, "ERROR: Couldn't find fortran PMPI_INIT function.  Link against static library instead.\n");
-        exit(1);
-    }
+    fortran_init = 1;
     MPI_Init_fortran_wrapper(ierr);
 }
 
 _EXTERN_C_ void mpi_init(MPI_Fint *ierr) { 
-    fortran_init = (void(*)(MPI_Fint*))dlsym(RTLD_NEXT, "pmpi_init");
-    if (!fortran_init) {
-        fprintf(stderr, "ERROR: Couldn't find fortran pmpi_init function.  Link against static library instead.\n");
-        exit(1);
-    }
+    fortran_init = 2;
     MPI_Init_fortran_wrapper(ierr);
 }
 
 _EXTERN_C_ void mpi_init_(MPI_Fint *ierr) { 
-    fortran_init = (void(*)(MPI_Fint*))dlsym(RTLD_NEXT, "pmpi_init_");
-    if (!fortran_init) {
-        fprintf(stderr, "ERROR: Couldn't find fortran pmpi_init_ function.  Link against static library instead.\n");
-        exit(1);
-    }
+    fortran_init = 3;
     MPI_Init_fortran_wrapper(ierr);
 }
 
 _EXTERN_C_ void mpi_init__(MPI_Fint *ierr) { 
-    fortran_init = (void(*)(MPI_Fint*))dlsym(RTLD_NEXT, "pmpi_init__");
-    if (!fortran_init) {
-        fprintf(stderr, "ERROR: Couldn't find fortran pmpi_init__ function.  Link against static library instead.\n");
-        exit(1);
-    }
+    fortran_init = 4;
     MPI_Init_fortran_wrapper(ierr);
 }
 
