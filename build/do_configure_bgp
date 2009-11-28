@@ -11,7 +11,7 @@
     LDFLAGS="-dynamic" \
     --host=powerpc-bgp-linux-gnu \
     --prefix=${HOME}/opt/libra/bgp_cnk \
-    --with-paradyn=${HOME}/src/sw/ppc32_bgcompute \
+    --with-paradyn=${HOME}/src/sw-bgp-port/ppc32_bgp_compute \
     --with-boost=${HOME}/opt/boost \
     --without-vtk \
     --disable-shared

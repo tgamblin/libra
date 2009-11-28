@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
   if (argc > 1 && string(argv[1]) == "-p") {
     if (argc > 2) {
       print = atoi(argv[2]);
-      if (print >= num_metrics) {
+      if (print >= (int)num_metrics) {
         print = 0;
       } else if (print < 0) {
         print = -1;
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
                  vals, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
       
       if (rank == 0) {
-        for (size_t i=0; i < size; i++) {
+        for (size_t i=0; i < (size_t)size; i++) {
           cerr << setw(5) << vals[i] << " ";
         }
         cerr << endl;
