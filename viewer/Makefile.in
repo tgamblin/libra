@@ -106,11 +106,13 @@ libvtkeffort_la_DEPENDENCIES = ../effort/libeffort.la \
 	../callpath/libcallpath.la ../libwavelet/libwavelet.la
 am__objects_1 = vtkEffortData.lo vtkEffortSource.lo \
 	vtkZValueScalars.lo
+am_libvtkeffort_la_OBJECTS = EffortData.lo summary.lo wavelet_ssim.lo \
+	$(am__objects_1)
 am__objects_2 = libvtkeffortPythonInit.lo vtkEffortDataPython.lo \
 	vtkEffortSourcePython.lo vtkZValueScalarsPython.lo
-am_libvtkeffort_la_OBJECTS = EffortData.lo summary.lo wavelet_ssim.lo \
-	$(am__objects_1) $(am__objects_2)
-libvtkeffort_la_OBJECTS = $(am_libvtkeffort_la_OBJECTS)
+nodist_libvtkeffort_la_OBJECTS = $(am__objects_2)
+libvtkeffort_la_OBJECTS = $(am_libvtkeffort_la_OBJECTS) \
+	$(nodist_libvtkeffort_la_OBJECTS)
 libvtkeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libvtkeffort_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -133,7 +135,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(_pyeffort_la_SOURCES) $(libvtkeffort_la_SOURCES) \
-	$(simtest_SOURCES)
+	$(nodist_libvtkeffort_la_SOURCES) $(simtest_SOURCES)
 DIST_SOURCES = $(_pyeffort_la_SOURCES) $(libvtkeffort_la_SOURCES) \
 	$(simtest_SOURCES)
 py_compile = $(top_srcdir)/config/py-compile
@@ -350,9 +352,9 @@ libvtkeffort_la_SOURCES = \
 	EffortData.C \
 	summary.C \
 	wavelet_ssim.C \
-	$(VTKEFFORT_CXX_SOURCES) \
-	$(VTKEFFORT_PYTHON_SOURCES)
+	$(VTKEFFORT_CXX_SOURCES)
 
+nodist_libvtkeffort_la_SOURCES = $(VTKEFFORT_PYTHON_SOURCES)
 libvtkeffort_la_LIBADD = \
 	../effort/libeffort.la \
 	../callpath/libcallpath.la \
@@ -896,7 +898,7 @@ $(VTKEFFORT_PYTHON_SOURCES): $(VTKEFFORT_H_FILES)
 pyeffort_wrap.C: pyeffort.i
 	$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
 
-pyeffort.py: _pyeffort.la
+pyeffort.py: pyeffort_wrap.C
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -35,8 +35,8 @@ libvtkeffort_la_SOURCES = \
 	EffortData.C \
 	summary.C \
 	wavelet_ssim.C \
-	$(VTKEFFORT_CXX_SOURCES) \
-	$(VTKEFFORT_PYTHON_SOURCES)
+	$(VTKEFFORT_CXX_SOURCES)
+nodist_libvtkeffort_la_SOURCES = $(VTKEFFORT_PYTHON_SOURCES)
 
 libvtkeffort_la_LIBADD = \
 	../effort/libeffort.la \
@@ -70,7 +70,7 @@ _pyeffort_la_LDFLAGS = \
   $(VTK_LIBS) $(VTK_RPATH) -lvtkCommonPythonD -lvtkGraphicsPythonD \
 	$(PYTHON_LDFLAGS) $(PYTHON_RPATH)
 
-pyeffort.py: _pyeffort.la
+pyeffort.py: pyeffort_wrap.C
 
 include_HEADERS = \
 	EffortData.h \
