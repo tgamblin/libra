@@ -16,20 +16,17 @@
 bool isDivisibleBy2(size_t n, int level);
 
 
-template <typename T>
-bool in_bounds(const boost::numeric::ublas::matrix<T>& mat, size_t row, size_t col) {
+template < template <typename> class Matrix, typename T>
+bool in_bounds(const Matrix<T>& mat, size_t row, size_t col) {
   return (row < mat.size1()) && (col < mat.size2());
 }
 
 
-/// Reads the provided boost::numeric::ublas::matrix in from the file. Assumes a file with 
-/// one row per line, elements separated by whitespace.
-/// Returns 0 on success, 1 on error.
 bool read_matrix(const char *filename, boost::numeric::ublas::matrix<double>& mat);
 
 
-template <typename T>
-void output(const boost::numeric::ublas::matrix<T>& mat, std::ostream& out = std::cout) {
+template < template <typename> class Matrix, typename T>
+void output(const Matrix<T>& mat, std::ostream& out = std::cout) {
   const size_t width = 12;
 
   for (size_t i=0; i < mat.size1(); i++) {
@@ -60,8 +57,8 @@ struct ms_summary {
 };
 
 
-template <typename T>
-ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+template < template <typename> class Matrix, typename T>
+ms_summary get_summary(const Matrix<T>& orig, const Matrix<T>& repro,
                        size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
                        size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -90,8 +87,8 @@ ms_summary get_summary(const boost::numeric::ublas::matrix<T>& orig, const boost
 }
 
 
-template <typename T>
-double rmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+template < template <typename> class Matrix, typename T>
+double rmse(const Matrix<T>& orig, const Matrix<T>& repro,
              size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
              size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -108,8 +105,8 @@ double rmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::
 
 
 /// Normalized rms error
-template <typename T>
-double nrmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro,
+template < template <typename> class Matrix, typename T>
+double nrmse(const Matrix<T>& orig, const Matrix<T>& repro,
              size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
              size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -127,8 +124,8 @@ double nrmse(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric:
 
 
 /// Peak Signal to Noise Ratio
-template <typename T>
-double psnr(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
+template < template <typename> class Matrix, typename T>
+double psnr(const Matrix<T>& orig, const Matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -139,8 +136,8 @@ double psnr(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::
 
 
 /// Similarity (NRMSE defined to be symmetric, with max and min taken from both matrices)
-template <typename T>
-double similarity(const boost::numeric::ublas::matrix<T>& orig, const boost::numeric::ublas::matrix<T>& repro) {
+template < template <typename> class Matrix, typename T>
+double similarity(const Matrix<T>& orig, const Matrix<T>& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -150,8 +147,8 @@ double similarity(const boost::numeric::ublas::matrix<T>& orig, const boost::num
 }
 
 
-template <typename T>
-void standardize(boost::numeric::ublas::matrix<T>& mat) {
+template < template <typename> class Matrix, typename T>
+void standardize(Matrix<T>& mat) {
   size_t n = mat.size1() * mat.size2();
   double sum = 0;
   double sum2 = 0;
@@ -176,10 +173,10 @@ void standardize(boost::numeric::ublas::matrix<T>& mat) {
 template <typename T>
 struct Abs {
   T value;
-  Abs(double num)    : value(::fabs(num)) { }
-  Abs(long num)      : value(::labs(num)) { }
-  Abs(long long num) : value(::llabs(num)) { }
-  Abs(int num)       : value(::abs(num)) { }
+  Abs(double num)        : value(::fabs(num)) { }
+  Abs(long num)          : value(::labs(num)) { }
+  Abs(long long num)     : value(::llabs(num)) { }
+  Abs(int num)           : value(::abs(num)) { }
 };
 
 
@@ -191,8 +188,8 @@ template<typename T> T abs_val(T num) {
 
 
 
-template <typename T>
-T sum(const boost::numeric::ublas::matrix<T>& mat,
+template < template <typename> class Matrix, typename T>
+T sum(const Matrix<T>& mat,
       size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
       size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
@@ -209,8 +206,8 @@ T sum(const boost::numeric::ublas::matrix<T>& mat,
 }
 
 
-template <typename T>
-double mean_val(const boost::numeric::ublas::matrix<T>& mat,
+template < template <typename> class Matrix, typename T>
+double mean_val(const Matrix<T>& mat,
                 size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
                 size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
@@ -224,8 +221,8 @@ double mean_val(const boost::numeric::ublas::matrix<T>& mat,
 }
 
 
-template <typename T>
-T max_val(const boost::numeric::ublas::matrix<T>& mat,
+template < template <typename> class Matrix, typename T>
+T max_val(const Matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -243,8 +240,8 @@ T max_val(const boost::numeric::ublas::matrix<T>& mat,
 }
 
 
-template <typename T>
-T min_val(const boost::numeric::ublas::matrix<T>& mat,
+template < template <typename> class Matrix, typename T>
+T min_val(const Matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -261,8 +258,8 @@ T min_val(const boost::numeric::ublas::matrix<T>& mat,
   return min;
 }
 
-template <typename T>
-T abs_max_val(const boost::numeric::ublas::matrix<T>& mat,
+template < template <typename> class Matrix, typename T>
+T abs_max_val(const Matrix<T>& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -279,8 +276,8 @@ T abs_max_val(const boost::numeric::ublas::matrix<T>& mat,
   return amax;
 }
 
-template <typename T, typename V>
-void set_all(const boost::numeric::ublas::matrix<T>& mat, V value,
+template < template <typename> class Matrix, typename T, typename V>
+void set_all(const Matrix<T>& mat, V value,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -295,11 +292,11 @@ void set_all(const boost::numeric::ublas::matrix<T>& mat, V value,
 }
 
 
-/// Interpolates a value for point (x,y) based on values in the boost::numeric::ublas::matrix.
+/// Interpolates a value for point (x,y) based on values in the Matrix.
 /// Finds the nearest values by taking floor and ceil of x and y, then
 /// uses bilinear interpolation to estimate the value at (x,y).
-template <typename T>
-double interp_bilinear(const boost::numeric::ublas::matrix<T>& mat, double x, double y) {
+template < template <typename> class Matrix, typename T>
+double interp_bilinear(const Matrix<T>& mat, double x, double y) {
   if (x < 0) {
     x = 0;
   } else if (x > (mat.size1() - 1)) {
