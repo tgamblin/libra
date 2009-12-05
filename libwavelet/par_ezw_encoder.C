@@ -5,9 +5,6 @@
 #include <fstream>
 using namespace std;
 
-#include <boost/numeric/ublas/matrix.hpp>
-using boost::numeric::ublas::matrix;
-
 #include "mpi_profile.h"
 #include "mpi_utils.h"
 #include "io_utils.h"
