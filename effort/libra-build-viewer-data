@@ -8,7 +8,7 @@ usage_string = \
   by Todd Gamblin, tgamblin@llnl.gov
 """
 
-import getopt, sys, os, subprocess, re, shutil, glob
+import getopt, sys, os, subprocess, re, shutil, glob, tempfile
 
 
 try:
@@ -75,7 +75,6 @@ def get_src_dir(dir):
     if not dir in path_map:
         src_dir_id += 1
         path_map[dir] = "%s/%03d" % (src_dir, src_dir_id)
-        print "creating %s" % path_map[dir]
         os.makedirs(path_map[dir])
     return path_map[dir]
 
@@ -84,57 +83,66 @@ def get_src_dir(dir):
 in_path = False
 lines = set()
 
-cmd = ['ef', '-f']
-if exefile: cmd = ['ef', '-e', exefile]
-cmd.extend(glob.glob('effort-*'))
+cmd = ['xargs', 'ef', '-f']
+if exefile: cmd = ['xargs', 'ef', '-e', exefile]
 
-pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-if not pipe.stdout:
-    print "Couldn't find effort files."
-    sys.exit(1)
+# Write effort names to a file (in case we have lots of regions) and use this as
+# input to ef via xargs.
+input_file = tempfile.TemporaryFile(mode='w+t')
+input_file.write(" ".join(glob.glob('effort-*')))
+input_file.seek(0)
 
-# Parse ef output, create symbol mappings, and copy source files to libra directory.
-for line in pipe.stdout:
-    line = line.rstrip("\n")
+try:
+    pipe = subprocess.Popen(cmd, stdin=input_file, stdout=subprocess.PIPE)
+    if not pipe.stdout:
+        print "Couldn't find effort files."
+        sys.exit(1)
+        
+        # Parse ef output, create symbol mappings, and copy source files to libra directory.
+    for line in pipe.stdout:
+        line = line.rstrip("\n")
 
-    start_end_re = '^(Start|End)'
-    startend = re.search(start_end_re, line)
-    if startend: line = re.sub(start_end_re, "", line)
-    line = line.strip()
+        start_end_re = '^(Start|End)'
+        startend = re.search(start_end_re, line)
+        if startend: line = re.sub(start_end_re, "", line)
+        line = line.strip()
 
-    if not line:
-        in_path = False
-    elif startend:
-        in_path = True
+        if not line:
+            in_path = False
+        elif startend:
+            in_path = True
 
-    if in_path:
-        match = re.search('^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)', line)
-        if match:
-            # parse this part of the callpath and dump a |-separated version into the lines set.
-            [file, lnum, fun, lib, offset] = match.groups()
-            lines.add("|".join(match.groups()))
-            
-            # Copy all the relevant source files into the src dir so we can look at them.
-            for dir in path:
-                source_file = "%s/%s" % (dir, file)
-                if os.path.exists(source_file):
-                    dest_file = "%s/%s" %  (get_src_dir(dir), file)
-                    shutil.copyfile(source_file, dest_file)
-
-        else:
-            match = re.search('^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)', line)
+        if in_path:
+            match = re.search('^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)', line)
             if match:
-                lib, offset = match.groups()
-                lines.add("?|?|?|#{lib}|#{offset}")
+                # parse this part of the callpath and dump a |-separated version into the lines set.
+                [file, lnum, fun, lib, offset] = match.groups()
+                lines.add("|".join(match.groups()))
+            
+                # Copy all the relevant source files into the src dir so we can look at them.
+                for dir in path:
+                    source_file = "%s/%s" % (dir, file)
+                    if os.path.exists(source_file):
+                        dest_file = "%s/%s" %  (get_src_dir(dir), file)
+                        shutil.copyfile(source_file, dest_file)
 
-# Output all the unique addresses found in the callpaths to a file.
-output = open("%s/symtab" % data_dir, "w")
+            else:
+                match = re.search('^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)', line)
+                if match:
+                    lib, offset = match.groups()
+                    lines.add("?|?|?|#{lib}|#{offset}")
 
-# Kludge to map unknown modules to exe file.
-if exefile:
-  output.write("[unknown module] => %s\n" % exefile)
-  output.write(" => %s\n" % exefile)
+        # Output all the unique addresses found in the callpaths to a file.
+        output = open("%s/symtab" % data_dir, "w")
 
-for l in lines:
-  output.write("%s\n" % l)
+        # Kludge to map unknown modules to exe file.
+        if exefile:
+            output.write("[unknown module] => %s\n" % exefile)
+            output.write(" => %s\n" % exefile)
 
+        for l in lines:
+            output.write("%s\n" % l)
+
+finally:    
+    # delete the temporary file we created for effort filenames
+    input_file.close()
