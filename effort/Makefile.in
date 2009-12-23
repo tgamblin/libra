@@ -140,16 +140,16 @@ libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 libeffort_la_DEPENDENCIES = ../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
-	effort_data.C effort_params.C string_utils.C Metric.C \
-	FrameDB.C effort_dataset.C s3d_topology.C \
-	parallel_compressor.C parallel_decompressor.C \
-	synchronize_keys.C sampling.C ltqnorm.C
+	effort_data.C effort_params.C Metric.C FrameDB.C \
+	effort_dataset.C s3d_topology.C parallel_compressor.C \
+	parallel_decompressor.C synchronize_keys.C sampling.C \
+	ltqnorm.C
 @HAVE_MPI_TRUE@am__objects_1 = parallel_compressor.lo \
 @HAVE_MPI_TRUE@	parallel_decompressor.lo synchronize_keys.lo
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@am__objects_2 = sampling.lo ltqnorm.lo
 am_libeffort_la_OBJECTS = effort_key.lo effort_record.lo \
-	effort_data.lo effort_params.lo string_utils.lo Metric.lo \
-	FrameDB.lo effort_dataset.lo s3d_topology.lo $(am__objects_1) \
+	effort_data.lo effort_params.lo Metric.lo FrameDB.lo \
+	effort_dataset.lo s3d_topology.lo $(am__objects_1) \
 	$(am__objects_2)
 libeffort_la_OBJECTS = $(am_libeffort_la_OBJECTS)
 libeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -457,7 +457,6 @@ dist_noinst_HEADERS = \
 	parallel_compressor.h \
 	parallel_decompressor.h \
 	env_config.h \
-	string_utils.h \
 	synchronize_keys.h \
 	Metric.h \
   effort_dataset.h \
@@ -472,9 +471,8 @@ lib_LTLIBRARIES = libeffort.la $(am__append_3)
 # This is used by 
 #
 libeffort_la_SOURCES = effort_key.C effort_record.C effort_data.C \
-	effort_params.C string_utils.C Metric.C FrameDB.C \
-	effort_dataset.C s3d_topology.C $(am__append_1) \
-	$(am__append_2)
+	effort_params.C Metric.C FrameDB.C effort_dataset.C \
+	s3d_topology.C $(am__append_1) $(am__append_2)
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@SAMPLE_PROGS = sample-test approx-timer 
 libeffort_la_LIBADD = \
 	../callpath/libcallpath.la \
@@ -791,7 +789,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topology.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sample_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sampling.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuner.Po@am__quote@
