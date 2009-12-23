@@ -464,7 +464,6 @@ dist_noinst_HEADERS = \
 	FrameDB.h \
 	sampling.h \
 	ltqnorm.h \
-	stl_utils.h \
 	s3d_topology.h
 
 lib_LTLIBRARIES = libeffort.la $(am__append_3)

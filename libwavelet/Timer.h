@@ -11,7 +11,6 @@
 class Timer {
   typedef std::map<std::string, timing_t> timing_map;
 
-  bool print_total;                /// Print total on write out or not.
   timing_map timings;              /// Map from user-supplied keys to elements
   std::vector<std::string> order;  /// Keys into element map, in insertion order
   timing_t start;                  /// Time this Timer was last constructedor cleared.
@@ -25,7 +24,7 @@ class Timer {
 
   
 public:
-  Timer(bool print_total = false);
+  Timer();
   Timer(const Timer& other);
   ~Timer();
 
@@ -43,14 +42,14 @@ public:
   timing_t start_time() const { return start; }
 
   /// Prints all timings (nicely formatted, in sec) to a file.
-  void write(std::ostream& out = std::cout) const;
+  void write(std::ostream& out = std::cout, bool print_total = false) const;
 
   /// Writes AND clears.
-  void dump(std::ostream& out = std::cout) {
-    write(out);
+  void dump(std::ostream& out = std::cout, bool print_total = false) {
+    write(out, print_total);
     clear();
   }
-
+  
   /// Returns the i-th timing recorded (starting with 0)
   timing_t operator[](const std::string& name) const { 
     return get(name); 

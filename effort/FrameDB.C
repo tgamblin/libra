@@ -104,8 +104,6 @@ namespace effort {
         db->add_info(line);
       }
     }
-
-    cerr << "loaded " << db->size() << " frames/aliases" << endl;
     
     return db.release();
   }

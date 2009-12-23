@@ -7,11 +7,10 @@
 using namespace std;
 
 
-Timer::Timer(bool pt) : print_total(pt), start(get_time_ns()), last(start) { }
+Timer::Timer() : start(get_time_ns()), last(start) { }
 
 
 Timer::Timer(const Timer& other): 
-  print_total(other.print_total),
   timings(other.timings),
   order(other.order),
   start(other.start),
@@ -20,7 +19,6 @@ Timer::Timer(const Timer& other):
 
 
 Timer& Timer::operator=(const Timer& other) {
-  print_total = other.print_total;
   timings = other.timings;
   order = other.order;
   start = other.start;
@@ -66,7 +64,7 @@ Timer& Timer::operator+=(const Timer& other) {
 }
 
 
-void Timer::write(std::ostream& out) const {
+void Timer::write(std::ostream& out, bool print_total) const {
   timing_t now = get_time_ns();
   const string total("Total");
   size_t max_len = total.length();

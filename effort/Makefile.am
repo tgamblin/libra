@@ -9,14 +9,12 @@ dist_noinst_HEADERS = \
 	parallel_compressor.h \
 	parallel_decompressor.h \
 	env_config.h \
-	string_utils.h \
 	synchronize_keys.h \
 	Metric.h \
   effort_dataset.h \
 	FrameDB.h \
 	sampling.h \
 	ltqnorm.h \
-	stl_utils.h \
 	s3d_topology.h
 
 lib_LTLIBRARIES = libeffort.la
@@ -28,7 +26,6 @@ libeffort_la_SOURCES = effort_key.C \
 						 		       effort_record.C \
                        effort_data.C \
                        effort_params.C \
-											 string_utils.C \
 											 Metric.C \
 											 FrameDB.C \
 											 effort_dataset.C \
