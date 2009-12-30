@@ -32,7 +32,7 @@ using namespace wavelet;
 #include "CallpathRuntime.h"
 
 #ifdef HAVE_SPRNG
-#include "sampling.h"
+#include "sampler.h"
 #endif // HAVE_SPRNG
 
 #include "effort_data.h"
@@ -108,7 +108,7 @@ struct effort_module {
 
 #ifdef HAVE_SPRNG
   // AMPL support
-  sampling_module sampler;
+  Sampler sampler;
 #endif // HAVE_SPRNG
   
 

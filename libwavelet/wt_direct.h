@@ -13,7 +13,7 @@ namespace wavelet {
   /// of the cdf wavelet transform.  This is not as fast as the lifting 
   /// implementation, but the algorithm used is closer to a parallel implementation.
   /// TODO: arbitrarily-sized matrices.
-  class wt_direct : public wt_2d, private wt_1d_direct {
+  class wt_direct : public wt_2d, public wt_1d_direct {
   public:
     /// Constructs a new direct wavelet transform with the provided filter bank.
     /// Filter defaults to CDF 9/7 Wavelets.
@@ -22,13 +22,12 @@ namespace wavelet {
     /// Destructor
     virtual ~wt_direct();
 
-  protected:
     virtual void fwt_row(wt_matrix& mat, size_t row, size_t n) {
-      fwt_1d(&mat(row, 0), n);
+      fwt_1d_single(&mat(row, 0), n);
     }
     
     virtual void iwt_row(wt_matrix& mat, size_t row, size_t n) {
-      iwt_1d(&mat(row, 0), n);
+      iwt_1d_single(&mat(row, 0), n);
     }
     
     virtual void fwt_col(wt_matrix& mat, size_t col, size_t n);

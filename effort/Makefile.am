@@ -6,6 +6,7 @@ dist_noinst_HEADERS = \
 	effort_module.h \
 	effort_params.h \
 	effort_record.h \
+	effort_signature.h \
 	parallel_compressor.h \
 	parallel_decompressor.h \
 	env_config.h \
@@ -13,7 +14,7 @@ dist_noinst_HEADERS = \
 	Metric.h \
   effort_dataset.h \
 	FrameDB.h \
-	sampling.h \
+	sampler.h \
 	ltqnorm.h \
 	s3d_topology.h
 
@@ -24,6 +25,7 @@ lib_LTLIBRARIES = libeffort.la
 #
 libeffort_la_SOURCES = effort_key.C \
 						 		       effort_record.C \
+											 effort_signature.C \
                        effort_data.C \
                        effort_params.C \
 											 Metric.C \
@@ -38,7 +40,7 @@ libeffort_la_SOURCES += parallel_compressor.C \
 												synchronize_keys.C
 
 if HAVE_SPRNG
-libeffort_la_SOURCES += sampling.C ltqnorm.C
+libeffort_la_SOURCES += sampler.C ltqnorm.C
 SAMPLE_PROGS = sample-test approx-timer 
 endif
 endif
@@ -89,7 +91,7 @@ endif
 #
 bin_PROGRAMS = ef nrmse s3d-topo-test $(SAMPLE_PROGS)
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test
+bin_PROGRAMS += tuner bin_test dataset_test effort-signature-test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
@@ -102,6 +104,9 @@ sample_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
+
+effort_signature_test_SOURCES = effort_signature_test.C
+effort_signature_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
 ef_LDADD= libeffort.la 

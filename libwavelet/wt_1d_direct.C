@@ -44,7 +44,7 @@ namespace wavelet {
   }
 
 
-  void wt_1d_direct::fwt_1d(double *data, size_t n) {
+  void wt_1d_direct::fwt_1d_single(double *data, size_t n) {
     assert(!(n & 1));
 
     sym_extend(data, n, 1);
@@ -60,7 +60,7 @@ namespace wavelet {
   }
 
   
-  void wt_1d_direct::iwt_1d(double *data, size_t n) {
+  void wt_1d_direct::iwt_1d_single(double *data, size_t n) {
     assert(!(n & 1));
 
     sym_extend(data, n, 1, true);

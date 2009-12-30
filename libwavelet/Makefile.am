@@ -4,9 +4,11 @@
 lib_LTLIBRARIES = libwavelet.la
 libwavelet_la_SOURCES = \
 	cdf97.C \
+	wt_1d.C \
 	wt_2d.C \
 	wt_lift.C \
 	wt_direct.C \
+	wt_1d_lift.C \
 	wt_1d_direct.C \
 	wt_utils.C \
 	io_utils.C \
@@ -65,8 +67,10 @@ include_HEADERS = \
 	vector_ibitstream.h \
 	vector_obitstream.h \
 	wavelet.h \
+	wt_1d.h \
 	wt_2d.h \
 	wt_direct.h \
+	wt_1d_lift.h \
 	wt_1d_direct.h \
 	wt_lift.h \
 	string_utils.h

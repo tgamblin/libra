@@ -3,7 +3,9 @@
 #include <stdint.h>
 #include <limits.h>
 #include <iostream>
-#include <io_utils.h>
+
+#include "io_utils.h"
+
 using namespace std;
 
 namespace wavelet {

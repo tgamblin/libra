@@ -102,23 +102,24 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libwavelet_la_LIBADD =
-am__libwavelet_la_SOURCES_DIST = cdf97.C wt_2d.C wt_lift.C wt_direct.C \
-	wt_1d_direct.C wt_utils.C io_utils.C matrix_utils.C \
-	filter_bank.C ezw.C ezw_encoder.C ezw_decoder.C obitstream.C \
-	ibitstream.C buffered_obitstream.C buffered_ibitstream.C \
-	vector_obitstream.C vector_ibitstream.C ac_obitstream.C \
-	ac_ibitstream.C arithmetic_codec.C byte_budget_exception.C \
-	timing.C Timer.C rle.C huffman.C string_utils.C wt_parallel.C \
-	par_ezw_encoder.C
+am__libwavelet_la_SOURCES_DIST = cdf97.C wt_1d.C wt_2d.C wt_lift.C \
+	wt_direct.C wt_1d_lift.C wt_1d_direct.C wt_utils.C io_utils.C \
+	matrix_utils.C filter_bank.C ezw.C ezw_encoder.C ezw_decoder.C \
+	obitstream.C ibitstream.C buffered_obitstream.C \
+	buffered_ibitstream.C vector_obitstream.C vector_ibitstream.C \
+	ac_obitstream.C ac_ibitstream.C arithmetic_codec.C \
+	byte_budget_exception.C timing.C Timer.C rle.C huffman.C \
+	string_utils.C wt_parallel.C par_ezw_encoder.C
 @HAVE_MPI_TRUE@am__objects_1 = wt_parallel.lo par_ezw_encoder.lo
-am_libwavelet_la_OBJECTS = cdf97.lo wt_2d.lo wt_lift.lo wt_direct.lo \
-	wt_1d_direct.lo wt_utils.lo io_utils.lo matrix_utils.lo \
-	filter_bank.lo ezw.lo ezw_encoder.lo ezw_decoder.lo \
-	obitstream.lo ibitstream.lo buffered_obitstream.lo \
-	buffered_ibitstream.lo vector_obitstream.lo \
-	vector_ibitstream.lo ac_obitstream.lo ac_ibitstream.lo \
-	arithmetic_codec.lo byte_budget_exception.lo timing.lo \
-	Timer.lo rle.lo huffman.lo string_utils.lo $(am__objects_1)
+am_libwavelet_la_OBJECTS = cdf97.lo wt_1d.lo wt_2d.lo wt_lift.lo \
+	wt_direct.lo wt_1d_lift.lo wt_1d_direct.lo wt_utils.lo \
+	io_utils.lo matrix_utils.lo filter_bank.lo ezw.lo \
+	ezw_encoder.lo ezw_decoder.lo obitstream.lo ibitstream.lo \
+	buffered_obitstream.lo buffered_ibitstream.lo \
+	vector_obitstream.lo vector_ibitstream.lo ac_obitstream.lo \
+	ac_ibitstream.lo arithmetic_codec.lo byte_budget_exception.lo \
+	timing.lo Timer.lo rle.lo huffman.lo string_utils.lo \
+	$(am__objects_1)
 libwavelet_la_OBJECTS = $(am_libwavelet_la_OBJECTS)
 libwavelet_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -143,9 +144,9 @@ am__include_HEADERS_DIST = ac_obitstream.h ac_ibitstream.h \
 	byte_budget_exception.h cdf97.h ezw.h ezw_encoder.h \
 	ezw_decoder.h filter_bank.h ibitstream.h io_utils.h \
 	matrix_utils.h obitstream.h stl_utils.h timing.h Timer.h \
-	vector_ibitstream.h vector_obitstream.h wavelet.h wt_2d.h \
-	wt_direct.h wt_1d_direct.h wt_lift.h string_utils.h \
-	wt_parallel.h par_ezw_encoder.h
+	vector_ibitstream.h vector_obitstream.h wavelet.h wt_1d.h \
+	wt_2d.h wt_direct.h wt_1d_lift.h wt_1d_direct.h wt_lift.h \
+	string_utils.h wt_parallel.h par_ezw_encoder.h
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -329,14 +330,14 @@ top_srcdir = @top_srcdir@
 # Wavelet library and associated sources.
 #
 lib_LTLIBRARIES = libwavelet.la
-libwavelet_la_SOURCES = cdf97.C wt_2d.C wt_lift.C wt_direct.C \
-	wt_1d_direct.C wt_utils.C io_utils.C matrix_utils.C \
-	filter_bank.C ezw.C ezw_encoder.C ezw_decoder.C obitstream.C \
-	ibitstream.C buffered_obitstream.C buffered_ibitstream.C \
-	vector_obitstream.C vector_ibitstream.C ac_obitstream.C \
-	ac_ibitstream.C arithmetic_codec.C byte_budget_exception.C \
-	timing.C Timer.C rle.C huffman.C string_utils.C \
-	$(am__append_1)
+libwavelet_la_SOURCES = cdf97.C wt_1d.C wt_2d.C wt_lift.C wt_direct.C \
+	wt_1d_lift.C wt_1d_direct.C wt_utils.C io_utils.C \
+	matrix_utils.C filter_bank.C ezw.C ezw_encoder.C ezw_decoder.C \
+	obitstream.C ibitstream.C buffered_obitstream.C \
+	buffered_ibitstream.C vector_obitstream.C vector_ibitstream.C \
+	ac_obitstream.C ac_ibitstream.C arithmetic_codec.C \
+	byte_budget_exception.C timing.C Timer.C rle.C huffman.C \
+	string_utils.C $(am__append_1)
 libwavelet_la_LDFLAGS = -avoid-version
 
 #
@@ -347,9 +348,9 @@ include_HEADERS = ac_obitstream.h ac_ibitstream.h \
 	byte_budget_exception.h cdf97.h ezw.h ezw_encoder.h \
 	ezw_decoder.h filter_bank.h ibitstream.h io_utils.h \
 	matrix_utils.h obitstream.h stl_utils.h timing.h Timer.h \
-	vector_ibitstream.h vector_obitstream.h wavelet.h wt_2d.h \
-	wt_direct.h wt_1d_direct.h wt_lift.h string_utils.h \
-	$(am__append_2)
+	vector_ibitstream.h vector_obitstream.h wavelet.h wt_1d.h \
+	wt_2d.h wt_direct.h wt_1d_lift.h wt_1d_direct.h wt_lift.h \
+	string_utils.h $(am__append_2)
 dist_noinst_HEADERS = \
   arithmetic_codec.h \
 	mpi_profile.h \
@@ -466,7 +467,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_ibitstream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_obitstream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_1d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_1d_direct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_1d_lift.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_2d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_direct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wt_lift.Plo@am__quote@

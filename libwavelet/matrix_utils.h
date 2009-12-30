@@ -8,6 +8,7 @@
 #include <vector>
 #include <cfloat>
 #include <algorithm>
+#include <numeric>
 #include <stdint.h>
 #include <boost/numeric/ublas/matrix.hpp>
 
@@ -289,6 +290,35 @@ void set_all(const Matrix<T>& mat, V value,
       mat(i,j) = value;
     }
   }
+}
+
+
+template <typename Iterator1, typename Iterator2>
+double manhattan_distance(Iterator1 first1, Iterator1 last1, Iterator2 first2) {
+  double sum = 0.0;
+  Iterator1 i = first1;
+  Iterator2 j = first2;
+  while (i != last1) {
+    sum += abs_val(*i - *j);
+    i++;
+    j++;
+  }
+  return sum;
+}
+
+
+template <typename Iterator1, typename Iterator2>
+double euclidean_distance(Iterator1 first1, Iterator1 last1, Iterator2 first2) {
+  double sum = 0.0;
+  Iterator1 i = first1;
+  Iterator2 j = first2;
+  while (i != last1) {
+    double diff = (*i - *j);
+    sum += diff * diff;
+    i++;
+    j++;
+  }
+  return sqrt(sum);
 }
 
 

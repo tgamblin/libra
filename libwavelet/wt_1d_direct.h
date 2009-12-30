@@ -2,6 +2,7 @@
 #define WT_1D_DIRECT_H
 
 #include <vector>
+#include "wt_1d.h"
 #include "filter_bank.h"
 #include "cdf97.h"
 
@@ -14,7 +15,21 @@ namespace wavelet {
   /// This is designd to be inherited privately by something more sophisticated
   /// that can make use of its functions. e.g. wt_direct. which knows about 
   /// boost matrices.
-  class wt_1d_direct {
+  class wt_1d_direct : public wt_1d {
+  public:
+    /// Constructs a new direct wavelet transform with the provided filter bank.
+    /// Filter defaults to CDF 9/7 Wavelets.
+    wt_1d_direct(filter_bank& f = filter::getCDF97());
+
+    /// Destructor
+    virtual ~wt_1d_direct();
+
+    /// Forward transform for raw contiguous data.
+    virtual void fwt_1d_single(double *data, size_t n);
+
+    /// Inverse transform for raw contiguous data.
+    virtual void iwt_1d_single(double *data, size_t n);
+
   protected:
     /// Filter bank for this transform
     filter_bank& f;
@@ -32,20 +47,6 @@ namespace wavelet {
     ///      n   elements to copy from input
     /// stride   stride of data in input
     void sym_extend(double *x, size_t n, size_t stride = 1, bool interleave = false);
-
-  public:
-    /// Constructs a new direct wavelet transform with the provided filter bank.
-    /// Filter defaults to CDF 9/7 Wavelets.
-    wt_1d_direct(filter_bank& f = filter::getCDF97());
-
-    /// Destructor
-    virtual ~wt_1d_direct();
-
-    /// Forward transform for raw contiguous data.
-    void fwt_1d(double *data, size_t n);
-
-    /// Inverse transform for raw contiguous data.
-    void iwt_1d(double *data, size_t n);
   };
 
 } // namespace

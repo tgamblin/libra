@@ -34,7 +34,6 @@ namespace wavelet {
     /// iwt_level:    level of iwt to perform on the matrix. (defaults to fwt_level)
     virtual int iwt_2d(wt_matrix& mat, int fwt_level = -1, int iwt_level = -1);
 
-  protected:
     /// Forward wavelet transform for matrix rows.
     /// mat: a boost matrix containing the data to be transformed
     /// row: the row to transform

@@ -32,7 +32,7 @@ namespace effort {
   typedef std::map<effort_key, sample_desc> stat_map;
   
 
-  class sampling_module {
+  class Sampler {
     MPI_Comm comm;               /// communicator on which we sample.
 
     std::string trace_dir;       /// Name of directory to write trace data into.
@@ -71,10 +71,10 @@ namespace effort {
 
   public:
     /// Constructor.  Doesn't init anything, but can optionally set initial sample size here.
-    sampling_module(size_t initial_sample_size = 40);
+    Sampler(size_t initial_sample_size = 40);
 
     /// Destroys SPRNG if necessary
-    ~sampling_module();
+    ~Sampler();
 
     /// This is a collective operation.  Inits file streams and paralle random number
     /// generator.
@@ -95,6 +95,7 @@ namespace effort {
   };
 
   Callpath make_path(const std::string& path);
+
 
   template <class OutputIterator>
   void parse_effort_keys(const char *str, OutputIterator output) {

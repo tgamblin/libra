@@ -12,7 +12,7 @@ using namespace std;
 namespace wavelet { 
 
   // just inits the filter.
-  wt_direct::wt_direct(filter_bank& filter) : wt_1d_direct(filter) { }
+  wt_direct::wt_direct(filter_bank& filter) : wt_2d(), wt_1d_direct(filter) { }
 
   wt_direct::~wt_direct() { } 
 

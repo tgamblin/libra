@@ -1,4 +1,4 @@
-#include "sampling.h"
+#include "sampler.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -22,7 +22,7 @@ using namespace std;
 
 namespace effort {
 
-  sampling_module::sampling_module(size_t initial_sample_size)
+  Sampler::Sampler(size_t initial_sample_size)
     : comm(MPI_COMM_NULL), 
       enabled(false), 
       proportion(0), 
@@ -37,7 +37,7 @@ namespace effort {
   { }
 
 
-  void sampling_module::init(MPI_Comm comm, double confidence, double error, std::string output_dir) {
+  void Sampler::init(MPI_Comm comm, double confidence, double error, std::string output_dir) {
     this->comm = comm;
     this->confidence = confidence;
     this->error = error;
@@ -74,7 +74,7 @@ namespace effort {
   }
 
 
-  sampling_module::~sampling_module() {
+  Sampler::~Sampler() {
     if (rng) {
       rng->free_sprng(); 
       rng = NULL;
@@ -82,27 +82,27 @@ namespace effort {
   }
 
 
-  void sampling_module::set_windows_per_update(size_t wpu) {
+  void Sampler::set_windows_per_update(size_t wpu) {
     windows_per_update = wpu;
   }
 
 
-  void sampling_module::set_normalized_error(bool normalized) {
+  void Sampler::set_normalized_error(bool normalized) {
     normalized_error = normalized;
   }
 
 
-  void sampling_module::set_stats(bool stats) {
+  void Sampler::set_stats(bool stats) {
     this->stats = stats;
   }
 
 
-  void sampling_module::set_trace(bool trace) {
+  void Sampler::set_trace(bool trace) {
     this->trace = trace;
   }
 
 
-  sample_desc sampling_module::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
+  sample_desc Sampler::compute_sample_size(double sum, double sum2, size_t N, double confidence, double error) {
     double mean = sum/N;                            // sample mean
     double variance = (sum2/N - (mean*mean));       // estimate w/sample mean
     double stdDev = sqrt(variance);
@@ -133,7 +133,7 @@ namespace effort {
   };
 
 
-  void sampling_module::get_sample_keys(effort_data& log, vector<effort_key>& sorted_keys) {
+  void Sampler::get_sample_keys(effort_data& log, vector<effort_key>& sorted_keys) {
     sorted_keys.clear();
 
     // Dump keys into the vector.
@@ -167,7 +167,7 @@ namespace effort {
   }
   */
 
-  double sampling_module::compute_sample_proportion(effort_data& log) {
+  double Sampler::compute_sample_proportion(effort_data& log) {
     int rank, size;
     PMPI_Comm_rank(comm, &rank);
     PMPI_Comm_size(comm, &size);
@@ -203,6 +203,7 @@ namespace effort {
         PMPI_Reduce(&val2, &sum2, 1, MPI_DOUBLE, MPI_SUM, root, comm);
       }
 
+
       sample_desc sd;
       if (rank < root) {
         // calculate local sample size and take the max of sizes seen so far.
@@ -233,7 +234,7 @@ namespace effort {
       } 
     }
 
-    // find global sample size with allreduce.
+    // find global sample size for this group with allreduce.
     size_t max_sample_size;
     PMPI_Allreduce(&local_max_sample_size, &max_sample_size, 1, MPI_SIZE_T, MPI_MAX, comm);
 
@@ -260,7 +261,7 @@ namespace effort {
     }
   };
 
-  void sampling_module::sample_step(effort_data& log) { 
+  void Sampler::sample_step(effort_data& log) { 
     int rank, size;
     PMPI_Comm_rank(comm, &rank);
     PMPI_Comm_size(comm, &size);
@@ -270,11 +271,19 @@ namespace effort {
       if (!trace_file.is_open()) {
         trace_file.open(trace_filename.c_str(), ios::app);
       }
-
       log.write_current_step(trace_file);
     }
     
     if (windows % windows_per_update == 0) {
+      // TODO: re-stratify here.
+      
+
+      // TODO: comm-split based on cluster ids.
+
+
+      // TODO: compute sample variances separately
+
+
       proportion = compute_sample_proportion(log);
 
       if (rank == 0) {
@@ -321,7 +330,7 @@ namespace effort {
     windows++;
   }
 
-  void sampling_module::finalize() {
+  void Sampler::finalize() {
     if (rng) {
       //rng->free_sprng();
       rng = NULL;
@@ -332,7 +341,7 @@ namespace effort {
   }
 
 
-  void sampling_module::add_guide_key(const effort_key& key) {
+  void Sampler::add_guide_key(const effort_key& key) {
     guide.insert(key);
   }
 

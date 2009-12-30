@@ -8,7 +8,7 @@ using namespace std;
 #endif // HAVE_CONFIG_H
 
 #ifdef HAVE_SPRNG
-#include "sampling.h"
+#include "sampler.h"
 #endif // HAVE_SPRNG
 
 #include "string_utils.h"
