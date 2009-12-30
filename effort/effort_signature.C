@@ -21,33 +21,24 @@ using namespace std;
 namespace effort {
 
   void effort_signature::init(const double *data, size_t len, int level) {
-    //vector<double> tmp(len);
-    //copy(data, data+len, tmp.begin());
+    vector<double> tmp(len);
+    copy(data, data+len, tmp.begin());
 
     int max_level = (int)log2pow2(len);
     if (level < 0) {
       level = max_level - 4;
     }
 
-    cerr << "max_level: " << max_level << endl;
-    cerr << "level: " << level << endl;
-
     // transform data
-    //wt_lift wt;
-    //wt.fwt_1d(&tmp[0], tmp.size(), level);
-
-    cerr << "transformed." << endl;
+    wt_lift wt;
+    wt.fwt_1d(&tmp[0], tmp.size(), level);
 
     // copy lowest band of transformed coefficients into signature array.
     sig_size = len >> level;
-    cerr << "sig_size: " << sig_size << endl;
-    cerr << "len:      " << len << endl;
+    double *sig = new double[sig_size];
+    copy(tmp.begin(), tmp.begin() + sig_size, sig);
 
-
-    double * sig = new double[sig_size];
-    cerr << "sig:      0x" << hex << sig << endl;
-
-    //copy(tmp.begin(), tmp.end(), sig);
+    // finally give the shared array ownership.
     signature.reset(sig);
   }
 
@@ -57,9 +48,7 @@ namespace effort {
   effort_signature::effort_signature(const effort_signature& other) 
     : signature(other.signature), sig_size(other.sig_size) { }
 
-  effort_signature::~effort_signature() { 
-    cerr << "deleting." << endl;
-  }
+  effort_signature::~effort_signature() { }
 
   effort_signature& effort_signature::operator=(const effort_signature& other) {
     signature = other.signature;
