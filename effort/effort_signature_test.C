@@ -1,57 +1,54 @@
-
 #include <vector>
 #include <iostream>
 #include <iomanip>
 
 #include "effort_signature.h"
-#include "kmedoids.h"
 #include "io_utils.h"
 #include "wt_lift.h"
 
-using namespace cluster;
 using namespace effort;
 using namespace wavelet;
 using namespace std;
 
 
-
 int main(int argc, char **argv) {
-  const int size = 64;
+  // size of data is optional first argument
+  int size = 64;
+  if (argc > 1) {
+    size = strtol(argv[1], NULL, 0);
+  }
+  if (!isPowerOf2(size)) {
+    cerr << "Size must be a power of 2." << endl;
+    exit(1);
+  }
+
+  // set up some data to make a signature out of
   vector<double> data(size);
-
-  cerr << "data size is " << data.size() << endl;
-
   for (size_t i=0; i < data.size(); i++) {
     data[i] = ((rand()/(double)RAND_MAX)+i+0.4*i*i-0.02*i*i);
   }
   
+  // make sure transform is done right for all levels we give it
   for (int l=0; l < log2pow2(size); l++) {
-    cerr << "starting iteration " << l << endl;
-    cerr << "1 data size is " << data.size() << endl;
-
     effort_signature sig(data, l);
-    cerr << "2 data size is " << data.size() << endl;
 
     wt_matrix mat(1, size);
     copy(data.begin(), data.end(), &mat(0,0));
-
-    cerr << "3 data size is " << data.size() << endl;
 
     wt_lift wt;
     for (int i=0; i < l; i++) {
       wt.fwt_row(mat, 0, size >> i);
     }
 
-    cerr << "4 data size is " << data.size() << endl;
-    
-    if (sig.size() != (size_t)(size >> l)) {
+    size_t expected_size = (size_t)(size >> l);
+    if (sig.size() != expected_size) {
       cerr << "ERROR: sizes do not match:" << endl;
       cerr << "  Found:    " << sig.size() << endl;
-      cerr << "  Expected: " << (size >> l) << endl;
+      cerr << "  Expected: " << expected_size << endl;
       exit(1);
     }
 
-    for (int i=0; i < (size >> l); i++) {
+    for (size_t i=0; i < expected_size; i++) {
       if (sig[i] != mat(0,i)) {
         cerr << "ERROR: incorrect signature transform." << endl;
 
@@ -66,8 +63,5 @@ int main(int argc, char **argv) {
         exit(1);
       }
     }
-    cerr << "done with iteration " << l << endl;
   }
-
-  kmedoids km;
 }
