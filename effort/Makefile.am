@@ -91,7 +91,12 @@ endif
 #
 bin_PROGRAMS = ef nrmse s3d-topo-test $(SAMPLE_PROGS)
 if HAVE_MPI
-bin_PROGRAMS += tuner bin_test dataset_test effort-signature-test
+bin_PROGRAMS += \
+	tuner \
+  bin_test \
+  dataset_test \
+	effort-signature-test \
+	signature-cluster-test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
@@ -107,6 +112,9 @@ dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 effort_signature_test_SOURCES = effort_signature_test.C
 effort_signature_test_LDADD = libeffort.la ../cluster/libcluster.la
+
+signature_cluster_test_SOURCES = signature_cluster_test.C
+signature_cluster_test_LDADD = libeffort.la ../cluster/libcluster.la
 
 ef_SOURCES=ef.C
 ef_LDADD= libeffort.la 

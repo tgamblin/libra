@@ -51,7 +51,13 @@ host_triplet = @host@
 @PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
 	$(am__EXEEXT_1) $(am__EXEEXT_2)
-@HAVE_MPI_TRUE@am__append_4 = tuner bin_test dataset_test effort-signature-test
+@HAVE_MPI_TRUE@am__append_4 = \
+@HAVE_MPI_TRUE@	tuner \
+@HAVE_MPI_TRUE@  bin_test \
+@HAVE_MPI_TRUE@  dataset_test \
+@HAVE_MPI_TRUE@	effort-signature-test \
+@HAVE_MPI_TRUE@	signature-cluster-test
+
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
 	$(dist_noinst_SCRIPTS) $(include_HEADERS) \
@@ -202,7 +208,8 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@	approx-timer$(EXEEXT)
 @HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	dataset_test$(EXEEXT) \
-@HAVE_MPI_TRUE@	effort-signature-test$(EXEEXT)
+@HAVE_MPI_TRUE@	effort-signature-test$(EXEEXT) \
+@HAVE_MPI_TRUE@	signature-cluster-test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
 approx_timer_OBJECTS = $(am_approx_timer_OBJECTS)
@@ -235,6 +242,10 @@ s3d_topo_test_DEPENDENCIES = libeffort.la
 am_sample_test_OBJECTS = sample_test.$(OBJEXT)
 sample_test_OBJECTS = $(am_sample_test_OBJECTS)
 sample_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+am_signature_cluster_test_OBJECTS = signature_cluster_test.$(OBJEXT)
+signature_cluster_test_OBJECTS = $(am_signature_cluster_test_OBJECTS)
+signature_cluster_test_DEPENDENCIES = libeffort.la \
+	../cluster/libcluster.la
 am_tuner_OBJECTS = tuner.$(OBJEXT)
 tuner_OBJECTS = $(am_tuner_OBJECTS)
 tuner_LDADD = $(LDADD)
@@ -262,7 +273,7 @@ SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
 	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(tuner_SOURCES)
+	$(signature_cluster_test_SOURCES) $(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_runtime_la_SOURCES_DIST) \
@@ -275,7 +286,7 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
 	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(tuner_SOURCES)
+	$(signature_cluster_test_SOURCES) $(tuner_SOURCES)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -519,6 +530,8 @@ dataset_test_SOURCES = dataset_test.C
 dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 effort_signature_test_SOURCES = effort_signature_test.C
 effort_signature_test_LDADD = libeffort.la ../cluster/libcluster.la
+signature_cluster_test_SOURCES = signature_cluster_test.C
+signature_cluster_test_LDADD = libeffort.la ../cluster/libcluster.la
 ef_SOURCES = ef.C
 ef_LDADD = libeffort.la 
 ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
@@ -734,6 +747,9 @@ s3d-topo-test$(EXEEXT): $(s3d_topo_test_OBJECTS) $(s3d_topo_test_DEPENDENCIES)
 sample-test$(EXEEXT): $(sample_test_OBJECTS) $(sample_test_DEPENDENCIES) 
 	@rm -f sample-test$(EXEEXT)
 	$(CXXLINK) $(sample_test_OBJECTS) $(sample_test_LDADD) $(LIBS)
+signature-cluster-test$(EXEEXT): $(signature_cluster_test_OBJECTS) $(signature_cluster_test_DEPENDENCIES) 
+	@rm -f signature-cluster-test$(EXEEXT)
+	$(CXXLINK) $(signature_cluster_test_OBJECTS) $(signature_cluster_test_LDADD) $(LIBS)
 tuner$(EXEEXT): $(tuner_OBJECTS) $(tuner_DEPENDENCIES) 
 	@rm -f tuner$(EXEEXT)
 	$(CXXLINK) $(tuner_OBJECTS) $(tuner_LDADD) $(LIBS)
@@ -805,6 +821,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topology.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sample_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sampler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signature_cluster_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/synchronize_keys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timing_module.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tuner.Po@am__quote@

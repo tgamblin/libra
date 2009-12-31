@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream>
-#include <iomanip>
+#include <iterator>
 
 #include "effort_signature.h"
 #include "io_utils.h"
