@@ -28,6 +28,8 @@ namespace effort {
       init(&data[0], data.size(), level); 
     }
     
+    effort_signature();
+
     ~effort_signature();
 
     effort_signature(const effort_signature& other);    
@@ -48,7 +50,6 @@ namespace effort {
     boost::shared_array<double> signature;     /// Transformed Effort data for comparison with
     size_t sig_size;                           /// Length of the shared array.
     
-    effort_signature();
     void init(const double *data, size_t len, int level);
   }; // effort_signature
 

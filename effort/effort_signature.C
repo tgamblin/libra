@@ -43,7 +43,7 @@ namespace effort {
   }
 
 
-  effort_signature::effort_signature() { }
+  effort_signature::effort_signature() : sig_size(0) { }
 
   effort_signature::effort_signature(const effort_signature& other) 
     : signature(other.signature), sig_size(other.sig_size) { }
