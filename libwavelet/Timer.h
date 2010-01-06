@@ -31,6 +31,9 @@ public:
   /// Empties out all recorded timings so far AND sets last_time to now.
   void clear();
 
+  /// Skips ahead and sets last time to now.
+  void fast_forward() { last = get_time_ns(); }
+
   /// Records time since start or last call to record.
   void record(const std::string& name);
 
