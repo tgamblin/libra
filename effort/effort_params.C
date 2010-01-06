@@ -28,6 +28,7 @@ namespace effort {
     out << "   regions              = " << params.regions            << endl;
     out << "   sampling             = " << params.sampling           << endl;
     out << "   topo                 = " << params.topo               << endl;
+    out << "   dump_keys            = " << params.dump_keys          << endl;
 
     out << "   ampl                 = " << params.ampl               << endl;
     if (params.ampl) {
@@ -37,6 +38,8 @@ namespace effort {
       out << "     windows_per_update = " << params.windows_per_update << endl;
       out << "     ampl_stats         = " << params.ampl_stats         << endl;
       out << "     ampl_trace         = " << params.ampl_trace         << endl;
+      out << "     ampl_max_strata    = " << params.ampl_max_strata    << endl;
+      out << "     ampl_sig_level     = " << params.ampl_sig_level     << endl;
       out << "     ampl_guide         = ";
 
       const set<effort_key>& keys(params.guide_keys());
@@ -69,6 +72,7 @@ namespace effort {
       config_desc("regions",            &this->regions),
       config_desc("sampling",           &this->sampling),
       config_desc("topo",               &this->topo),
+      config_desc("dump_keys",          &this->dump_keys),
       config_desc("ampl",               &this->ampl),
       config_desc("confidence",         &this->confidence),
       config_desc("error",              &this->error),
@@ -76,6 +80,8 @@ namespace effort {
       config_desc("windows_per_update", &this->windows_per_update),
       config_desc("ampl_stats",         &this->ampl_stats),
       config_desc("ampl_trace",         &this->ampl_trace),
+      config_desc("ampl_max_strata",    &this->ampl_max_strata),
+      config_desc("ampl_sig_level",     &this->ampl_sig_level),
       config_desc("ampl_guide",         &this->ampl_guide),
       config_desc()
     };

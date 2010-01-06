@@ -32,6 +32,7 @@ namespace effort {
                               /// progress every so many actual timesteps.
 
     bool topo;                /// alternately outputs topology-ordered compressed data.
+    bool dump_keys;           /// Dump all effort keys to a file in MPI_Finalize.  Default is false.
 
     bool ampl;                /// AMPL mode -- uses AMPL for sampling and outputs sampled trace.
     double confidence;        /// AMPL confidence
@@ -40,9 +41,11 @@ namespace effort {
     int windows_per_update;   /// AMPL windows per update.
     bool ampl_stats;          /// Whether AMPL should write stats for eventsin its log.
     bool ampl_trace;          /// Whether AMPL should write traces
+    int ampl_max_strata;      /// Max strata to produce for AMPL auto-stratification.  Default is 1 (no stratification)
+    int ampl_sig_level;       /// Transform Level for signatures used in clustering. Defaults to -1.
     const char *ampl_guide;   /// identifier for region to guide sampling
 
-    
+
     /// Constructor with default values of all parameters.
     effort_params() 
       : rows_per_process(32), 
@@ -56,13 +59,16 @@ namespace effort {
         regions("effort"),
         sampling(1),
         topo(false),
+        dump_keys(false),
         ampl(false),
         confidence(.90),
         error(.08),
         normalized_error(false),
-        windows_per_update(5),
+        windows_per_update(32),
         ampl_stats(false),
         ampl_trace(true),
+        ampl_max_strata(1),
+        ampl_sig_level(-1),
         ampl_guide(""),
         have_time(false),
         parsed(false)
