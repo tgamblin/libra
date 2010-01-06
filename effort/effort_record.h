@@ -24,7 +24,10 @@ namespace effort {
     void commit(size_t progress_count);
     
     /// Gets the effort for a particular progress step.
-    double& operator[](int p);
+    double& operator[](int p) { return values[p]; }
+
+    /// Gets the size so far.
+    size_t size() { return values.size(); }
     
     /// Adds to current value of this effort.
     void operator+=(double value) { current += value; }
