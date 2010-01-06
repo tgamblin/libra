@@ -6,11 +6,11 @@
 #include <string>
 #include <fstream>
 #include <set>
-#include <vector>
 
 #include "effort_data.h"
 #include "effort_key.h"
 #include "Callpath.h"
+#include "Timer.h"
 #include "string_utils.h"
 
 
@@ -47,25 +47,46 @@ namespace effort {
     
     size_t windows;              /// Windows seen so far.
     size_t windows_per_update;   /// Number of windows before we update sample proportion
-    bool stats;                  /// record summary stats or not
+    bool record_stats;           /// record summary stats or not
     bool trace;                  /// write trace files or not
-
+    size_t max_strata;           /// Max number of strata to produce
+    int sig_level;               /// Transform level for signatures used for stratifying.
+    
     std::ofstream trace_file;    /// Per-process trace file.
     std::string trace_filename;  /// Name of trace file, so we can open and close.
 
     Sprng *rng;                  /// Uniform parallel RN generator
     
     size_t initial_sample;       /// Settable in constructor.  Defaults to 40.
-    stat_map key_stats;          /// Sample stats for each effort region.
     std::set<effort_key> guide;  /// Effort keys for regions that guide sapmling
 
-    ///
-    /// Collective operation.  
-    /// Computes minimum sample proportion to guarantee provided confidence and error bounds.
-    ///
-    double compute_sample_proportion(effort_data& log);
+    Timer timer;                 /// Performance timer.
 
-    sample_desc compute_sample_size(double sum, double sum2, size_t N, double confidence, double error);
+    ///
+    /// Compute minimum proportion of processes to sample on communicator comm 
+    /// to guarantee confidence and error bounds.  This can compute sample size for
+    /// multiple metrics (identified by effort keys).  It will return the *maximum* 
+    /// sample size for any effort key evaluated.
+    ///
+    /// NOTE: This is a collective operation.
+    /// 
+    /// PRE: log contains records for all keys in the keys vector.
+    /// PRE: keys vector is identical (and in same order) on all processes.
+    ///
+    /// Parameters:
+    ///   log     effort_data with collected data from all processes.
+    ///   keys    keys from log to evaluate sample size for.
+    ///   stats   If record_stats is true, summary statistics for all keys will be stored here on process 0.
+    ///   comm    Communicator whose processes we'll evaluate.
+    ///
+    double compute_sample_proportion(
+      effort_data& log, const std::vector<effort_key>& keys, stat_map& stats, MPI_Comm comm) const;
+
+    ///
+    /// Computes the minimum sample size for a population 
+    ///
+    static sample_desc sample_size(
+      double sum, double sum2, size_t N, double confidence, double error, bool normalize);
 
     void get_sample_keys(effort_data& log, std::vector<effort_key>& sorted_keys);
 
@@ -86,12 +107,17 @@ namespace effort {
     void set_stats(bool stats);
     void set_trace(bool trace);
     void add_guide_key(const effort_key& key);
+    void set_max_strata(size_t max);
+    void set_sig_level(int level);
 
     /// Record end of a window.  Possibly update.
     void sample_step(effort_data& log);
 
     /// call to free up resources before MPI_Finalize
     void finalize();
+    
+    /// Get timer for sampling events.
+    const Timer& get_timer() { return timer; }
   };
 
   Callpath make_path(const std::string& path);
@@ -102,11 +128,11 @@ namespace effort {
     if (!str) return;
 
     std::vector<std::string> key_strings;
-    stringutils::split(str, ", ", key_strings);
+    stringutils::split(str, ",", key_strings);
     
     for (size_t k=0; k < key_strings.size(); k++) {
       std::vector<std::string> path_strings;
-      stringutils::split_str(key_strings[k], ">", path_strings);
+      stringutils::split_str(key_strings[k], "=>", path_strings);
 
       Callpath start(make_path(path_strings[0]));
       Callpath end(start);
