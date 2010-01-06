@@ -24,7 +24,7 @@ namespace effort {
     PMPI_Comm_size(comm, &size);
     
     size_t num_strings = strings.size();
-    MPI_Bcast(&num_strings, 1, MPI_SIZE_T, 0, comm);
+    PMPI_Bcast(&num_strings, 1, MPI_SIZE_T, 0, comm);
     
     relatives rels = get_radix_relatives(rank, size);
     if (rels.parent >= 0) strings.clear();  // empty vector on non-root
@@ -115,8 +115,8 @@ namespace effort {
 
     /// synch up the relevant parts of the header.
     synchronize_effort_keys(effort_log, comm_world);
-    MPI_Bcast(&progress_steps, 1, MPI_SIZE_T, 0, comm_world);
-    MPI_Bcast(&blocks,         1, MPI_SIZE_T, 0, comm_world);
+    PMPI_Bcast(&progress_steps, 1, MPI_SIZE_T, 0, comm_world);
+    PMPI_Bcast(&blocks,         1, MPI_SIZE_T, 0, comm_world);
 
     // step to the next power of 2 timestep and fill with zeros.
     effort_log.progress_step(gePowerOf2(progress_steps));
