@@ -43,6 +43,8 @@ namespace effort {
     effort_data::iterator begin() { return emap.begin(); }
     effort_data::iterator end()   { return emap.end(); }
     size_t size() { return emap.size(); }
+    size_t steps() { return progress_count; }
+
     bool contains(const effort_key& key) {
       return emap.find(key) != emap.end();
     }
