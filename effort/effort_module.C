@@ -39,6 +39,8 @@ using namespace wavelet;
 #include "s3d_topology.h"
 #include "effort_params.h"
 #include "parallel_compressor.h"
+#include "synchronize_keys.h"
+#include "stl_utils.h"
 using namespace effort;
 
 
@@ -160,6 +162,7 @@ struct effort_module {
       sampler.set_normalized_error(params.normalized_error);
       sampler.set_stats(params.ampl_stats);
       sampler.set_trace(params.ampl_trace);
+      sampler.set_max_strata(params.ampl_max_strata);
 
       const set<effort_key>& guide_keys = params.guide_keys();
       for(set<effort_key>::iterator k=guide_keys.begin(); k != guide_keys.end(); k++) {
@@ -326,7 +329,9 @@ struct effort_module {
 
 #ifdef HAVE_SPRNG
       if (params.ampl) {
+        timer.record("APP");
         sampler.sample_step(effort_log);
+        timer.fast_forward();          // skip past what happened in sampler.  Add it in later.
       }
 #endif // HAVE_SPRNG
 
@@ -483,10 +488,24 @@ struct effort_module {
 
     parallel_compressor compressor(params);
 
+    if (params.dump_keys) {
+      synchronize_effort_keys(effort_log, MPI_COMM_WORLD);
+      if (rank == 0) {
+        ostringstream key_filename;
+        key_filename << effort_dir << "/keys";
+
+        ofstream key_file(key_filename.str().c_str());
+        transform(effort_log.begin(), effort_log.end(), 
+                  ostream_iterator<effort_key>(key_file, "\n"),
+                  get_first());
+      }
+    }
+
 #ifdef HAVE_SPRNG
     // if we're sampling, skip the compression stuff and just return here.
     if (params.ampl) {
       sampler.finalize();
+      timer += sampler.get_timer();  // add in sampler's timer.
     } else
 #endif // HAVE_SPRNG
     {
