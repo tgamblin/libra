@@ -46,6 +46,7 @@ endif
 endif
 
 libeffort_la_LIBADD = \
+	../cluster/libcluster.la \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
@@ -70,7 +71,7 @@ libeffort_runtime_la_LDFLAGS = -avoid-version
 
 libpmpi_effort_la_SOURCES = effort_wrapper.C base_wrapper.C
 libpmpi_effort_la_LIBADD = libeffort-runtime.la
-libpmpi_effort_la_LDFLAGS = -avoid-version 
+libpmpi_effort_la_LDFLAGS = -avoid-version
 
 libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 libcomm_effort_la_LIBADD = libeffort-runtime.la
@@ -96,28 +97,20 @@ bin_PROGRAMS += \
   bin_test \
   dataset_test \
 	effort-signature-test \
-	signature-cluster-test
+	signature-cluster-test \
+	parse-callpath-test
 endif
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
 approx_timer_SOURCES = approx_timer.C
-approx_timer_LDADD = libeffort.la ../cluster/libcluster.la
-
 sample_test_SOURCES = sample_test.C
-sample_test_LDADD = libeffort.la ../cluster/libcluster.la
-
 dataset_test_SOURCES = dataset_test.C
-dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
-
 effort_signature_test_SOURCES = effort_signature_test.C
-effort_signature_test_LDADD = libeffort.la ../cluster/libcluster.la
-
 signature_cluster_test_SOURCES = signature_cluster_test.C
-signature_cluster_test_LDADD = libeffort.la ../cluster/libcluster.la
+parse_callpath_test_SOURCES = parse_callpath_test.C
 
 ef_SOURCES=ef.C
-ef_LDADD= libeffort.la 
 ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 
 
@@ -143,7 +136,7 @@ $(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 
-LDADD   =  libeffort.la
+LDADD   =  libeffort.la ../cluster/libcluster.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
            -I$(top_srcdir)/cluster \

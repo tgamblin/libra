@@ -56,7 +56,8 @@ bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
 @HAVE_MPI_TRUE@  bin_test \
 @HAVE_MPI_TRUE@  dataset_test \
 @HAVE_MPI_TRUE@	effort-signature-test \
-@HAVE_MPI_TRUE@	signature-cluster-test
+@HAVE_MPI_TRUE@	signature-cluster-test \
+@HAVE_MPI_TRUE@	parse-callpath-test
 
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
@@ -143,8 +144,8 @@ libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libeffort_runtime_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_rpath = -rpath $(libdir)
-libeffort_la_DEPENDENCIES = ../callpath/libcallpath.la \
-	../libwavelet/libwavelet.la
+libeffort_la_DEPENDENCIES = ../cluster/libcluster.la \
+	../callpath/libcallpath.la ../libwavelet/libwavelet.la
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_signature.C effort_data.C effort_params.C Metric.C \
 	FrameDB.C effort_dataset.C s3d_topology.C \
@@ -209,47 +210,59 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	dataset_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	effort-signature-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	signature-cluster-test$(EXEEXT)
+@HAVE_MPI_TRUE@	signature-cluster-test$(EXEEXT) \
+@HAVE_MPI_TRUE@	parse-callpath-test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
 approx_timer_OBJECTS = $(am_approx_timer_OBJECTS)
+approx_timer_LDADD = $(LDADD)
 approx_timer_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
 bin_test_LDADD = $(LDADD)
-bin_test_DEPENDENCIES = libeffort.la
+bin_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_dataset_test_OBJECTS = dataset_test.$(OBJEXT)
 dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
+dataset_test_LDADD = $(LDADD)
 dataset_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
-ef_DEPENDENCIES = libeffort.la
+ef_LDADD = $(LDADD)
+ef_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 ef_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(ef_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_effort_signature_test_OBJECTS = effort_signature_test.$(OBJEXT)
 effort_signature_test_OBJECTS = $(am_effort_signature_test_OBJECTS)
+effort_signature_test_LDADD = $(LDADD)
 effort_signature_test_DEPENDENCIES = libeffort.la \
 	../cluster/libcluster.la
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
-nrmse_DEPENDENCIES = libeffort.la
+nrmse_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+am_parse_callpath_test_OBJECTS = parse_callpath_test.$(OBJEXT)
+parse_callpath_test_OBJECTS = $(am_parse_callpath_test_OBJECTS)
+parse_callpath_test_LDADD = $(LDADD)
+parse_callpath_test_DEPENDENCIES = libeffort.la \
+	../cluster/libcluster.la
 am_s3d_topo_test_OBJECTS = s3d_topo_test.$(OBJEXT)
 s3d_topo_test_OBJECTS = $(am_s3d_topo_test_OBJECTS)
 s3d_topo_test_LDADD = $(LDADD)
-s3d_topo_test_DEPENDENCIES = libeffort.la
+s3d_topo_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_sample_test_OBJECTS = sample_test.$(OBJEXT)
 sample_test_OBJECTS = $(am_sample_test_OBJECTS)
+sample_test_LDADD = $(LDADD)
 sample_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 am_signature_cluster_test_OBJECTS = signature_cluster_test.$(OBJEXT)
 signature_cluster_test_OBJECTS = $(am_signature_cluster_test_OBJECTS)
+signature_cluster_test_LDADD = $(LDADD)
 signature_cluster_test_DEPENDENCIES = libeffort.la \
 	../cluster/libcluster.la
 am_tuner_OBJECTS = tuner.$(OBJEXT)
 tuner_OBJECTS = $(am_tuner_OBJECTS)
 tuner_LDADD = $(LDADD)
-tuner_DEPENDENCIES = libeffort.la
+tuner_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
 SCRIPTS = $(dist_bin_SCRIPTS) $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -272,8 +285,9 @@ SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
-	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(signature_cluster_test_SOURCES) $(tuner_SOURCES)
+	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
+	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
+	$(tuner_SOURCES)
 DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_runtime_la_SOURCES_DIST) \
@@ -285,8 +299,9 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
-	$(s3d_topo_test_SOURCES) $(sample_test_SOURCES) \
-	$(signature_cluster_test_SOURCES) $(tuner_SOURCES)
+	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
+	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
+	$(tuner_SOURCES)
 HEADERS = $(dist_noinst_HEADERS) $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -495,6 +510,7 @@ libeffort_la_SOURCES = effort_key.C effort_record.C effort_signature.C \
 	$(am__append_2)
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@SAMPLE_PROGS = sample-test approx-timer 
 libeffort_la_LIBADD = \
+	../cluster/libcluster.la \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
@@ -511,7 +527,7 @@ libeffort_la_LDFLAGS = \
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_LDFLAGS = -avoid-version 
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_SOURCES = effort_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libpmpi_effort_la_LIBADD = libeffort-runtime.la
-@PMPI_EFFORT_TRUE@libpmpi_effort_la_LDFLAGS = -avoid-version 
+@PMPI_EFFORT_TRUE@libpmpi_effort_la_LDFLAGS = -avoid-version
 @PMPI_EFFORT_TRUE@libcomm_effort_la_SOURCES = comm_wrapper.C base_wrapper.C
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LIBADD = libeffort-runtime.la
 @PMPI_EFFORT_TRUE@libcomm_effort_la_LDFLAGS = -avoid-version 
@@ -523,17 +539,12 @@ libeffort_la_LDFLAGS = \
 @PMPI_EFFORT_TRUE@libtiming_la_LIBADD = ../libwavelet/libwavelet.la
 dist_bin_SCRIPTS = libra-build-viewer-data libra-reconstruct-exact
 approx_timer_SOURCES = approx_timer.C
-approx_timer_LDADD = libeffort.la ../cluster/libcluster.la
 sample_test_SOURCES = sample_test.C
-sample_test_LDADD = libeffort.la ../cluster/libcluster.la
 dataset_test_SOURCES = dataset_test.C
-dataset_test_LDADD = libeffort.la ../cluster/libcluster.la
 effort_signature_test_SOURCES = effort_signature_test.C
-effort_signature_test_LDADD = libeffort.la ../cluster/libcluster.la
 signature_cluster_test_SOURCES = signature_cluster_test.C
-signature_cluster_test_LDADD = libeffort.la ../cluster/libcluster.la
+parse_callpath_test_SOURCES = parse_callpath_test.C
 ef_SOURCES = ef.C
-ef_LDADD = libeffort.la 
 ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 nrmse_SOURCES = nrmse.C 
 tuner_SOURCES = tuner.C
@@ -542,7 +553,7 @@ s3d_topo_test_SOURCES = s3d_topo_test.C
 CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
-LDADD = libeffort.la
+LDADD = libeffort.la ../cluster/libcluster.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
            -I$(top_srcdir)/cluster \
@@ -741,6 +752,9 @@ effort-signature-test$(EXEEXT): $(effort_signature_test_OBJECTS) $(effort_signat
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
+parse-callpath-test$(EXEEXT): $(parse_callpath_test_OBJECTS) $(parse_callpath_test_DEPENDENCIES) 
+	@rm -f parse-callpath-test$(EXEEXT)
+	$(CXXLINK) $(parse_callpath_test_OBJECTS) $(parse_callpath_test_LDADD) $(LIBS)
 s3d-topo-test$(EXEEXT): $(s3d_topo_test_OBJECTS) $(s3d_topo_test_DEPENDENCIES) 
 	@rm -f s3d-topo-test$(EXEEXT)
 	$(CXXLINK) $(s3d_topo_test_OBJECTS) $(s3d_topo_test_LDADD) $(LIBS)
@@ -816,6 +830,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_callpath_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pcontrol_counter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topo_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3d_topology.Plo@am__quote@
