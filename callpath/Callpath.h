@@ -58,6 +58,9 @@ public:
   /// Writes this callpath out to a stream.
   void write_out(std::ostream& out);
 
+  /// True if other is a prefix of this callpath.
+  bool in(const Callpath& other) const;
+
   /// Returns a new callpath containing a slice of this callpath: [start, end).
   /// TODO: allow callpaths to be managed/unmanaged (at runtime it might make sense to
   ///       unique things but here it really doesn't.)

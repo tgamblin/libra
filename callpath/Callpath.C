@@ -114,6 +114,15 @@ size_t Callpath::size() const {
 }
 
 
+bool Callpath::in(const Callpath& other) const {
+  if (other.size() > size()) {
+    return false;
+  } else {
+    return equal(other.path->rbegin(), other.path->rend(), path->rbegin());
+  }
+}
+
+
 Callpath Callpath::slice(size_t start, size_t end) {
   vector<FrameId> new_slice;
   for (size_t i=start; i < end; i++) {
