@@ -61,7 +61,7 @@ namespace effort {
   int effort_signature::packed_size(MPI_Comm comm) const {
     int size = 0;
     size += mpi_packed_size(1, MPI_SIZE_T, comm);
-    size += mpi_packed_size(size, MPI_DOUBLE, comm);
+    size += mpi_packed_size(sig_size, MPI_DOUBLE, comm);
     return size;
   }
 
