@@ -57,6 +57,7 @@ bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
 @HAVE_MPI_TRUE@  dataset_test \
 @HAVE_MPI_TRUE@	effort-signature-test \
 @HAVE_MPI_TRUE@	signature-cluster-test \
+@HAVE_MPI_TRUE@	par-signature-cluster-test \
 @HAVE_MPI_TRUE@	parse-callpath-test
 
 subdir = effort
@@ -211,6 +212,7 @@ timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @HAVE_MPI_TRUE@	dataset_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	effort-signature-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	signature-cluster-test$(EXEEXT) \
+@HAVE_MPI_TRUE@	par-signature-cluster-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	parse-callpath-test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
@@ -241,6 +243,13 @@ am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
 nrmse_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+am_par_signature_cluster_test_OBJECTS =  \
+	par_signature_cluster_test.$(OBJEXT)
+par_signature_cluster_test_OBJECTS =  \
+	$(am_par_signature_cluster_test_OBJECTS)
+par_signature_cluster_test_LDADD = $(LDADD)
+par_signature_cluster_test_DEPENDENCIES = libeffort.la \
+	../cluster/libcluster.la
 am_parse_callpath_test_OBJECTS = parse_callpath_test.$(OBJEXT)
 parse_callpath_test_OBJECTS = $(am_parse_callpath_test_OBJECTS)
 parse_callpath_test_LDADD = $(LDADD)
@@ -285,6 +294,7 @@ SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
+	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
 	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
 	$(tuner_SOURCES)
@@ -299,6 +309,7 @@ DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
 	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
 	$(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
+	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
 	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
 	$(tuner_SOURCES)
@@ -543,6 +554,7 @@ sample_test_SOURCES = sample_test.C
 dataset_test_SOURCES = dataset_test.C
 effort_signature_test_SOURCES = effort_signature_test.C
 signature_cluster_test_SOURCES = signature_cluster_test.C
+par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
 ef_SOURCES = ef.C
 ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
@@ -752,6 +764,9 @@ effort-signature-test$(EXEEXT): $(effort_signature_test_OBJECTS) $(effort_signat
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
+par-signature-cluster-test$(EXEEXT): $(par_signature_cluster_test_OBJECTS) $(par_signature_cluster_test_DEPENDENCIES) 
+	@rm -f par-signature-cluster-test$(EXEEXT)
+	$(CXXLINK) $(par_signature_cluster_test_OBJECTS) $(par_signature_cluster_test_LDADD) $(LIBS)
 parse-callpath-test$(EXEEXT): $(parse_callpath_test_OBJECTS) $(parse_callpath_test_DEPENDENCIES) 
 	@rm -f parse-callpath-test$(EXEEXT)
 	$(CXXLINK) $(parse_callpath_test_OBJECTS) $(parse_callpath_test_LDADD) $(LIBS)
@@ -828,6 +843,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env_config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ltqnorm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/par_signature_cluster_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_decompressor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_callpath_test.Po@am__quote@

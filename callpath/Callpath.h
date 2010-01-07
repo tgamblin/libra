@@ -157,4 +157,11 @@ struct callpath_path_lt {
   }
 };
 
+
+///
+/// Parse a complete callpath from a string.
+///
+Callpath make_path(const std::string& path);
+
+
 #endif //CALLPATH_H

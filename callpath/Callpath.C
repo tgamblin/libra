@@ -19,6 +19,9 @@ using namespace std;
 #include "io_utils.h"
 using namespace wavelet;
 
+#include "string_utils.h"
+using namespace stringutils;
+
 /// This is the set of all unique callpaths seen so far.  Used to unique
 /// callpaths on creation, so that instances can be compared by pointer.
 typedef set<const vector<FrameId>*, pathvector_lt<less<FrameId> > > callpath_set;
@@ -193,4 +196,29 @@ const FrameId& Callpath::get(size_t i) const {
     exit(1);
   }
   return (*path)[i]; 
+}
+
+
+Callpath make_path(const string& path) {
+  vector<string> frame_strings;
+  vector<FrameId> frames;
+  
+  split(path, ":", frame_strings);
+  for (size_t i=0; i < frame_strings.size(); i++) {
+    vector<string> pieces;
+    split(frame_strings[i], "(", pieces);
+    if (pieces.size() != 2) {
+      cerr << "ERROR: bad callpath parse at:" << endl;
+      cerr << (pieces.size() ? pieces[0] : string("unknown")) << endl;
+      exit(1);
+    }
+    
+    ModuleId module(trim(pieces[0]));
+    char *err;
+    uintptr_t offset = strtoull(pieces[1].c_str(), &err, 0);
+    frames.push_back(FrameId(module, offset));
+  }
+  reverse(frames.begin(), frames.end());
+  
+  return Callpath::create(frames);
 }

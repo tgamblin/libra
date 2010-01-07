@@ -30,8 +30,7 @@ libwavelet_la_SOURCES = \
 	timing.C \
 	Timer.C \
 	rle.C \
-	huffman.C \
-	string_utils.C
+	huffman.C
 libwavelet_la_LDFLAGS=-avoid-version
 
 #
@@ -72,8 +71,7 @@ include_HEADERS = \
 	wt_direct.h \
 	wt_1d_lift.h \
 	wt_1d_direct.h \
-	wt_lift.h \
-	string_utils.h
+	wt_lift.h
 
 dist_noinst_HEADERS = \
   arithmetic_codec.h \

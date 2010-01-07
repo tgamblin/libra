@@ -98,6 +98,7 @@ bin_PROGRAMS += \
   dataset_test \
 	effort-signature-test \
 	signature-cluster-test \
+	par-signature-cluster-test \
 	parse-callpath-test
 endif
 
@@ -108,6 +109,7 @@ sample_test_SOURCES = sample_test.C
 dataset_test_SOURCES = dataset_test.C
 effort_signature_test_SOURCES = effort_signature_test.C
 signature_cluster_test_SOURCES = signature_cluster_test.C
+par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
 
 ef_SOURCES=ef.C

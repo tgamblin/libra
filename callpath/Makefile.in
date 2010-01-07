@@ -95,10 +95,10 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libcallpath_la_LIBADD =
 am__libcallpath_la_SOURCES_DIST = Callpath.C FrameId.C ModuleId.C \
-	FrameInfo.C Translator.C CallpathRuntime.C
+	FrameInfo.C Translator.C string_utils.C CallpathRuntime.C
 @HAVE_SW_TRUE@am__objects_1 = CallpathRuntime.lo
 am_libcallpath_la_OBJECTS = Callpath.lo FrameId.lo ModuleId.lo \
-	FrameInfo.lo Translator.lo $(am__objects_1)
+	FrameInfo.lo Translator.lo string_utils.lo $(am__objects_1)
 libcallpath_la_OBJECTS = $(am_libcallpath_la_OBJECTS)
 libcallpath_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -304,6 +304,7 @@ libcallpath_la_SOURCES = \
 	ModuleId.C \
 	FrameInfo.C \
 	Translator.C \
+	string_utils.C \
 	$(SW_ONLY_SRCS)
 
 libcallpath_la_LDFLAGS = \
@@ -318,7 +319,8 @@ include_HEADERS = \
 	ModuleId.h \
 	FrameInfo.h \
 	Translator.h \
-	safe_bool.h
+	safe_bool.h \
+	string_utils.h
 
 INCLUDES = $(SW_CPPFLAGS) -I$(top_srcdir)/libwavelet $(BOOST_CPPFLAGS) -I$(top_srcdir)
 all: all-am
@@ -401,6 +403,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FrameInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ModuleId.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Translator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/string_utils.Plo@am__quote@
 
 .C.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
