@@ -72,6 +72,10 @@ void get_args(int *argc, char ***argv) {
       sigs_per_process = strtol(optarg, &err, 0);
       if (*err) usage();
       break;
+    case 'c':
+      max_clusters = strtol(optarg, &err, 0);
+      if (*err) usage();
+      break;
     default:
       usage();
       break;
@@ -92,13 +96,14 @@ int main(int argc, char **argv) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  // make sure max_clusters is valid.
+  max_clusters = min(max_clusters, size*sigs_per_process);
   
   uint32_t seed = 0;
-  if (rank == 0) {
-    struct timeval time;
-    gettimeofday(&time, 0);
-    seed = time.tv_sec * time.tv_usec;
-  }
+  struct timeval time;
+  gettimeofday(&time, 0);
+  seed = time.tv_sec * time.tv_usec;
 
   MTRand rand(seed + rank);  // Seed signatures differently on each rank.
   matrix<double> data(sigs_per_process, trace_length);     // vector of local "traces"
@@ -139,18 +144,20 @@ int main(int argc, char **argv) {
   for (size_t i=0; i < trials; i++) {
     parkm.xclara(sigs, sig_euclidean_distance(), max_clusters, trace_length);
   }
+
   double total = get_time_ns() - start;
   double avg = total / trials;
-  
-  if (timing && rank == 0) {
-    ostringstream timing_filename;
-    timing_filename << "times-" << size;
-    ofstream timing(timing_filename.str().c_str());
-    parkm.get_timer().write(timing);
-    
+  if (rank == 0) {
     cout << size << " processes" << endl;
     cout << "TOTAL:   " << total / 1e9 << endl;
     cout << "AVERAGE: " << avg   / 1e9 << endl;
+  
+    if (timing) {
+      ostringstream timing_filename;
+      timing_filename << "times-" << size;
+      ofstream timing(timing_filename.str().c_str());
+      parkm.get_timer().write(timing);
+    }
   }
 
   if (validate) {

@@ -21,6 +21,15 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Fortran binding for MPI_Init
 AC_FC_FUNC(PMPI_Init, PMPI_INIT)
+AC_ARG_WITH([pmpi-init], 
+  AS_HELP_STRING([--with-pmpi-init], 
+                 [Manually specify binding for pmpi_init function.  Must be one of PMPI_INIT, pmpi_init, pmpi_init_, or pmpi_init__]),
+  [if [[ "x$withval" = xpmpi_init -o "x$withval" = xPMPI_INIT -o "x$withval" = xpmpi_init_ -o "x$withval" = xpmpi_init__ ]]; then
+      PMPI_INIT="$withval"
+   else
+      AC_MSG_ERROR([--with-pmpi-init arg must be one of PMPI_INIT, pmpi_init, pmpi_init_, or pmpi_init__])
+   fi]
+)
 AC_SUBST(PMPI_INIT)
 
 # Test whether we're on BlueGene/L and define things in config.h accordingly
