@@ -4,6 +4,7 @@
 #include "Callpath.h"
 #include "Metric.h"
 #include "ModuleId.h"
+#include "string_utils.h"
 
 #include "libra-config.h"
 #ifdef LIBRA_HAVE_MPI
@@ -86,7 +87,28 @@ namespace effort {
   /// TODO : provide something to make a filename here too.
   bool parse_filename(const std::string& filename, 
                       std::string *metric = NULL, int *type = NULL, int *number = NULL);
+
   
+  template <class OutputIterator>
+  void parse_effort_keys(const char *str, OutputIterator output) {
+    if (!str) return;
+
+    std::vector<std::string> key_strings;
+    stringutils::split(str, ",", key_strings);
+    
+    for (size_t k=0; k < key_strings.size(); k++) {
+      std::vector<std::string> path_strings;
+      stringutils::split_str(key_strings[k], "=>", path_strings);
+
+      Callpath start(make_path(path_strings[0]));
+      Callpath end(start);
+      if (path_strings.size() > 1) {
+        end = make_path(path_strings[1]);        
+      }
+      
+      *output++ = effort_key(Metric::time(), 0, start, end);
+    }
+  }
 
 } // namespace
 

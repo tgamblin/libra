@@ -168,5 +168,5 @@ namespace effort {
 
     return true;
   }
-  
+
 } // namespace

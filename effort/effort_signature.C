@@ -82,6 +82,4 @@ namespace effort {
   }
 #endif // HAVE_MPI
 
-
-  
 } // namespace effort
