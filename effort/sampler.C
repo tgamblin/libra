@@ -328,7 +328,7 @@ namespace effort {
         my_trace.push_back(effort_signature(start, windows_per_update, sig_level));
         timer.record("MakeSignature");
 
-        km.clara(my_trace, sig_euclidean_distance(), max_strata);
+        km.xclara(my_trace, sig_euclidean_distance(), max_strata, windows_per_update);
         timer += km.get_timer();
         timer.fast_forward();
 
@@ -480,33 +480,6 @@ namespace effort {
   void Sampler::add_guide_key(const effort_key& key) {
     guide.insert(key);
   }
-
-
-  Callpath make_path(const string& path) {
-    vector<string> frame_strings;
-    vector<FrameId> frames;
-
-    stringutils::split(path, ":", frame_strings);
-    for (size_t i=0; i < frame_strings.size(); i++) {
-      vector<string> pieces;
-      stringutils::split(frame_strings[i], "(", pieces);
-      if (pieces.size() != 2) {
-        cerr << "ERROR: bad callpath parse at:" << endl;
-        cerr << (pieces.size() ? pieces[0] : string("unknown")) << endl;
-        exit(1);
-      }
-
-      ModuleId module(stringutils::trim(pieces[0]));
-      char *err;
-      uintptr_t offset = strtoull(pieces[1].c_str(), &err, 0);
-      frames.push_back(FrameId(module, offset));
-    }
-    reverse(frames.begin(), frames.end());
-
-    return Callpath::create(frames);
-  }
-
-
 
 }
 
