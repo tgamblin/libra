@@ -177,9 +177,11 @@ int main(int argc, char **argv) {
       cout << endl;
       cout << "Seq k:   " << km.medoid_ids.size() << endl;
       cout << "Seq BIC: " << best_bic << endl;
+      cout << km << endl;
       cout << endl;
       cout << "Par k:   " << parallel.medoid_ids.size() << endl;
       cout << "Par BIC: " << bic(parallel, matrix_distance(distance), trace_length) << endl;
+      cout << parallel << endl;
       cout << endl;
       cout << "Mirkin Distance: " << mirkin_distance(parallel, km) << endl;
       cout << "Mirkin Distance: " << mirkin_distance(km, parallel) << endl;
