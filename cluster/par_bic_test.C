@@ -5,7 +5,7 @@
 #include <iterator>
 #include <sys/time.h>
 
-#include "effort_signature.h"
+#include "point.h"
 #include "io_utils.h"
 #include "wavelet.h"
 #include "kmedoids.h"
@@ -14,25 +14,20 @@
 #include "matrix_utils.h"
 #include "MersenneTwister.h"
 
-using namespace effort;
 using namespace cluster;
 using namespace std;
 using boost::numeric::ublas::matrix;
 
 void usage() {
-  cerr << "Usage: par-signature-cluster-test [-htvi] [-l level] [-n trace-length] [-s sigs-per-process] [-c clusters]" << endl;
-  cerr << "  Parallel test case for clustering effort signatures." << endl;
+  cerr << "Usage: par-bic-test [-htvi] [-p points-per-process] [-c clusters]" << endl;
+  cerr << "  Parallel test case for clustering points and evaluating their BIC scores." << endl;
   cerr << "Options:" << endl;
   cerr << "  -h         Show this message." << endl;
   cerr << "  -t         Output timing info to file." << endl;
   cerr << "  -v         Validate with sequential clustering and output Mirkin distance." << endl;
   cerr << "  -i         Number of times to iterate through test." << endl;
   cerr << "               Default is 10 tries." << endl;
-  cerr << "  -l         Level of wavelet transform applied to signatures.  " << endl;
-  cerr << "               Default is deep enough to make a 16-element signature." << endl;
-  cerr << "  -n         Length of synthetic trace used to generate signatures." << endl;
-  cerr << "               Default is 64." << endl;
-  cerr << "  -s         Number of signatures generated per process." << endl;
+  cerr << "  -p         Number of points generated per process." << endl;
   cerr << "               Default is 1." << endl;
   cerr << "  -c         Max number of clusters to search for." << endl;
   cerr << "               Default is 1." << endl;
@@ -41,11 +36,13 @@ void usage() {
 
 bool timing = false;
 bool validate = false;
-int level = -1;
-size_t trace_length = 64;
-size_t sigs_per_process = 1;
+size_t points_per_process = 1;
 size_t max_clusters = 10;
 size_t iterations = 10;
+const size_t dimensions = 2;
+
+const double xscale = 4.0;
+const double yscale = 1.0;
 
 /// Uses getopt to read in arguments.
 void get_args(int *argc, char ***argv, int rank) {
@@ -68,16 +65,8 @@ void get_args(int *argc, char ***argv, int rank) {
       iterations = strtol(optarg, &err, 0);
       if (*err) usage();
       break;
-    case 'l':
-      level = strtol(optarg, &err, 0);
-      if (*err) usage();
-      break;
-    case 'n':
-      trace_length = strtol(optarg, &err, 0);
-      if (*err) usage();
-      break;
-    case 's':
-      sigs_per_process = strtol(optarg, &err, 0);
+    case 'p':
+      points_per_process = strtol(optarg, &err, 0);
       if (*err) usage();
       break;
     case 'c':
@@ -97,6 +86,18 @@ void get_args(int *argc, char ***argv, int rank) {
 }
 
 
+static point create_point(MTRand& rand, int x, int y, int xr, int yr, double xscale, double yscale) {
+  xr = (int)(xr * xscale);
+  yr = (int)(yr * yscale);
+  x  = (int)(x  * xscale);
+  y  = (int)(y  * yscale);
+
+  int px = x + rand.randInt(xr*2) - xr;
+  int py = y + rand.randInt(yr*2) - yr;
+  return point(px,py);
+}
+
+
 
 int main(int argc, char **argv) {
   MPI_Init(&argc, &argv);
@@ -108,41 +109,38 @@ int main(int argc, char **argv) {
   get_args(&argc, &argv, rank);
 
   // make sure max_clusters is valid.
-  max_clusters = min(max_clusters, size*sigs_per_process);
+  max_clusters = min(max_clusters, size*points_per_process);
   
   uint32_t seed = 0;
   struct timeval time;
   gettimeofday(&time, 0);
   seed = time.tv_sec * time.tv_usec;
 
-  MTRand rand(seed + rank);  // Seed signatures differently on each rank.
-  matrix<double> data(sigs_per_process, trace_length);     // vector of local "traces"
+  MTRand rand(seed + rank);  // Seed points differently on each rank.
+  matrix<int> data(points_per_process, dimensions);     // vector of local "traces"
 
-  double noise = 1.0;
   for (size_t r=0; r < data.size1(); r++) {
-    size_t type = (rank + r) % 3;
+    point p;
 
-    for (size_t c=0; c < data.size2(); c++) {
-      switch (type) {
-      case 0:
-        data(r,c) = 10 * sin(c/5.0);
-        break;
-      case 1:
-        data(r,c) = sin(c/5.0);
-        break;
-      case 2:
-        data(r,c) = 10 * sin(c/5.0)*sin(c/5.0) * cos(c);
-        break;
-      }
-      
-      // add in noise so that things aren't *exactly* the same.
-      data(r,c) += noise * rand();
+    size_t type = (rank + r) % 3;
+    switch (type) {
+    case 0:
+      p = create_point(rand, 2, 4, 2, 2, xscale, yscale);
+      break;
+    case 1:
+      p = create_point(rand, 12, 12, 2, 2, xscale, yscale);
+      break;
+    case 2:
+      p = create_point(rand, 12, 3, 2, 2, xscale, yscale);
+      break;
     }
+    data(r,0) = p.x;
+    data(r,1) = p.y;
   }
 
-  vector<effort_signature> sigs(data.size1());
+  vector<point> points(data.size1());
   for (size_t i=0; i < data.size1(); i++) {
-    sigs[i] = effort_signature(&data(i,0), data.size2(), level);
+    points[i] = point(data(i,0), data(i,1));
   }
 
   double total_mirkin = 0;
@@ -153,7 +151,7 @@ int main(int argc, char **argv) {
     long long start = get_time_ns();
     
     for (size_t i=0; i < trials; i++) {
-      parkm.xclara(sigs, sig_euclidean_distance(), max_clusters, trace_length);
+      parkm.xclara(points, point_distance(), max_clusters, dimensions);
     }
 
     double total = get_time_ns() - start;
@@ -174,51 +172,75 @@ int main(int argc, char **argv) {
     if (validate) {
       cluster::partition parallel;
       parkm.gather(parallel, 0);
-      
-      matrix<double> full_data(size * sigs_per_process, trace_length);
-      MPI_Gather(&data(0,0),      sigs_per_process * trace_length, MPI_DOUBLE,
-                 &full_data(0,0), sigs_per_process * trace_length, MPI_DOUBLE,
+
+
+      matrix<int> full_data(size * points_per_process, dimensions);
+      MPI_Gather(&data(0,0),      points_per_process * dimensions, MPI_INT,
+                 &full_data(0,0), points_per_process * dimensions, MPI_INT,
                  0, MPI_COMM_WORLD);
       
       if (rank == 0) {
-        ostringstream fn;
-        fn << "full." << iter;
-        ofstream full(fn.str().c_str());
-        output(full_data, full);
+        //ostringstream fn;
+        //fn << "full." << iter;
+        //ofstream full(fn.str().c_str());
+        //output(full_data, full);
 
+        cerr << "pushing" << endl;
 
         // compare parallel clustering with local clustering.
-        vector<effort_signature> all_sigs;
+        vector<point> all_points;
         for (size_t i=0; i < full_data.size1(); i++) {
-          all_sigs.push_back(effort_signature(&full_data(i,0), full_data.size2(), level));
+          all_points.push_back(point(full_data(i,0), full_data(i,1)));
         }
+
+        cerr << "done pushing" << endl;
         
         dissimilarity_matrix distance;
-        build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
+        build_dissimilarity_matrix(all_points, point_distance(), distance);
         
+
+        cerr << "done dissim" << endl;
+
         kmedoids km;
-        double best_bic = km.xpam(distance, max_clusters, trace_length);
+        double best_bic = km.xpam(distance, max_clusters, dimensions);
         cout << endl;
         cout << "Seq k:   " << km.num_clusters() << endl;
         cout << "Seq BIC: " << best_bic << endl;
         cout << "Seq D:   " << total_dissimilarity(km, matrix_distance(distance)) << endl;
         cout << "Seq D2:  " << total_squared_dissimilarity(km, matrix_distance(distance)) << endl;
+
+        cerr << "done km" << endl;
+
         cout << km << endl;
+        cerr << "done out km" << endl;
+        cerr << "size: " << all_points.size() << endl;
+
+        copy(all_points.begin(), all_points.end(), ostream_iterator<point>(cerr, " "));
+
+
+        draw("SEQ", all_points, km);
+
+        cerr << "done draw" << endl;
+
         cout << endl;
         cout << "Par k:   " << parallel.num_clusters() << endl;
-        cout << "Par BIC: " << bic(parallel, matrix_distance(distance), trace_length) << endl;
+        cout << "Par BIC: " << bic(parallel, matrix_distance(distance), dimensions) << endl;
         cout << "Par D:   " << total_dissimilarity(parallel, matrix_distance(distance)) << endl;
         cout << "Par D2:  " << total_squared_dissimilarity(parallel, matrix_distance(distance)) << endl;
-        cout << parallel << endl;
+
+        //cout << parallel << endl;
+        draw("PAR", all_points, parallel);
+
         cout << endl;
 
         kmedoids par_clone;
         par_clone.pam(distance, parallel.num_clusters());
         cout << "Clone k:   " << par_clone.num_clusters() << endl;
-        cout << "Clone BIC: " << bic(par_clone, matrix_distance(distance), trace_length) << endl;
+        cout << "Clone BIC: " << bic(par_clone, matrix_distance(distance), dimensions) << endl;
         cout << "Clone D:   " << total_dissimilarity(par_clone, matrix_distance(distance)) << endl;
         cout << "Clone D2:  " << total_squared_dissimilarity(par_clone, matrix_distance(distance)) << endl;
-        cout << par_clone << endl;
+        //cout << par_clone << endl;
+        draw("CLONE", all_points, par_clone);
         cout << endl;
 
         

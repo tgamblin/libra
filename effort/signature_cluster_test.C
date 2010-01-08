@@ -7,6 +7,7 @@
 #include "wavelet.h"
 #include "kmedoids.h"
 #include "matrix_utils.h"
+#include "bic.h"
 
 using namespace effort;
 using namespace cluster;
@@ -38,6 +39,7 @@ int main(int argc, char **argv) {
   // initialize data with interesting functions
   matrix<double> data(num_sigs, trace_size);
 
+
   srand(142859287);
   double noise = 1.0;
   for (size_t r=0; r < data.size1(); r++) {
@@ -61,6 +63,7 @@ int main(int argc, char **argv) {
       data(r,c) += e;
     }
   }
+  
 
   vector<effort_signature> sigs(data.size1());
   for (size_t i=0; i < data.size1(); i++) {
@@ -75,5 +78,6 @@ int main(int argc, char **argv) {
     km.set_epsilon(0);
     km.pam(distance, k);
     cout << km << endl;
+    cout << "BIC: " << bic(km, matrix_distance(distance), data.size2()) << endl;
   }
 }
