@@ -109,8 +109,8 @@ namespace effort {
     this->trace = trace;
   }
 
-  void Sampler::set_max_strata(size_t strata) {
-    max_strata = strata;
+  void Sampler::set_strata(size_t s) {
+    max_strata = s;
   }
 
   void Sampler::set_sig_level(int level) {

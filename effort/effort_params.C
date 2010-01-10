@@ -38,7 +38,7 @@ namespace effort {
       out << "     windows_per_update = " << params.windows_per_update << endl;
       out << "     ampl_stats         = " << params.ampl_stats         << endl;
       out << "     ampl_trace         = " << params.ampl_trace         << endl;
-      out << "     ampl_max_strata    = " << params.ampl_max_strata    << endl;
+      out << "     ampl_strata        = " << params.ampl_strata        << endl;
       out << "     ampl_sig_level     = " << params.ampl_sig_level     << endl;
       out << "     ampl_guide         = ";
 
@@ -80,7 +80,7 @@ namespace effort {
       config_desc("windows_per_update", &this->windows_per_update),
       config_desc("ampl_stats",         &this->ampl_stats),
       config_desc("ampl_trace",         &this->ampl_trace),
-      config_desc("ampl_max_strata",    &this->ampl_max_strata),
+      config_desc("ampl_strata",        &this->ampl_strata),
       config_desc("ampl_sig_level",     &this->ampl_sig_level),
       config_desc("ampl_guide",         &this->ampl_guide),
       config_desc()
