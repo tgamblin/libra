@@ -43,7 +43,7 @@ static int in_wrapper = 0;
 /* --- sure things get inited and destroyed properly.                           */
 
 /* pcontrol records effort and marks timesteps. */
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_File_sync ================== */
 _EXTERN_C_ int MPI_Pcontrol(const int arg_0, ...) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Pcontrol(arg_0);
@@ -54,7 +54,7 @@ _EXTERN_C_ int MPI_Pcontrol(const int arg_0, ...) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_File_sync =============== */
 static void MPI_Pcontrol_fortran_wrapper(MPI_Fint *arg_0, MPI_Fint *ierr) { 
     int return_val = 0;
     return_val = MPI_Pcontrol(*arg_0);
@@ -77,7 +77,7 @@ _EXTERN_C_ void mpi_pcontrol__(MPI_Fint *arg_0, MPI_Fint *ierr) {
     MPI_Pcontrol_fortran_wrapper(arg_0, ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_File_sync ================= */
 
 
 
@@ -85,7 +85,7 @@ _EXTERN_C_ void mpi_pcontrol__(MPI_Fint *arg_0, MPI_Fint *ierr) {
 
 /* Init effort librarypcontrol records effort */
 static int fortran_init = 0;
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_File_sync ================== */
 _EXTERN_C_ int MPI_Init(int *arg_0, char ***arg_1) { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Init(arg_0, arg_1);
@@ -118,7 +118,7 @@ _EXTERN_C_ int MPI_Init(int *arg_0, char ***arg_1) {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_File_sync =============== */
 static void MPI_Init_fortran_wrapper(MPI_Fint *ierr) { 
     int argc = 0;
     char ** argv = NULL;
@@ -147,14 +147,14 @@ _EXTERN_C_ void mpi_init__(MPI_Fint *ierr) {
     MPI_Init_fortran_wrapper(ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_File_sync ================= */
 
 
 
 
 
 /* Finalize cleans up and compresses data. */
-/* ================== C Wrappers for MPI_Wait ================== */
+/* ================== C Wrappers for MPI_File_sync ================== */
 _EXTERN_C_ int MPI_Finalize() { 
     int return_val = 0;
     if (in_wrapper) return PMPI_Finalize();
@@ -166,7 +166,7 @@ _EXTERN_C_ int MPI_Finalize() {
     return return_val;
 }
 
-/* =============== Fortran Wrappers for MPI_Wait =============== */
+/* =============== Fortran Wrappers for MPI_File_sync =============== */
 static void MPI_Finalize_fortran_wrapper(MPI_Fint *ierr) { 
     int return_val = 0;
     return_val = MPI_Finalize();
@@ -189,7 +189,7 @@ _EXTERN_C_ void mpi_finalize__(MPI_Fint *ierr) {
     MPI_Finalize_fortran_wrapper(ierr);
 }
 
-/* ================= End Wrappers for MPI_Wait ================= */
+/* ================= End Wrappers for MPI_File_sync ================= */
 
 
 
