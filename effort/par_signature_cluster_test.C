@@ -13,11 +13,13 @@
 #include "bic.h"
 #include "matrix_utils.h"
 #include "MersenneTwister.h"
+#include "io_utils.h"
 
 using namespace effort;
 using namespace cluster;
 using namespace std;
 using boost::numeric::ublas::matrix;
+using wavelet::exists;
 
 void usage() {
   cerr << "Usage: par-signature-cluster-test [-htvi] [-l level] [-n trace-length] [-s sigs-per-process] [-c clusters]" << endl;
@@ -223,6 +225,13 @@ int main(int argc, char **argv) {
     if (timing) {
       ostringstream timing_filename;
       timing_filename << "times-" << size;
+      size_t i=1;
+      while (exists(timing_filename.str().c_str())) {
+        timing_filename.str("");
+        timing_filename << "times-" << size << "." << i;
+        i++;
+      }
+
       ofstream timing(timing_filename.str().c_str());
       parkm.get_timer().write(timing);
     }
