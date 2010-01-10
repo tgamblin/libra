@@ -162,7 +162,7 @@ struct effort_module {
       sampler.set_normalized_error(params.normalized_error);
       sampler.set_stats(params.ampl_stats);
       sampler.set_trace(params.ampl_trace);
-      sampler.set_max_strata(params.ampl_max_strata);
+      sampler.set_strata(params.ampl_strata);
 
       const set<effort_key>& guide_keys = params.guide_keys();
       for(set<effort_key>::iterator k=guide_keys.begin(); k != guide_keys.end(); k++) {

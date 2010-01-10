@@ -26,7 +26,7 @@ void Summary::compute() {
   mTotal = 0;
   mCount = 0;
   mMean = 0;
-  mMax = DBL_MIN;
+  mMax = -DBL_MAX;
   mMin = DBL_MAX;
 
   size_t rows = end_row - start_row;
@@ -53,7 +53,7 @@ void Summary::compute() {
   double totalRowSkew = 0;
   double totalRowKurtosis = 0;
   mMinRowVariance = mMinRowSkew = mMinRowKurtosis = DBL_MAX;
-  mMaxRowVariance = mMaxRowSkew = mMaxRowKurtosis = DBL_MIN;
+  mMaxRowVariance = mMaxRowSkew = mMaxRowKurtosis = -DBL_MAX;
   
   for (size_t i=start_row; i < end_row; i++) {  
     double sumSquares = 0;

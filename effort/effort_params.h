@@ -41,7 +41,7 @@ namespace effort {
     int windows_per_update;   /// AMPL windows per update.
     bool ampl_stats;          /// Whether AMPL should write stats for eventsin its log.
     bool ampl_trace;          /// Whether AMPL should write traces
-    int ampl_max_strata;      /// Max strata to produce for AMPL auto-stratification.  Default is 1 (no stratification)
+    int ampl_strata;          /// Max strata to produce for AMPL auto-stratification.  Default is 1 (no stratification)
     int ampl_sig_level;       /// Transform Level for signatures used in clustering. Defaults to -1.
     const char *ampl_guide;   /// identifier for region to guide sampling
 
@@ -67,7 +67,7 @@ namespace effort {
         windows_per_update(32),
         ampl_stats(false),
         ampl_trace(true),
-        ampl_max_strata(1),
+        ampl_strata(1),
         ampl_sig_level(-1),
         ampl_guide(""),
         have_time(false),

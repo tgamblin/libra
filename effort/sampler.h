@@ -107,7 +107,7 @@ namespace effort {
     void set_stats(bool stats);
     void set_trace(bool trace);
     void add_guide_key(const effort_key& key);
-    void set_max_strata(size_t max);
+    void set_strata(size_t max);
     void set_sig_level(int level);
 
     /// Record end of a window.  Possibly update.

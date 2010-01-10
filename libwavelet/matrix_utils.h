@@ -68,7 +68,7 @@ ms_summary get_summary(const Matrix<T>& orig, const Matrix<T>& repro,
   if (row_end > orig.size1()) row_end = orig.size1();
   if (col_end > orig.size2()) col_end = orig.size2();
 
-  ms_summary summary(0, DBL_MIN, DBL_MAX);
+  ms_summary summary(0, -DBL_MAX, DBL_MAX);
 
   for (size_t i=row_start; i < row_end; i++) {
     for (size_t j=col_start; j < col_end; j++) { 
