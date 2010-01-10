@@ -34,8 +34,8 @@ void usage() {
   cerr << "               Default is 64." << endl;
   cerr << "  -s         Number of signatures generated per process." << endl;
   cerr << "               Default is 1." << endl;
-  cerr << "  -c         Max number of clusters to search for." << endl;
-  cerr << "               Default is 1." << endl;
+  cerr << "  -k         Max number of clusters to search for." << endl;
+  cerr << "               Default is 10." << endl;
   exit(1);
 }
 
@@ -52,7 +52,7 @@ void get_args(int *argc, char ***argv, int rank) {
   int c;
   char *err;
 
-  while ((c = getopt(*argc, *argv, "htvi:l:n:s:c:")) != -1) {
+  while ((c = getopt(*argc, *argv, "htvi:l:n:s:k:")) != -1) {
     switch (c) {
     case 'h':
       if (rank == 0) usage();
@@ -80,7 +80,7 @@ void get_args(int *argc, char ***argv, int rank) {
       sigs_per_process = strtol(optarg, &err, 0);
       if (*err) usage();
       break;
-    case 'c':
+    case 'k':
       max_clusters = strtol(optarg, &err, 0);
       if (*err) usage();
       break;
@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
     long long start = get_time_ns();
     
     for (size_t i=0; i < trials; i++) {
-      parkm.xclara(sigs, sig_euclidean_distance(), max_clusters, trace_length);
+      parkm.clara(sigs, sig_euclidean_distance(), max_clusters);
     }
 
     double total = get_time_ns() - start;
@@ -197,38 +197,22 @@ int main(int argc, char **argv) {
         build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
         
         kmedoids km;
-        double best_bic = km.xpam(distance, max_clusters, trace_length);
+        km.pam(distance, max_clusters);
         cout << endl;
         cout << "Seq k:   " << km.num_clusters() << endl;
-        cout << "Seq BIC: " << best_bic << endl;
-        cout << "Seq D:   " << total_dissimilarity(km, matrix_distance(distance)) << endl;
-        cout << "Seq D2:  " << total_squared_dissimilarity(km, matrix_distance(distance)) << endl;
+        //cout << "Seq D:   " << total_dissimilarity(km, matrix_distance(distance)) << endl;
+        //cout << "Seq D2:  " << total_squared_dissimilarity(km, matrix_distance(distance)) << endl;
         cout << km << endl;
         cout << endl;
         cout << "Par k:   " << parallel.num_clusters() << endl;
-        cout << "Par BIC: " << bic(parallel, matrix_distance(distance), trace_length) << endl;
-        cout << "Par D:   " << total_dissimilarity(parallel, matrix_distance(distance)) << endl;
-        cout << "Par D2:  " << total_squared_dissimilarity(parallel, matrix_distance(distance)) << endl;
+        //cout << "Par D:   " << total_dissimilarity(parallel, matrix_distance(distance)) << endl;
+        //cout << "Par D2:  " << total_squared_dissimilarity(parallel, matrix_distance(distance)) << endl;
         cout << parallel << endl;
         cout << endl;
 
-        kmedoids par_clone;
-        par_clone.pam(distance, parallel.num_clusters());
-        cout << "Clone k:   " << par_clone.num_clusters() << endl;
-        cout << "Clone BIC: " << bic(par_clone, matrix_distance(distance), trace_length) << endl;
-        cout << "Clone D:   " << total_dissimilarity(par_clone, matrix_distance(distance)) << endl;
-        cout << "Clone D2:  " << total_squared_dissimilarity(par_clone, matrix_distance(distance)) << endl;
-        cout << par_clone << endl;
-        cout << endl;
-
-        
         double mirkin = mirkin_distance(parallel, km);
         total_mirkin += mirkin;
         cout << "Mirkin Distance:       " << mirkin << endl;
-
-        double clone_dist = mirkin_distance(par_clone, parallel);
-        cout << "Clone Mirkin Distance: " << clone_dist << endl;
-
       }
     }
   }
