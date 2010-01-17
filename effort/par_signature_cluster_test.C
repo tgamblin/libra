@@ -172,6 +172,8 @@ int main(int argc, char **argv) {
 
   double total = 0.0;
   for (size_t iter=0; iter < iterations; iter++) {
+    cerr << "clustering" << endl;
+
     // time the clustering itself
     long long start = get_time_ns();
     parkm.clara(sigs, sig_euclidean_distance(), num_clusters);
@@ -193,19 +195,14 @@ int main(int argc, char **argv) {
         for (size_t i=0; i < full_data.size1(); i++) {
           all_sigs.push_back(effort_signature(&full_data(i,0), full_data.size2(), 0));
         }
-        
+
         dissimilarity_matrix distance;
         build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
         
         kmedoids km;
         km.pam(distance, num_clusters);
-        cout << endl;
         cout << "Seq k:   " << km.num_clusters() << endl;
-        //cout << km << endl;
-
-        cout << endl;
         cout << "Par k:   " << parallel.num_clusters() << endl;
-        //cout << parallel << endl;
         cout << endl;
 
         double mirkin = mirkin_distance(parallel, km);
