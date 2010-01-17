@@ -132,44 +132,42 @@ int main(int argc, char **argv) {
   seed = time.tv_sec * time.tv_usec;
 
   MTRand rand(seed + rank);  // Seed signatures differently on each rank.
-  matrix<double> all_data(size * sigs_per_process, trace_length);     // vector of all traces
+  matrix<double> data(sigs_per_process, trace_length);     // vector of all traces
 
   double noise = 1.0;
-  for (size_t r=0; r < all_data.size1(); r++) {
-    size_t type = r % 6;
+  for (size_t r=0; r < sigs_per_process; r++) {
+    size_t type = (rank + r) % 6;
 
-    for (size_t c=0; c < all_data.size2(); c++) {
+    for (size_t c=0; c < trace_length; c++) {
       switch (type) {
       case 0:
-        all_data(r,c) = 10 * sin(c/5.0);
+        data(r,c) = 10 * sin(c/5.0);
         break;
       case 1:
-        all_data(r,c) = sin(c/5.0);
+        data(r,c) = sin(c/5.0);
         break;
       case 2:
-        all_data(r,c) = 10 * sin(c/5.0)*sin(c/5.0) * cos(c);
+        data(r,c) = 10 * sin(c/5.0)*sin(c/5.0) * cos(c);
         break;
       case 3:
-        all_data(r,c) = 2 * c;
+        data(r,c) = 2 * c;
         break;
       case 4:
-        all_data(r,c) = 20 * cos(10*c)*sin(c/2.0);
+        data(r,c) = 20 * cos(10*c)*sin(c/2.0);
         break;
       case 5:
-        all_data(r,c) = 8;
+        data(r,c) = 8;
         break;
       }
       
       // add in noise so that things aren't *exactly* the same.
-      all_data(r,c) += noise * rand();
+      data(r,c) += noise * rand();
     }
   }
 
   vector<effort_signature> sigs(sigs_per_process);
-  size_t start_row = rank * sigs_per_process;    // start of local signatures
-
   for (size_t i=0; i < sigs_per_process; i++) {
-    sigs[i] = effort_signature(&all_data(start_row + i,0), trace_length, level);
+    sigs[i] = effort_signature(&data(i,0), trace_length, level);
   }
 
   double total_mirkin = 0;
@@ -188,6 +186,11 @@ int main(int argc, char **argv) {
     if (validate) {
       cluster::partition parallel;
       parkm.gather(parallel, 0);
+
+      matrix<double>all_data(size * sigs_per_process, trace_length);
+      MPI_Gather(&data(0,0),     sigs_per_process * trace_length, MPI_DOUBLE,
+                 &all_data(0,0), sigs_per_process * trace_length, MPI_DOUBLE,
+                 0, MPI_COMM_WORLD);
       
       if (rank == 0) {
         // compare parallel clustering with local clustering.
@@ -199,7 +202,6 @@ int main(int argc, char **argv) {
         dissimilarity_matrix distance;
         cout << "building dissimilarity matrix out of " << all_sigs.size() << " signatures." <<endl;
         
-
         build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
         
         kmedoids km;
