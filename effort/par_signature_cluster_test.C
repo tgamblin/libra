@@ -72,27 +72,27 @@ void get_args(int *argc, char ***argv, int rank) {
       validate = true;
       break;
     case 'i':
-      init_size = strtol(optarg, &err, 0);
+      init_size = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     case 'r':
-      max_reps = strtol(optarg, &err, 0);
+      max_reps = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     case 'l':
-      level = strtol(optarg, &err, 0);
+      level = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     case 'n':
-      trace_length = strtol(optarg, &err, 0);
+      trace_length = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     case 's':
-      sigs_per_process = strtol(optarg, &err, 0);
+      sigs_per_process = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     case 'k':
-      num_clusters = strtol(optarg, &err, 0);
+      num_clusters = strtol(optarg, &err, 10);
       if (*err) usage();
       break;
     default:
@@ -201,11 +201,11 @@ int main(int argc, char **argv) {
         km.pam(distance, num_clusters);
         cout << endl;
         cout << "Seq k:   " << km.num_clusters() << endl;
-        cout << km << endl;
+        //cout << km << endl;
 
         cout << endl;
         cout << "Par k:   " << parallel.num_clusters() << endl;
-        cout << parallel << endl;
+        //cout << parallel << endl;
         cout << endl;
 
         double mirkin = mirkin_distance(parallel, km);
