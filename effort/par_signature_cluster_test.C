@@ -28,6 +28,7 @@ void usage() {
   cerr << "  -h         Show this message." << endl;
   cerr << "  -t         Output timing info to file." << endl;
   cerr << "  -v         Validate with sequential clustering and output Mirkin distance." << endl;
+  cerr << "  -p         Print entire clusterings when validating." << endl;
   cerr << "  -i         Initial sample size (before 2*k) for clara." << endl;
   cerr << "               Default is 40." << endl;
   cerr << "  -r         Max trial reps per k in clara." << endl;
@@ -45,6 +46,7 @@ void usage() {
 
 bool timing = false;
 bool validate = false;
+bool print_clusterings = false;
 int level = -1;
 size_t init_size = 40;
 size_t max_reps = 5;
@@ -52,14 +54,14 @@ size_t trace_length = 64;
 size_t sigs_per_process = 1;
 size_t num_clusters = 10;
 
-const size_t iterations = 10;   // num trials to account for variance in clara.
+const size_t iterations = 1;   // num trials to account for variance in clara.
 
 /// Uses getopt to read in arguments.
 void get_args(int *argc, char ***argv, int rank) {
   int c;
   char *err;
 
-  while ((c = getopt(*argc, *argv, "htvi:r:l:n:s:k:")) != -1) {
+  while ((c = getopt(*argc, *argv, "htvpi:r:l:n:s:k:")) != -1) {
     switch (c) {
     case 'h':
       if (rank == 0) usage();
@@ -70,6 +72,9 @@ void get_args(int *argc, char ***argv, int rank) {
       break;
     case 'v':
       validate = true;
+      break;
+    case 'p':
+      print_clusterings = true;
       break;
     case 'i':
       init_size = strtol(optarg, &err, 10);
@@ -127,42 +132,44 @@ int main(int argc, char **argv) {
   seed = time.tv_sec * time.tv_usec;
 
   MTRand rand(seed + rank);  // Seed signatures differently on each rank.
-  matrix<double> data(sigs_per_process, trace_length);     // vector of local "traces"
+  matrix<double> all_data(size * sigs_per_process, trace_length);     // vector of all traces
 
   double noise = 1.0;
-  for (size_t r=0; r < data.size1(); r++) {
-    size_t type = (rank + r) % 6;
+  for (size_t r=0; r < all_data.size1(); r++) {
+    size_t type = r % 6;
 
-    for (size_t c=0; c < data.size2(); c++) {
+    for (size_t c=0; c < all_data.size2(); c++) {
       switch (type) {
       case 0:
-        data(r,c) = 10 * sin(c/5.0);
+        all_data(r,c) = 10 * sin(c/5.0);
         break;
       case 1:
-        data(r,c) = sin(c/5.0);
+        all_data(r,c) = sin(c/5.0);
         break;
       case 2:
-        data(r,c) = 10 * sin(c/5.0)*sin(c/5.0) * cos(c);
+        all_data(r,c) = 10 * sin(c/5.0)*sin(c/5.0) * cos(c);
         break;
       case 3:
-        data(r,c) = 2 * c;
+        all_data(r,c) = 2 * c;
         break;
       case 4:
-        data(r,c) = 20 * cos(10*c)*sin(c/2.0);
+        all_data(r,c) = 20 * cos(10*c)*sin(c/2.0);
         break;
       case 5:
-        data(r,c) = 8;
+        all_data(r,c) = 8;
         break;
       }
       
       // add in noise so that things aren't *exactly* the same.
-      data(r,c) += noise * rand();
+      all_data(r,c) += noise * rand();
     }
   }
 
-  vector<effort_signature> sigs(data.size1());
-  for (size_t i=0; i < data.size1(); i++) {
-    sigs[i] = effort_signature(&data(i,0), data.size2(), level);
+  vector<effort_signature> sigs(sigs_per_process);
+  size_t start_row = rank * sigs_per_process;    // start of local signatures
+
+  for (size_t i=0; i < sigs_per_process; i++) {
+    sigs[i] = effort_signature(&all_data(start_row + i,0), trace_length, level);
   }
 
   double total_mirkin = 0;
@@ -172,8 +179,6 @@ int main(int argc, char **argv) {
 
   double total = 0.0;
   for (size_t iter=0; iter < iterations; iter++) {
-    cerr << "clustering" << endl;
-
     // time the clustering itself
     long long start = get_time_ns();
     parkm.clara(sigs, sig_euclidean_distance(), num_clusters);
@@ -184,25 +189,29 @@ int main(int argc, char **argv) {
       cluster::partition parallel;
       parkm.gather(parallel, 0);
       
-      matrix<double> full_data(size * sigs_per_process, trace_length);
-      MPI_Gather(&data(0,0),      sigs_per_process * trace_length, MPI_DOUBLE,
-                 &full_data(0,0), sigs_per_process * trace_length, MPI_DOUBLE,
-                 0, MPI_COMM_WORLD);
-      
       if (rank == 0) {
         // compare parallel clustering with local clustering.
         vector<effort_signature> all_sigs;
-        for (size_t i=0; i < full_data.size1(); i++) {
-          all_sigs.push_back(effort_signature(&full_data(i,0), full_data.size2(), 0));
+        for (size_t i=0; i < all_data.size1(); i++) {
+          all_sigs.push_back(effort_signature(&all_data(i,0), all_data.size2(), 0));
         }
 
         dissimilarity_matrix distance;
+        cout << "building dissimilarity matrix out of " << all_sigs.size() << " signatures." <<endl;
+        
+
         build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
         
         kmedoids km;
         km.pam(distance, num_clusters);
         cout << "Seq k:   " << km.num_clusters() << endl;
+        if (print_clusterings) 
+          cout << km << endl;
+
         cout << "Par k:   " << parallel.num_clusters() << endl;
+        if (print_clusterings) 
+          cout << parallel << endl;
+
         cout << endl;
 
         double mirkin = mirkin_distance(parallel, km);
