@@ -207,15 +207,26 @@ Callpath make_path(const string& path) {
   for (size_t i=0; i < frame_strings.size(); i++) {
     vector<string> pieces;
     split(frame_strings[i], "(", pieces);
-    if (pieces.size() != 2) {
-      cerr << "ERROR: bad callpath parse at:" << endl;
-      cerr << (pieces.size() ? pieces[0] : string("unknown")) << endl;
+
+    string module_str, offset_str;
+    if (pieces.size() == 1) {
+      offset_str = trim(pieces[0], "( )");
+    } else if (pieces.size() == 2) {
+      module_str = trim(pieces[0], "( )");
+      offset_str = trim(pieces[1], "( )");
+    } else {
+      cerr << "ERROR: bad callpath parse splitting '" << frame_strings[i] << "'" << endl;
       exit(1);
     }
-    
-    ModuleId module(trim(pieces[0]));
+
+    ModuleId module(module_str);
     char *err;
-    uintptr_t offset = strtoull(pieces[1].c_str(), &err, 0);
+    uintptr_t offset = strtoull(offset_str.c_str(), &err, 0);
+    if (*err) {
+      cerr << "ERROR: bad callpath parse at: '" << hex << offset << dec << "'" << endl;
+      exit(1);
+    }
+
     frames.push_back(FrameId(module, offset));
   }
   reverse(frames.begin(), frames.end());
