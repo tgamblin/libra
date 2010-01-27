@@ -1,55 +1,55 @@
 #!/usr/bin/env python
 #
-usage_string = \
-"""Usage: libra-build-viewer-data [-I src_dir]
-  -e, --executable EXE         Add a directory to search for source files
-  -I, --include DIR            Use FILE for symtab information (use when Stackwalker can't determine modules)
+usage_string = """\
+Usage: libra-build-viewer-data [-I src_dir]
+ -e, --executable EXE         Add a directory to search for source files
+ -I, --include DIR            Use FILE for symtab information (use when Stackwalker can't determine modules)
 
-  by Todd Gamblin, tgamblin@llnl.gov
+ by Todd Gamblin, tgamblin@llnl.gov
 """
 
 import getopt, sys, os, subprocess, re, shutil, glob, tempfile
 
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "I:e:", ["include=", "executable="])
+   opts, args = getopt.getopt(sys.argv[1:], "I:e:", ["include=", "executable="])
 except getopt.GetoptError, err:
-    print str(err)
-    print usage_string
-    sys.exit(2)
+   print str(err)
+   print usage_string
+   sys.exit(2)
 
 
 # Allow user to specify executable and dirs to search for source 
 path = []
 exefile = None
 for o, a in opts:
-    if o in ("-e", "--executable"):
-        exefile = os.path.abspath(a)
-    elif o in ("-I", "--include"):
-        path.append(a)
-    else:
-        print "Invalid option: '%s'" % o
-        print usage_string
-        sys.exit(2)
+   if o in ("-e", "--executable"):
+      exefile = os.path.abspath(a)
+   elif o in ("-I", "--include"):
+      path.append(a)
+   else:
+      print "Invalid option: '%s'" % o
+      print usage_string
+      sys.exit(2)
 
 def flatten(seq):
-    """Converts an arbitrarily deep list of lists into a single flat list"""
-    res = []
-    for item in seq:
-        if (isinstance(item, (tuple, list))):
-            res.extend(flatten(item))
-        else:
-            res.append(item)
-    return res
+   """Converts an arbitrarily deep list of lists into a single flat list"""
+   res = []
+   for item in seq:
+      if (isinstance(item, (tuple, list))):
+         res.extend(flatten(item))
+      else:
+         res.append(item)
+   return res
 
 
 def rglob(dir):
-    """Returns a list including dir and its recursively enumerated children."""
-    subdirs=[dir]
-    for root, dirs, files in os.walk(os.path.expanduser(dir)):
-        if root != dir:
-            subdirs.append(root)
-    return subdirs
+   """Returns a list including dir and its recursively enumerated children."""
+   subdirs=[dir]
+   for root, dirs, files in os.walk(os.path.expanduser(dir)):
+      if root != dir:
+         subdirs.append(root)
+   return subdirs
 
 # Get a glob of all subdirectories of dirs in path, then add them to the path.
 path = flatten(map(lambda dir: rglob(dir), path))
@@ -57,13 +57,13 @@ path = flatten(map(lambda dir: rglob(dir), path))
 # Directory where viewer-related files should be put.
 data_dir = "viewer-data"
 if os.path.exists(data_dir):
-    shutil.rmtree(data_dir)
+   shutil.rmtree(data_dir)
 os.makedirs(data_dir)
 
 # Directory where we'll put dirs in the source search path
 src_dir = "%s/src" % data_dir
 if not os.path.exists(src_dir):
-    os.makedirs(src_dir)
+   os.makedirs(src_dir)
 
 # Map directories in path to sequential directory names in the viewer
 # data folder.  Directories are created  when get_dest_dir() is called
@@ -71,12 +71,12 @@ if not os.path.exists(src_dir):
 path_map = {}
 src_dir_id = 0
 def get_src_dir(dir):
-    global path_map, src_dir_id
-    if not dir in path_map:
-        src_dir_id += 1
-        path_map[dir] = "%s/%03d" % (src_dir, src_dir_id)
-        os.makedirs(path_map[dir])
-    return path_map[dir]
+   global path_map, src_dir_id
+   if not dir in path_map:
+      src_dir_id += 1
+      path_map[dir] = "%s/%03d" % (src_dir, src_dir_id)
+      os.makedirs(path_map[dir])
+   return path_map[dir]
 
 # Run ef on all the effort files (at once, for speed) and get symtab data 
 # for making sense of callpaths into a single file. 
@@ -86,6 +86,8 @@ lines = set()
 cmd = ['xargs', 'ef', '-f']
 if exefile: cmd = ['xargs', 'ef', '-e', exefile]
 
+# Note: the current ef will use an available symtab regardless of -e.
+
 # Write effort names to a file (in case we have lots of regions) and use this as
 # input to ef via xargs.
 input_file = tempfile.TemporaryFile(mode='w+t')
@@ -93,56 +95,57 @@ input_file.write(" ".join(glob.glob('effort-*')))
 input_file.seek(0)
 
 try:
-    pipe = subprocess.Popen(cmd, stdin=input_file, stdout=subprocess.PIPE)
-    if not pipe.stdout:
-        print "Couldn't find effort files."
-        sys.exit(1)
-        
-        # Parse ef output, create symbol mappings, and copy source files to libra directory.
-    for line in pipe.stdout:
-        line = line.rstrip("\n")
+   pipe = subprocess.Popen(cmd, stdin=input_file, stdout=subprocess.PIPE)
+   if not pipe.stdout:
+      print "Couldn't find effort files."
+      sys.exit(1)
 
-        start_end_re = '^(Start|End)'
-        startend = re.search(start_end_re, line)
-        if startend: line = re.sub(start_end_re, "", line)
-        line = line.strip()
+   # Parse ef output, create symbol mappings, and copy source files to libra directory.
+   for line in pipe.stdout:
+      line = line.rstrip("\n")
 
-        if not line:
-            in_path = False
-        elif startend:
-            in_path = True
+      start_end_re = '^(Start|End)'
+      startend = re.search(start_end_re, line)
+      if startend: line = re.sub(start_end_re, "", line)
+      line = line.strip()
 
-        if in_path:
+      if not line:
+         in_path = False
+      elif startend:
+         in_path = True
+
+         if in_path:
             match = re.search('^([^\s]+)\:(\d+)\s+([\w_]+)\s+([^\(]+)\(([x0-9a-f]+)\)', line)
             if match:
-                # parse this part of the callpath and dump a |-separated version into the lines set.
-                [file, lnum, fun, lib, offset] = match.groups()
-                lines.add("|".join(match.groups()))
-            
-                # Copy all the relevant source files into the src dir so we can look at them.
-                for dir in path:
-                    source_file = "%s/%s" % (dir, file)
-                    if os.path.exists(source_file):
-                        dest_file = "%s/%s" %  (get_src_dir(dir), file)
-                        shutil.copyfile(source_file, dest_file)
+               # parse this part of the callpath and dump a |-separated version into the lines set.
+               [file, lnum, fun, lib, offset] = match.groups()
+               lines.add("|".join(match.groups()))
 
-            else:
-                match = re.search('^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)', line)
-                if match:
-                    lib, offset = match.groups()
-                    lines.add("?|?|?|#{lib}|#{offset}")
+               # Copy all the relevant source files into the src dir so we can look at them.
+               for dir in path:
+                  source_file = "%s/%s" % (dir, file)
+                  if os.path.exists(source_file):
+                     dest_file = "%s/%s" %  (get_src_dir(dir), file)
+                     shutil.copyfile(source_file, dest_file)
 
-        # Output all the unique addresses found in the callpaths to a file.
-        output = open("%s/symtab" % data_dir, "w")
-
-        # Kludge to map unknown modules to exe file.
-        if exefile:
-            output.write("[unknown module] => %s\n" % exefile)
-            output.write(" => %s\n" % exefile)
-
-        for l in lines:
-            output.write("%s\n" % l)
+                  else:
+                     match = re.search('^\[unknown\]\s+\[unknown\]\s+([^\(]+)\(([x0-9a-f]+)\)', line)
+               if match:
+                  lib, offset = match.groups()
+                  lines.add("?|?|?|#{lib}|#{offset}")
 
 finally:    
-    # delete the temporary file we created for effort filenames
-    input_file.close()
+   # Output all the unique addresses found in the callpaths to a file.
+   output = open("%s/symtab" % data_dir, "w")
+
+   # Kludge to map unknown modules to exe file.
+   if exefile:
+      output.write("[unknown module] => %s\n" % exefile)
+      output.write(" => %s\n" % exefile)
+
+   for l in lines:
+      output.write("%s\n" % l)
+
+   # delete the temporary file we created for effort filenames
+   input_file.close()
+   
