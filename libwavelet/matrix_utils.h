@@ -17,8 +17,8 @@
 bool isDivisibleBy2(size_t n, int level);
 
 
-template < template <typename> class Matrix, typename T>
-bool in_bounds(const Matrix<T>& mat, size_t row, size_t col) {
+template <class Matrix>
+bool in_bounds(const Matrix& mat, size_t row, size_t col) {
   return (row < mat.size1()) && (col < mat.size2());
 }
 
@@ -26,8 +26,8 @@ bool in_bounds(const Matrix<T>& mat, size_t row, size_t col) {
 bool read_matrix(const char *filename, boost::numeric::ublas::matrix<double>& mat);
 
 
-template < template <typename> class Matrix, typename T>
-void output(const Matrix<T>& mat, std::ostream& out = std::cout) {
+template <class Matrix>
+void output(const Matrix& mat, std::ostream& out = std::cout) {
   const size_t width = 12;
 
   for (size_t i=0; i < mat.size1(); i++) {
@@ -58,8 +58,8 @@ struct ms_summary {
 };
 
 
-template < template <typename> class Matrix, typename T>
-ms_summary get_summary(const Matrix<T>& orig, const Matrix<T>& repro,
+template <class Matrix>
+ms_summary get_summary(const Matrix& orig, const Matrix& repro,
                        size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
                        size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -88,8 +88,8 @@ ms_summary get_summary(const Matrix<T>& orig, const Matrix<T>& repro,
 }
 
 
-template < template <typename> class Matrix, typename T>
-double rmse(const Matrix<T>& orig, const Matrix<T>& repro,
+template <class Matrix>
+double rmse(const Matrix& orig, const Matrix& repro,
              size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
              size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -106,8 +106,8 @@ double rmse(const Matrix<T>& orig, const Matrix<T>& repro,
 
 
 /// Normalized rms error
-template < template <typename> class Matrix, typename T>
-double nrmse(const Matrix<T>& orig, const Matrix<T>& repro,
+template <class Matrix>
+double nrmse(const Matrix& orig, const Matrix& repro,
              size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
              size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) {
   assert(orig.size1() == repro.size1());
@@ -125,8 +125,8 @@ double nrmse(const Matrix<T>& orig, const Matrix<T>& repro,
 
 
 /// Peak Signal to Noise Ratio
-template < template <typename> class Matrix, typename T>
-double psnr(const Matrix<T>& orig, const Matrix<T>& repro) {
+template <class Matrix>
+double psnr(const Matrix& orig, const Matrix& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -137,8 +137,8 @@ double psnr(const Matrix<T>& orig, const Matrix<T>& repro) {
 
 
 /// Similarity (NRMSE defined to be symmetric, with max and min taken from both matrices)
-template < template <typename> class Matrix, typename T>
-double similarity(const Matrix<T>& orig, const Matrix<T>& repro) {
+template <class Matrix>
+double similarity(const Matrix& orig, const Matrix& repro) {
   assert(orig.size1() == repro.size1());
   assert(orig.size2() == repro.size2());
 
@@ -148,8 +148,8 @@ double similarity(const Matrix<T>& orig, const Matrix<T>& repro) {
 }
 
 
-template < template <typename> class Matrix, typename T>
-void standardize(Matrix<T>& mat) {
+template <class Matrix>
+void standardize(Matrix& mat) {
   size_t n = mat.size1() * mat.size2();
   double sum = 0;
   double sum2 = 0;
@@ -189,15 +189,15 @@ template<typename T> T abs_val(T num) {
 
 
 
-template < template <typename> class Matrix, typename T>
-T sum(const Matrix<T>& mat,
+template <class Matrix>
+typename Matrix::value_type sum(const Matrix& mat,
       size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
       size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
   if (row_end > mat.size1()) row_end = mat.size1();
   if (col_end > mat.size2()) col_end = mat.size2();
 
-  T total = 0;
+  typename Matrix::value_type total = 0;
   for (size_t i = row_start; i < row_end; i++) {
     for (size_t j = col_start; j < col_end; j++) { 
       total += mat(i,j);
@@ -207,8 +207,8 @@ T sum(const Matrix<T>& mat,
 }
 
 
-template < template <typename> class Matrix, typename T>
-double mean_val(const Matrix<T>& mat,
+template <class Matrix>
+double mean_val(const Matrix& mat,
                 size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
                 size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max())
 {
@@ -222,8 +222,8 @@ double mean_val(const Matrix<T>& mat,
 }
 
 
-template < template <typename> class Matrix, typename T>
-T max_val(const Matrix<T>& mat,
+template <class Matrix>
+typename Matrix::value_type max_val(const Matrix& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -231,7 +231,7 @@ T max_val(const Matrix<T>& mat,
   if (col_end > mat.size2()) col_end = mat.size2();
   if (row_end <= row_start || col_end <= col_start) return 0;
 
-  T max = mat(row_start, col_start);
+  typename Matrix::value_type max = mat(row_start, col_start);
   for (size_t i = row_start; i < row_end; i++) {
     for (size_t j = col_start; j < col_end; j++) { 
       max = mat(i,j) > max ? mat(i,j) : max;
@@ -241,8 +241,8 @@ T max_val(const Matrix<T>& mat,
 }
 
 
-template < template <typename> class Matrix, typename T>
-T min_val(const Matrix<T>& mat,
+template <class Matrix>
+typename Matrix::value_type min_val(const Matrix& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -250,7 +250,7 @@ T min_val(const Matrix<T>& mat,
   if (col_end > mat.size2()) col_end = mat.size2();
   if (row_end <= row_start || col_end <= col_start) return 0;
 
-  T min = mat(row_start, col_start);
+  typename Matrix::value_type min = mat(row_start, col_start);
   for (size_t i = row_start; i < row_end; i++) {
     for (size_t j = col_start; j < col_end; j++) { 
       min = mat(i,j) < min ? mat(i,j) : min;
@@ -259,26 +259,26 @@ T min_val(const Matrix<T>& mat,
   return min;
 }
 
-template < template <typename> class Matrix, typename T>
-T abs_max_val(const Matrix<T>& mat,
+template <class Matrix>
+typename Matrix::value_type abs_max_val(const Matrix& mat,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
   if (row_end > mat.size1()) row_end = mat.size1();
   if (col_end > mat.size2()) col_end = mat.size2();
 
-  T amax = 0;
+  typename Matrix::value_type amax = 0;
   for (size_t i = row_start; i < row_end; i++) {
     for (size_t j = col_start; j < col_end; j++) { 
-      T tmp = abs_val(mat(i,j));
+      typename Matrix::value_type tmp = abs_val(mat(i,j));
       amax = (tmp > amax) ? tmp : amax;
     }
   }
   return amax;
 }
 
-template < template <typename> class Matrix, typename T, typename V>
-void set_all(const Matrix<T>& mat, V value,
+template <class Matrix, typename V>
+void set_all(const Matrix& mat, V value,
           size_t row_start = 0, size_t row_end = std::numeric_limits<size_t>::max(),
           size_t col_start = 0, size_t col_end = std::numeric_limits<size_t>::max()) 
 {
@@ -325,8 +325,8 @@ double euclidean_distance(Iterator1 first1, Iterator1 last1, Iterator2 first2) {
 /// Interpolates a value for point (x,y) based on values in the Matrix.
 /// Finds the nearest values by taking floor and ceil of x and y, then
 /// uses bilinear interpolation to estimate the value at (x,y).
-template < template <typename> class Matrix, typename T>
-double interp_bilinear(const Matrix<T>& mat, double x, double y) {
+template <class Matrix>
+double interp_bilinear(const Matrix& mat, double x, double y) {
   if (x < 0) {
     x = 0;
   } else if (x > (mat.size1() - 1)) {
