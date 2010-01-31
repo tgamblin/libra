@@ -153,6 +153,7 @@ namespace effort {
       }
       return false;
 
+      // TODO: figure out what to do about key matching.
       //effort_key normalized(Metric::time(), 0, key.start_path, key.end_path);
       //return (guide.find(normalized) != guide.end());
     }
@@ -207,8 +208,8 @@ namespace effort {
     
     for (size_t i=0; i < ss_ordered.size(); i++) {
       const effort_key& key = ss_ordered[i];
-      const sample_desc& sd = stats[key];
-      
+      const sample_desc& sd = stats[key]; 
+     
       out << setw(4)  << i
           << setw(10) << setprecision(3) << sd.mean
           << setw(10) << setprecision(3) << sd.variance
