@@ -54,7 +54,7 @@ size_t trace_length = 64;
 size_t sigs_per_process = 1;
 size_t num_clusters = 10;
 
-const size_t iterations = 1;   // num trials to account for variance in clara.
+const size_t iterations = 10;   // num trials to account for variance in clara.
 
 /// Uses getopt to read in arguments.
 void get_args(int *argc, char ***argv, int rank) {
