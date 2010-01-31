@@ -11,8 +11,9 @@ using namespace Dyninst::Stackwalker;
 
 #include "FrameId.h"
 
-
 #ifdef HAVE_SYMTAB
+#include "Symtab.h"
+#include "Symbol.h"
 #include "AddrLookup.h"
 using namespace Dyninst::SymtabAPI;
 #endif // HAVE_SYMTAB
@@ -75,7 +76,7 @@ Callpath CallpathRuntime::doStackwalk(size_t wrap_level) {
 
 void CallpathRuntime::set_chop_libc(bool chop) {
   chop_libc_calls = chop;
-#ifdef HAVE_SYMTAB
+#ifndef HAVE_SYMTAB
   if (chop_libc_calls) {
     cerr << "WARNING: chop_libc_calls is not supported without SymtabAPI.  Paths will not be trimmed." << endl;
   }
