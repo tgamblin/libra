@@ -113,7 +113,6 @@ struct effort_module {
   Sampler sampler;
 #endif // HAVE_SPRNG
   
-
   // global initializers
   effort_module() 
     : cur_effort_type(0)
