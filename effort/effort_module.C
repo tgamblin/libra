@@ -369,12 +369,6 @@ struct effort_module {
   void pcontrol(int type) { 
     effort_do_stackwalk();
 
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    ostringstream msg;
-    msg << "EFFORT PCONTROL type " << type << endl;
-    cerr << msg.str();
-    
     if (regions == REGIONS_EFFORT || regions == REGIONS_BOTH) {
       record_region(start_callpath, *pnmpi_callpath);
       start_callpath = *pnmpi_callpath;
