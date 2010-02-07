@@ -1,8 +1,5 @@
 #include "Callpath.h"
 
-#include <signal.h>
-#include <execinfo.h>
-
 #include <string>
 #include <iostream>
 #include <fstream>
