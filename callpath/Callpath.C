@@ -7,6 +7,9 @@
 #include <set>
 #include <vector>
 #include <map>
+///the function reverse is prototyped in algorithm on AIX. Not needed for other machine but also
+///not harmful
+#include <algorithm>
 using namespace std;
 
 #ifdef LIBRA_HAVE_MPI

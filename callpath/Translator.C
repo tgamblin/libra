@@ -146,7 +146,8 @@ void Translator::write_path(ostream& out, const Callpath& path, bool one_line, s
     return;
   }
   
-  FrameInfo infos[path.size()];
+//Fails under AIX  FrameInfo infos[path.size()];
+  vector<FrameInfo> infos(path.size());
   
   // find max field widths for the output.
   size_t max_file = 0;
