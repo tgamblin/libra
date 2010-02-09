@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& out, const FrameId& fid);
 /// Heavyweight comparator for FrameIds.  Compares by module name and offset 
 /// rather than by unique pointer value.
 struct frameid_string_lt {
-  bool operator()(const FrameId& lhs, const FrameId& rhs) {
+  bool operator()(const FrameId& lhs, const FrameId& rhs) const {
     if (lhs.module.str() == rhs.module.str()) {
       return lhs.offset < rhs.offset;
     } else {
