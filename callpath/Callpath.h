@@ -131,7 +131,7 @@ std::ostream& operator<<(std::ostream& out, const Callpath& path);
 template <class LessThan>
 struct pathvector_lt {
   LessThan lt;
-  bool operator()(const std::vector<FrameId> *lhs, const std::vector<FrameId> *rhs) {
+  bool operator()(const std::vector<FrameId> *lhs, const std::vector<FrameId> *rhs) const {
     if (lhs == rhs)  return false;
     if (lhs == NULL) return true;
     if (rhs == NULL) return false;
