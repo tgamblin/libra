@@ -1,5 +1,5 @@
-#ifndef WT_MPI_PROFILE_H
-#define WT_MPI_PROFILE_H
+#ifndef MPI_UTILS_H
+#define MPI_UTILS_H
 
 #include <iostream>
 #include <cstdlib>
@@ -41,4 +41,4 @@ inline int mpi_packed_size(int count, MPI_Datatype type, MPI_Comm comm) {
 #define MPI_INTPTR_T    (mpi_typeof(intptr_t()))
 #define MPI_UINTPTR_T   (mpi_typeof(uintptr_t()))
 
-#endif // WT_MPI_PROFILE_H
+#endif // MPI_UTILS_H

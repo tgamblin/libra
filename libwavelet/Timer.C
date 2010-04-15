@@ -1,5 +1,7 @@
 #include "Timer.h"
 
+#include "timing.h"
+
 #include <cmath>
 #include <iomanip>
 #include <algorithm>
@@ -35,6 +37,11 @@ void Timer::clear() {
   timings.clear();
   start = get_time_ns();
   last = start;
+}
+
+
+void Timer::fast_forward() { 
+  last = get_time_ns(); 
 }
 
 

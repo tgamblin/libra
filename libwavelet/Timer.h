@@ -1,12 +1,12 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "timing.h"
-
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
+
+#include "timing.h"
 
 class Timer {
   typedef std::map<std::string, timing_t> timing_map;
@@ -32,7 +32,7 @@ public:
   void clear();
 
   /// Skips ahead and sets last time to now.
-  void fast_forward() { last = get_time_ns(); }
+  void fast_forward();
 
   /// Records time since start or last call to record.
   void record(const std::string& name);

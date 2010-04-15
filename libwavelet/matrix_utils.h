@@ -176,6 +176,8 @@ struct Abs {
   T value;
   Abs(double num)        : value(::fabs(num)) { }
   Abs(long num)          : value(::labs(num)) { }
+  Abs(unsigned long num) : value(::labs(num)) { }
+  Abs(unsigned int num)  : value(::labs(num)) { }
   Abs(long long num)     : value(::llabs(num)) { }
   Abs(int num)           : value(::abs(num)) { }
 };
