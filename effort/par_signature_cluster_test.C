@@ -27,6 +27,7 @@ void usage() {
   cerr << "Options:" << endl;
   cerr << "  -h         Show this message." << endl;
   cerr << "  -t         Output timing info to file." << endl;
+  cerr << "  -x         Use BIC (makes -k = max clusters)" << endl;
   cerr << "  -v         Validate with sequential clustering and output Mirkin distance." << endl;
   cerr << "  -p         Print entire clusterings when validating." << endl;
   cerr << "  -i         Initial sample size (before 2*k) for clara." << endl;
@@ -47,6 +48,7 @@ void usage() {
 bool timing = false;
 bool validate = false;
 bool print_clusterings = false;
+bool use_bic = false;
 int level = -1;
 size_t init_size = 40;
 size_t max_reps = 5;
@@ -61,7 +63,7 @@ void get_args(int *argc, char ***argv, int rank) {
   int c;
   char *err;
 
-  while ((c = getopt(*argc, *argv, "htvpi:r:l:n:s:k:")) != -1) {
+  while ((c = getopt(*argc, *argv, "htvxpi:r:l:n:s:k:")) != -1) {
     switch (c) {
     case 'h':
       if (rank == 0) usage();
@@ -72,6 +74,9 @@ void get_args(int *argc, char ***argv, int rank) {
       break;
     case 'v':
       validate = true;
+      break;
+    case 'x':
+      use_bic = true;
       break;
     case 'p':
       print_clusterings = true;
@@ -179,7 +184,11 @@ int main(int argc, char **argv) {
   for (size_t iter=0; iter < iterations; iter++) {
     // time the clustering itself
     long long start = get_time_ns();
-    parkm.clara(sigs, sig_euclidean_distance(), num_clusters);
+    if (!use_bic) {
+      parkm.clara(sigs, sig_euclidean_distance(), num_clusters);
+    } else {
+      parkm.xclara(sigs, sig_euclidean_distance(), num_clusters, trace_length);
+    }
     total += get_time_ns() - start;
 
     // gather distributed clusteirng and compare to exhaustive sequential version.
@@ -205,7 +214,12 @@ int main(int argc, char **argv) {
         build_dissimilarity_matrix(all_sigs, sig_euclidean_distance(), distance);
         
         kmedoids km;
-        km.pam(distance, num_clusters);
+
+        if (!use_bic) {
+          km.pam(distance, num_clusters);
+        } else {
+          km.xpam(distance, num_clusters, trace_length);
+        }
         cout << "Seq k:   " << km.num_clusters() << endl;
         if (print_clusterings) 
           cout << km << endl;
