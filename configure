@@ -20964,6 +20964,11 @@ else
   HAVE_PAPI_FALSE=
 fi
 
+if [ "x$have_papi" = xyes ]; then
+
+$as_echo "#define HAVE_LIBPAPI 1" >>confdefs.h
+
+fi
 
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
