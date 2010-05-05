@@ -46,7 +46,7 @@ host_triplet = @host@
 @HAVE_MPI_TRUE@am__append_2 = \
 @HAVE_MPI_TRUE@	par_partition.C \
 @HAVE_MPI_TRUE@	par_kmedoids.C \
-@HAVE_MPI_TRUE@	trial.C
+@HAVE_MPI_TRUE@	trial.C 
 
 noinst_PROGRAMS = point-cluster-test$(EXEEXT) mirkin-test$(EXEEXT) \
 	pathological-cluster-test$(EXEEXT) nondistinct-test$(EXEEXT) \
@@ -56,7 +56,8 @@ noinst_PROGRAMS = point-cluster-test$(EXEEXT) mirkin-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	par-cluster-test \
 @HAVE_MPI_TRUE@	par-cluster-speed-test \
 @HAVE_MPI_TRUE@	par-bic-test \
-@HAVE_MPI_TRUE@	multi-gather-test
+@HAVE_MPI_TRUE@	multi-gather-test \
+@HAVE_MPI_TRUE@	random-test
 
 subdir = cluster
 DIST_COMMON = $(am__noinst_HEADERS_DIST) $(srcdir)/Makefile.am \
@@ -122,7 +123,7 @@ libcluster_la_OBJECTS = $(am_libcluster_la_OBJECTS)
 @HAVE_MPI_TRUE@am__EXEEXT_1 = par-cluster-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	par-cluster-speed-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	par-bic-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	multi-gather-test$(EXEEXT)
+@HAVE_MPI_TRUE@	multi-gather-test$(EXEEXT) random-test$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_bic_test_OBJECTS = bic_test.$(OBJEXT)
 bic_test_OBJECTS = $(am_bic_test_OBJECTS)
@@ -173,6 +174,10 @@ point_cluster_test_OBJECTS = $(am_point_cluster_test_OBJECTS)
 point_cluster_test_LDADD = $(LDADD)
 point_cluster_test_DEPENDENCIES = libcluster.la \
 	../libwavelet/libwavelet.la
+am_random_test_OBJECTS = random_test.$(OBJEXT)
+random_test_OBJECTS = $(am_random_test_OBJECTS)
+random_test_LDADD = $(LDADD)
+random_test_DEPENDENCIES = libcluster.la ../libwavelet/libwavelet.la
 am_reuse_test_OBJECTS = reuse_test.$(OBJEXT)
 reuse_test_OBJECTS = $(am_reuse_test_OBJECTS)
 reuse_test_LDADD = $(LDADD)
@@ -201,16 +206,16 @@ SOURCES = $(libcluster_la_SOURCES) $(bic_test_SOURCES) \
 	$(par_bic_test_SOURCES) $(par_cluster_speed_test_SOURCES) \
 	$(par_cluster_test_SOURCES) \
 	$(pathological_cluster_test_SOURCES) \
-	$(point_cluster_test_SOURCES) $(reuse_test_SOURCES) \
-	$(write_members_test_SOURCES)
+	$(point_cluster_test_SOURCES) $(random_test_SOURCES) \
+	$(reuse_test_SOURCES) $(write_members_test_SOURCES)
 DIST_SOURCES = $(am__libcluster_la_SOURCES_DIST) $(bic_test_SOURCES) \
 	$(convergence_test_SOURCES) $(mirkin_test_SOURCES) \
 	$(multi_gather_test_SOURCES) $(nondistinct_test_SOURCES) \
 	$(par_bic_test_SOURCES) $(par_cluster_speed_test_SOURCES) \
 	$(par_cluster_test_SOURCES) \
 	$(pathological_cluster_test_SOURCES) \
-	$(point_cluster_test_SOURCES) $(reuse_test_SOURCES) \
-	$(write_members_test_SOURCES)
+	$(point_cluster_test_SOURCES) $(random_test_SOURCES) \
+	$(reuse_test_SOURCES) $(write_members_test_SOURCES)
 am__noinst_HEADERS_DIST = kmedoids.h random.h gaussian.h counter.h \
 	color.h spherical_clustering_generator.h dissimilarity.h \
 	partition.h MersenneTwister.h point.h bic.h trial.h \
@@ -412,6 +417,7 @@ nondistinct_test_SOURCES = nondistinct_test.C
 convergence_test_SOURCES = convergence_test.C
 reuse_test_SOURCES = reuse_test.C
 write_members_test_SOURCES = write_members_test.C
+random_test_SOURCES = random_test.C
 LDADD = \
 	libcluster.la \
   ../libwavelet/libwavelet.la
@@ -526,6 +532,9 @@ pathological-cluster-test$(EXEEXT): $(pathological_cluster_test_OBJECTS) $(patho
 point-cluster-test$(EXEEXT): $(point_cluster_test_OBJECTS) $(point_cluster_test_DEPENDENCIES) 
 	@rm -f point-cluster-test$(EXEEXT)
 	$(CXXLINK) $(point_cluster_test_OBJECTS) $(point_cluster_test_LDADD) $(LIBS)
+random-test$(EXEEXT): $(random_test_OBJECTS) $(random_test_DEPENDENCIES) 
+	@rm -f random-test$(EXEEXT)
+	$(CXXLINK) $(random_test_OBJECTS) $(random_test_LDADD) $(LIBS)
 reuse-test$(EXEEXT): $(reuse_test_OBJECTS) $(reuse_test_DEPENDENCIES) 
 	@rm -f reuse-test$(EXEEXT)
 	$(CXXLINK) $(reuse_test_OBJECTS) $(reuse_test_LDADD) $(LIBS)
@@ -554,6 +563,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathological_cluster_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/point.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/point_cluster_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reuse_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/trial.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/write_members_test.Po@am__quote@
