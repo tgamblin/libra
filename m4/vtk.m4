@@ -20,6 +20,12 @@ AC_DEFUN([AC_OPTIONS_VTK],
                  echo "Couldn't find VTK include directory."
                fi
               ])
+
+  AC_ARG_WITH([vtk-lib-suffix], 
+              [AC_HELP_STRING([--with-vtk-libsuffix],
+    	                      [VTK's lib directory name is usually something like lib/vtk-suffix.  This defaults to the same string supplied to vtk-version, but can be different.])],
+              [vtk_libsuffix=$withval], 
+              [vtk_libsuffix=$vtk_suffix])
 ])
 
 
@@ -54,7 +60,7 @@ AC_DEFUN([AC_PATH_VTK],
 
                 # set VTK c,cpp,ld flags
                 VTK_CPPFLAGS="-I$VTK_PREFIX/include/vtk$vtk_suffix"
-                VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_suffix"
+                VTK_LIB_PATH="$VTK_PREFIX/lib/vtk$vtk_libsuffix"
                 VTK_LIBS="-L$VTK_LIB_PATH $VTK_DEFAULT_LIBS"
                 VTK_RPATH="-R $VTK_LIB_PATH"
 
