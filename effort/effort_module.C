@@ -366,7 +366,6 @@ struct effort_module {
   /// MPI_Pcontrol interface to switch regions.
   ///
   void pcontrol(int type) { 
-    effort_do_stackwalk();
 
     if (regions == REGIONS_EFFORT || regions == REGIONS_BOTH) {
       record_region(start_callpath, *pnmpi_callpath);
@@ -586,6 +585,7 @@ void progress_step() {
 }
 
 void effort_pcontrol(int type) {  
+  effort_do_stackwalk();
   module().pcontrol(type);  
 }
 

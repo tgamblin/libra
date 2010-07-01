@@ -134,4 +134,6 @@ int main(int argc, char **argv) {
     cout << "TOTAL:   " << total / 1e9 << endl;
     cout << "AVERAGE: " << avg   / 1e9 << endl;
   }
+  
+  MPI_Finalize();
 }

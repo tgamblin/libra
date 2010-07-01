@@ -18,8 +18,7 @@ noinst_HEADERS = \
 libcluster_la_SOURCES = \
 	partition.C \
 	kmedoids.C \
-	point.C \
-	trial.C
+	point.C
 
 if HAVE_MPI
 noinst_HEADERS += \
@@ -30,7 +29,8 @@ noinst_HEADERS += \
 
 libcluster_la_SOURCES += \
 	par_partition.C \
-	par_kmedoids.C
+	par_kmedoids.C \
+	trial.C 
 endif
 
 #test program for matrix
@@ -50,7 +50,8 @@ noinst_PROGRAMS += \
 	par-cluster-test \
 	par-cluster-speed-test \
 	par-bic-test \
-	multi-gather-test
+	multi-gather-test \
+	random-test
 endif
 
 mirkin_test_SOURCES = mirkin_test.C

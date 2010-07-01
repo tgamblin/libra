@@ -111,6 +111,9 @@ fi
 # Check for PAPI for HW counters
 LX_LIB_PAPI
 AM_CONDITIONAL([HAVE_PAPI],  [test "x$have_papi" = xyes])
+if [[ "x$have_papi" = xyes ]]; then
+   AC_DEFINE([HAVE_LIBPAPI], [1], [Defined if we have PAPI.])
+fi
 
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
