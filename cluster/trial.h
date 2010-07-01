@@ -58,7 +58,7 @@ namespace cluster {
     size_t iterations;          /// number of iterations so far
     
     /// size of the sample to cluster for particular k
-    size_t get_sample_size(size_t k);
+    size_t get_sample_size(size_t k) const;
   };
   
 } // namespace cluster

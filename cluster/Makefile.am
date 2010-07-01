@@ -26,13 +26,11 @@ noinst_HEADERS += \
 	par_partition.h \
 	par_kmedoids.h \
 	multi_gather.h \
-	trial.h \
 	id_pair.h
 
 libcluster_la_SOURCES += \
 	par_partition.C \
-	par_kmedoids.C \
-	trial.C
+	par_kmedoids.C
 endif
 
 #test program for matrix
@@ -44,7 +42,8 @@ noinst_PROGRAMS = \
 	convergence-test \
 	write-members-test \
 	bic-test \
-	reuse-test
+	reuse-test \
+	random-test
 
 if HAVE_MPI
 noinst_PROGRAMS += \
@@ -66,6 +65,7 @@ nondistinct_test_SOURCES = nondistinct_test.C
 convergence_test_SOURCES = convergence_test.C
 reuse_test_SOURCES = reuse_test.C
 write_members_test_SOURCES = write_members_test.C
+random_test_SOURCES = random_test.C
 
 LDADD = \
 	libcluster.la \

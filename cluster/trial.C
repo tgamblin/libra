@@ -5,7 +5,7 @@ using namespace std;
 
 namespace cluster {
 
-  size_t trial_generator::get_sample_size(size_t k) {
+  size_t trial_generator::get_sample_size(size_t k) const {
     return min(init_size + 2 * k, num_objects);
   }
 
