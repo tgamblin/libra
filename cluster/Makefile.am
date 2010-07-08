@@ -42,16 +42,14 @@ noinst_PROGRAMS = \
 	convergence-test \
 	write-members-test \
 	bic-test \
-	reuse-test \
-	random-test
+	reuse-test
 
 if HAVE_MPI
 noinst_PROGRAMS += \
 	par-cluster-test \
 	par-cluster-speed-test \
 	par-bic-test \
-	multi-gather-test \
-	random-test
+	multi-gather-test
 endif
 
 mirkin_test_SOURCES = mirkin_test.C
@@ -66,7 +64,6 @@ nondistinct_test_SOURCES = nondistinct_test.C
 convergence_test_SOURCES = convergence_test.C
 reuse_test_SOURCES = reuse_test.C
 write_members_test_SOURCES = write_members_test.C
-random_test_SOURCES = random_test.C
 
 LDADD = \
 	libcluster.la \
