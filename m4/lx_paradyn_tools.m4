@@ -34,7 +34,7 @@
 # LX_PARADYN_TOOLS
 #  ------------------------------------------------------------------------
 # Tests for everything needed for paradyn tools API: dwarf, xml2, symtabAPI,
-# and DynStackwalkerAPI.  Sets have_symtab, have_stackwalk if either is found.
+# and DynStackwalkerAPI.  Sets have_symtabAPI, have_stackwalk if either is found.
 # Will also set the following variables for different pieces of the SW API 
 # infrastucture:
 # have_stackwalk, have_symtabAPI, have_common
