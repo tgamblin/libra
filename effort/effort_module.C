@@ -66,6 +66,7 @@ using namespace wavelet;
 #include "sampler.h"
 #endif // HAVE_SPRNG
 
+#include "effort_api.h"
 #include "effort_data.h"
 #include "s3d_topology.h"
 #include "effort_params.h"
@@ -110,6 +111,30 @@ static regions_t str_to_regions(const char *str) {
   }
 }
 
+struct progress_listener_entry {
+  progress_listener_t callback;
+  size_t remaining;
+  size_t frequency;
+  
+  progress_listener_entry(progress_listener_t cb, size_t freq)
+    : callback(cb), remaining(freq), frequency(freq) { }
+  
+  ~progress_listener_entry() { }
+  
+  /// Decrements the remaining counter and calls the function if it's time
+  /// to do so.  Resets the counter after the function call.
+  /// 
+  /// Returns true if the function was called and false if not.
+  bool call(effort_data& data) {
+    remaining--;
+    if (remaining) return false;
+    
+    callback(data);         // do the callback if remaining hit zero
+    remaining = frequency;  // reset the counter.
+    return true;
+  }
+};
+
 
 struct effort_module {
   CallpathRuntime runtime;      /// Wrapper around stackwalking functionality
@@ -138,6 +163,9 @@ struct effort_module {
 
   // Storage for user counters
   vector<Metric> user_metrics;
+
+  // listeners registered to receive progress events.
+  vector<progress_listener_entry> listeners;
 
 #ifdef HAVE_SPRNG
   // AMPL support
@@ -368,6 +396,11 @@ struct effort_module {
       // commit all effort recorded this iteration and advance to next iteration.
       effort_log.progress_step();
       sample_count = params.sampling;
+
+      // call all listeners on the now committed effort log data
+      for (size_t i=0; i < listeners.size(); i++) {
+        listeners[i].call(effort_log);
+      }
     }
   }
 
@@ -579,6 +612,25 @@ struct effort_module {
       }
     }
   }
+
+
+  void remove_progress_listener(progress_listener_t callback) {
+    for (vector<progress_listener_entry>::iterator i = listeners.begin(); i != listeners.end(); i++) {
+      if (i->callback == callback) {
+        listeners.erase(i);
+        break;
+      }
+    }
+  }
+
+
+  void register_progress_listener(progress_listener_t callback, int frequency) {
+    // remove any existing entry for this callback
+    remove_progress_listener(callback);
+
+    // Add a new entry for the callback.
+    listeners.push_back(progress_listener_entry(callback, frequency));
+  }
 };
 
 
@@ -642,4 +694,15 @@ void effort_set_dims(size_t x, size_t y, size_t z) {
 
 extern "C" void effort_set_dims_f(int *x, int *y, int *z) {
   effort_set_dims(*x,*y,*z);
+}
+
+
+namespace effort {
+  void register_progress_listener(progress_listener_t listener, int frequency) {
+    module().register_progress_listener(listener, frequency);
+  }
+  
+  void remove_progress_listener(progress_listener_t listener) {
+    module().remove_progress_listener(listener);  
+  }
 }

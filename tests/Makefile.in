@@ -350,7 +350,12 @@ bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
 bunny_LDADD = ../effort/libpmpi-effort.la
 LDADD = ../libwavelet/libwavelet.la
-INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
+INCLUDES = \
+	$(BOOST_CPPFLAGS) \
+	-I$(top_srcdir)/libwavelet \
+	-I$(top_srcdir)/effort \
+	-I$(top_srcdir)/callpath
+
 all: all-am
 
 .SUFFIXES:

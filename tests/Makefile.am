@@ -63,4 +63,9 @@ delitter:
 clean-local: delitter
 
 LDADD = ../libwavelet/libwavelet.la
-INCLUDES = $(BOOST_CPPFLAGS) -I$(top_srcdir)/libwavelet -I$(top_srcdir)/effort
+INCLUDES = \
+	$(BOOST_CPPFLAGS) \
+	-I$(top_srcdir)/libwavelet \
+	-I$(top_srcdir)/effort \
+	-I$(top_srcdir)/callpath
+
