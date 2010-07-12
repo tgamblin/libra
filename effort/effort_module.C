@@ -66,7 +66,6 @@ using namespace wavelet;
 #include "sampler.h"
 #endif // HAVE_SPRNG
 
-#include "effort_api.h"
 #include "effort_data.h"
 #include "s3d_topology.h"
 #include "effort_params.h"
@@ -697,12 +696,10 @@ extern "C" void effort_set_dims_f(int *x, int *y, int *z) {
 }
 
 
-namespace effort {
-  void register_progress_listener(progress_listener_t listener, int frequency) {
-    module().register_progress_listener(listener, frequency);
-  }
-  
-  void remove_progress_listener(progress_listener_t listener) {
-    module().remove_progress_listener(listener);  
-  }
+void effort_register_progress_listener(progress_listener_t listener, int frequency) {
+  module().register_progress_listener(listener, frequency);
+}
+
+void effort_remove_progress_listener(progress_listener_t listener) {
+  module().remove_progress_listener(listener);  
 }

@@ -66,20 +66,20 @@ extern "C" {
 #endif // __cplusplus
 
 
+///////////////////////////////////////////////////////////////////////////
+// Tool API -- to be called by other tools working with Libra at runtime.
+// Note that these have C lnkage but take a C++ data type.
+///////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 #include "effort_data.h"
-
 namespace effort {
-  ///////////////////////////////////////////////////////////////////////////
-  // Tool API -- to be called by other tools working with Libra at runtime.
-  // Note that these are C++ functions.
-  ///////////////////////////////////////////////////////////////////////////
-  
   ///
   /// Handler type for functions that want to listen to progress events.
   ///
   typedef void (*progress_listener_t)(effort::effort_data& data);
-  
+} // namespace effort
+
+extern "C" {
   ///
   /// Register a listener function to be called every <frequency> progress steps.
   /// Subsequent registrations of the same functions will NOT add new handlers.  
@@ -92,16 +92,13 @@ namespace effort {
   /// listeners will be called in each timestep, so do not depend on any particular
   /// order when you register listeners!
   ///
-  void register_progress_listener(progress_listener_t listener, int frequency = 1);
+  void effort_register_progress_listener(effort::progress_listener_t listener, int frequency = 1);
   
   ///
   /// Remove a listener function from the list of registered listeners.
   /// After this call, the listener will no longer be notified of progress steps.
   /// 
-  void remove_progress_listener(progress_listener_t listener);
-
-} // namespace effort
-
+  void effort_remove_progress_listener(effort::progress_listener_t listener);
+}
 #endif // __cplusplus
-
 #endif // EFFORT_API_H
