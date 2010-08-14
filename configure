@@ -744,16 +744,16 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-PNMPI_EFFORT_FALSE
-PNMPI_EFFORT_TRUE
-PMPI_EFFORT_FALSE
-PMPI_EFFORT_TRUE
+HAVE_PNMPI_FALSE
+HAVE_PNMPI_TRUE
 PNMPI_RPATH
 PNMPI_LDFLAGS
 PNMPI_CPPFLAGS
 pnmpidir
 PNMPI_PATCH
 PNMPI_WRAPPERGEN
+PMPI_EFFORT_FALSE
+PMPI_EFFORT_TRUE
 HAVE_PAPI_FALSE
 HAVE_PAPI_TRUE
 PAPI_RPATH
@@ -1635,8 +1635,7 @@ Optional Packages:
   --with-dwarf=<dir>      Path to the installation directory of libdwarf.
   --with-xml2=<dir>       Path to the installation directory of libxml2.
   --with-papi=<dir>       Path to the installation directory of PAPI.
-# Help string
-          --with-pnmpi=<dir>      Path to the location of PnMPI tools. If provided,
+  --with-pnmpi=<dir>      Path to the location of PnMPI tools. If provided,
                           builds PnMPI modules.
   --with-mpi-wavelet      Optionally build the wavelet library with MPI
                           bindings instead of PMPI bindings. Defaults to use
@@ -5490,13 +5489,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5493: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5492: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5496: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5495: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5499: output\"" >&5)
+  (eval echo "\"\$as_me:5498: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6702,7 +6701,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6705 "configure"' > conftest.$ac_ext
+  echo '#line 6704 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8973,11 +8972,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8976: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8975: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8980: \$? = $ac_status" >&5
+   echo "$as_me:8979: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9312,11 +9311,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9315: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9314: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9319: \$? = $ac_status" >&5
+   echo "$as_me:9318: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9417,11 +9416,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9420: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9419: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9424: \$? = $ac_status" >&5
+   echo "$as_me:9423: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9472,11 +9471,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9475: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9474: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9479: \$? = $ac_status" >&5
+   echo "$as_me:9478: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11839,7 +11838,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11842 "configure"
+#line 11841 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11935,7 +11934,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11938 "configure"
+#line 11937 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13891,11 +13890,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13894: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13893: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13898: \$? = $ac_status" >&5
+   echo "$as_me:13897: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13990,11 +13989,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13993: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13992: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13997: \$? = $ac_status" >&5
+   echo "$as_me:13996: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14042,11 +14041,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14045: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14044: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14049: \$? = $ac_status" >&5
+   echo "$as_me:14048: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15551,11 +15550,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15554: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15553: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15558: \$? = $ac_status" >&5
+   echo "$as_me:15557: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15650,11 +15649,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15653: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15652: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15657: \$? = $ac_status" >&5
+   echo "$as_me:15656: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15702,11 +15701,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15705: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15704: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15709: \$? = $ac_status" >&5
+   echo "$as_me:15708: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18637,18 +18636,36 @@ fi
 # This will NOT add MPI libraries to the build.
 CC=${CXX}          # Use CXX instead of CC for tests
 CPP="${CXX} -E"    # Use CXX instead of defaupt CPP for tests
-ac_fn_c_check_header_mongrel "$LINENO" "mpi.h" "ac_cv_header_mpi_h" "$ac_includes_default"
-if test "x$ac_cv_header_mpi_h" = x""yes; then :
+
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <mpi.h>
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+int foo; MPI_Initialized(&foo);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  have_mpi=yes
 
 $as_echo "#define HAVE_MPI 1" >>confdefs.h
 
-     have_mpi=yes
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find mpi.h. Building without MPI." >&5
-$as_echo "$as_me: Couldn't find mpi.h. Building without MPI." >&6;}
-     have_mpi=no
+  have_mpi=no
 fi
-
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
 
  if test "x$have_mpi" == xyes; then
   HAVE_MPI_TRUE=
@@ -18658,6 +18675,7 @@ else
   HAVE_MPI_FALSE=
 fi
 
+#AC_LANG_POP
 
 # Check for Linux timers.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for clock_gettime in -lrt" >&5
@@ -18990,8 +19008,8 @@ if test "${with_python+set}" = set; then :
 
      # Need this so that we can check for frameworks properly.
      echo $ECHO_N "checking if Python is a Mac OS X Framework... $ECHO_C"
-     SYS_TYPE=`uname -s`
-     if test "x$SYS_TYPE" = "xDarwin" && (echo $pyhome | grep -q '\.framework$'); then
+     py_devel_sys_type=`uname -s`
+     if test "x$py_devel_sys_type" = "xDarwin" && (echo $pyhome | grep -q '\.framework$'); then
          echo yes
          py_is_framework=yes
      else
@@ -19140,7 +19158,7 @@ $as_echo "$as_me: Could not find python interpreter." >&6;}
           pyhome=`echo ${PYTHON} | sed 's_/bin/[^/]*\$__'`
           { $as_echo "$as_me:${as_lineno-$LINENO}: Assuming python home directory is \"$pyhome\"." >&5
 $as_echo "$as_me: Assuming python home directory is \"$pyhome\"." >&6;}
-          if [ "x$SYS_TYPE" = "xDarwin" ]; then
+          if [ "x$py_devel_sys_type" = "xDarwin" ]; then
               echo "  NOTE: On Mac OS X, you may need to explicitly supply"
               echo "        the path to Python.framework on your system."
           fi
@@ -20709,9 +20727,24 @@ fi
      have_stackwalk=no
    fi
 
-   if test "x$have_common" != xno;    then have_common=yes;    fi
-   if test "x$have_symtabAPI" != xno; then have_symtabAPI=yes; fi
-   if test "x$have_stackwalk" != xno; then have_stackwalk=yes; fi
+   if test "x$have_common" != xno; then
+
+$as_echo "#define HAVE_COMMON 1" >>confdefs.h
+
+     have_common=yes;
+   fi
+   if test "x$have_symtabAPI" != xno; then
+
+$as_echo "#define HAVE_SYMTAB 1" >>confdefs.h
+
+     have_symtabAPI=yes;
+   fi
+   if test "x$have_stackwalk" != xno; then
+
+$as_echo "#define HAVE_SW 1" >>confdefs.h
+
+     have_stackwalk=yes;
+   fi
 
 else
   echo "path to ParaDyn tools not provided."
@@ -20730,23 +20763,12 @@ else
   HAVE_SW_FALSE=
 fi
 
-if [ "x$have_stackwalk" = xyes ]; then
-
-$as_echo "#define HAVE_SW 1" >>confdefs.h
-
-fi
  if test "x$have_symtabAPI" = xyes; then
   HAVE_SYMTAB_TRUE=
   HAVE_SYMTAB_FALSE='#'
 else
   HAVE_SYMTAB_TRUE='#'
   HAVE_SYMTAB_FALSE=
-fi
-
-if [ "x$have_symtabAPI" = xyes ]; then
-
-$as_echo "#define HAVE_SYMTAB 1" >>confdefs.h
-
 fi
 
 
@@ -20994,6 +21016,9 @@ fi
 
   if test "x$have_papi" != xno; then
     have_papi=yes
+
+$as_echo "#define HAVE_LIBPAPI 1" >>confdefs.h
+
   fi
 
  if test "x$have_papi" = xyes; then
@@ -21004,61 +21029,75 @@ else
   HAVE_PAPI_FALSE=
 fi
 
-if [ "x$have_papi" = xyes ]; then
-
-$as_echo "#define HAVE_LIBPAPI 1" >>confdefs.h
-
-fi
-
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
 if [ "x$have_mpi" = xyes -a "x$have_stackwalk" = xyes ]; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: Building PMPI tool module." >&5
+$as_echo "$as_me: Building PMPI tool module." >&6;}
 
+$as_echo "#define PMPI_EFFORT 1" >>confdefs.h
+
+    pmpi_effort=yes
+else
+    pmpi_effort=no
+fi
+ if test "x$pmpi_effort" = xyes; then
+  PMPI_EFFORT_TRUE=
+  PMPI_EFFORT_FALSE='#'
+else
+  PMPI_EFFORT_TRUE='#'
+  PMPI_EFFORT_FALSE=
+fi
+
+
+# Check for PnMPI tool framework.
 
 # Check whether --with-pnmpi was given.
 if test "${with_pnmpi+set}" = set; then :
   withval=$with_pnmpi; # --with-pnmpi provided
+     if [ "x$withval" = xno ]; then
+        have_pnmpi=no    # explicitly disabled
+        { $as_echo "$as_me:${as_lineno-$LINENO}: Building without PnMPI tool modules." >&5
+$as_echo "$as_me: Building without PnMPI tool modules." >&6;}
+      else
+        pnmpi_home="$withval"
 
-             if test "x$withval" = xno; then
-                 have_pnmpi=no    # explicitly disabled
-                 have_pnmpi=no
-             else
-                 pnmpi_home="$withval"
+        # Export location of wrapper generator, even if we don't have pnmpi.
+        # Figure out a better way to do this.
+        if [ -x "$pnmpi_home/bin/wrappergen" ]; then
+          # This is the standard gnu install location of things
+          PNMPI_WRAPPERGEN="$pnmpi_home/bin/wrappergen"
+          PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -p $pnmpi_home/share/pnmpi/mpi_pnmpi_proto"
+          PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -f $pnmpi_home/share/pnmpi/mpi_pnmpi_fct"
 
-                 # Export location of wrapper generator, even if we don't have pnmpi.
-                 # Figure out a better way to do this.
-                 if [ -x "$pnmpi_home/bin/wrappergen" ]; then
-                     # This is the standard gnu install location of things
-                     PNMPI_WRAPPERGEN="$pnmpi_home/bin/wrappergen"
-                     PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -p $pnmpi_home/share/pnmpi/mpi_pnmpi_proto"
-                     PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -f $pnmpi_home/share/pnmpi/mpi_pnmpi_fct"
+          PNMPI_PATCH="$pnmpi_home/bin/patch"
+          pnmpi_include="$pnmpi_home/include"
+          pnmpi_lib="$pnmpi_home/lib"
+          pnmpidir='${prefix}/lib'
 
-                     PNMPI_PATCH="$pnmpi_home/bin/patch"
-                     pnmpi_include="$pnmpi_home/include"
-                     pnmpi_lib="$pnmpi_home/lib"
-                     pnmpidir='${prefix}/lib'
+        elif [ -x "$pnmpi_home/wrappergen/wrappergen" ]; then
+          # If we find stuff here, it's all in some source directory
+          PNMPI_WRAPPERGEN="$withval/wrappergen/wrappergen"
+          PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -p $pnmpi_home/wrapper/mpi_pnmpi_proto"
+          PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -f $pnmpi_home/wrapper/mpi_pnmpi_fct"
 
-                 elif [ -x "$pnmpi_home/wrappergen/wrappergen" ]; then
-                     # If we find stuff here, it's all in some source directory
-                     PNMPI_WRAPPERGEN="$withval/wrappergen/wrappergen"
-                     PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -p $pnmpi_home/wrapper/mpi_pnmpi_proto"
-                     PNMPI_WRAPPERGEN="$PNMPI_WRAPPERGEN -f $pnmpi_home/wrapper/mpi_pnmpi_fct"
-
-                     if test "x$SYS_TYPE" == "x"; then
-                         SYS_TYPE=`uname -s`
-                     fi
-                     PNMPI_PATCH="$pnmpi_home/patch/patch"
-                     pnmpi_include="$pnmpi_home/include"
-                     pnmpi_lib="$pnmpi_home/lib/${SYS_TYPE}"
-                     pnmpidir="$pnmpi_lib"
-                 else
-                     as_fn_error "Couldn't find PnMPI wrappergen!" "$LINENO" 5
-                 fi
+          pnmpi_detect_sys_type="$SYS_TYPE"
+          if [ -z "$pnmpi_detect_sys_type" ]; then
+              pnmpi_detect_sys_type=`uname -s`
+          fi
+          PNMPI_PATCH="$pnmpi_home/patch/patch"
+          pnmpi_include="$pnmpi_home/include"
+          pnmpi_lib="$pnmpi_home/lib/${pnmpi_detect_sys_type}"
+          pnmpidir="$pnmpi_lib"
+        else
+          as_fn_error "Couldn't find PnMPI wrappergen!" "$LINENO" 5
+        fi
 
 
 
 
-                 # Export PNMPI_CPPFLAGS and PNMPI_LDFLAGS
+
+        # Export PNMPI_CPPFLAGS and PNMPI_LDFLAGS
 
   PNMPI_CPPFLAGS="-I$pnmpi_include"
   OLD_CPPFLAGS="$CPPFLAGS"
@@ -21173,60 +21212,34 @@ fi
 
 
 
-                 if test "x$have_pnmpi" != xno; then
-                     { $as_echo "$as_me:${as_lineno-$LINENO}: Building PnMPI tool modules." >&5
-$as_echo "$as_me: Building PnMPI tool modules." >&6;}
+        if [ "x$have_pnmpi" = xyes ]; then
 
-$as_echo "#define PNMPI_EFFORT 1" >>confdefs.h
+$as_echo "#define HAVE_PNMPI 1" >>confdefs.h
 
-              have_pnmpi=yes
-                 else
-                     have_pnmpi=no
-                 fi
-             fi
+          { $as_echo "$as_me:${as_lineno-$LINENO}: Building PnMPI tool modules." >&5
+$as_echo "$as_me: Building PnMPI tool modules." >&6;};
+        else
+          { $as_echo "$as_me:${as_lineno-$LINENO}: Building without PnMPI tool modules." >&5
+$as_echo "$as_me: Building without PnMPI tool modules." >&6;};
+        fi
+      fi
 
 else
   # --with-pnmpi not provided
-
-             { $as_echo "$as_me:${as_lineno-$LINENO}: Building without PnMPI tool modules." >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: Building without PnMPI tool modules." >&5
 $as_echo "$as_me: Building without PnMPI tool modules." >&6;}
-             have_pnmpi=no
-
+     have_pnmpi=no
 
 fi
 
-
-
-    if [ "x$have_pnmpi" = xno ]; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: Building PMPI tool module." >&5
-$as_echo "$as_me: Building PMPI tool module." >&6;}
-
-$as_echo "#define PMPI_EFFORT 1" >>confdefs.h
-
-        pmpi_effort=yes
-    else
-        pmpi_effort=no
-    fi
-else
-    pmpi_effort=no
-    have_pnmpi=no
-fi
- if test "x$pmpi_effort" = xyes; then
-  PMPI_EFFORT_TRUE=
-  PMPI_EFFORT_FALSE='#'
-else
-  PMPI_EFFORT_TRUE='#'
-  PMPI_EFFORT_FALSE=
-fi
 
  if test "x$have_pnmpi" = xyes; then
-  PNMPI_EFFORT_TRUE=
-  PNMPI_EFFORT_FALSE='#'
+  HAVE_PNMPI_TRUE=
+  HAVE_PNMPI_FALSE='#'
 else
-  PNMPI_EFFORT_TRUE='#'
-  PNMPI_EFFORT_FALSE=
+  HAVE_PNMPI_TRUE='#'
+  HAVE_PNMPI_FALSE=
 fi
-
 
 
 # If this is provided, use PMPI bindings instead of MPI bindings.
@@ -21276,7 +21289,7 @@ echo
 echo "Build Options:"
 echo "  Libra Viewer ................................... $build_viewer"
 echo "  PMPI Effort Library ............................ $pmpi_effort"
-echo "  PnMPI Effort Library ........................... $have_pnmpi"
+echo "  PnMPI Modules .................................. $have_pnmpi"
 echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
 echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"
@@ -21433,8 +21446,8 @@ if test -z "${PMPI_EFFORT_TRUE}" && test -z "${PMPI_EFFORT_FALSE}"; then
   as_fn_error "conditional \"PMPI_EFFORT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${PNMPI_EFFORT_TRUE}" && test -z "${PNMPI_EFFORT_FALSE}"; then
-  as_fn_error "conditional \"PNMPI_EFFORT\" was never defined.
+if test -z "${HAVE_PNMPI_TRUE}" && test -z "${HAVE_PNMPI_FALSE}"; then
+  as_fn_error "conditional \"HAVE_PNMPI\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

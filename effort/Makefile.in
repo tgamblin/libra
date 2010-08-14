@@ -78,7 +78,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/lx_lib_dwarf.m4 \
 	$(top_srcdir)/m4/lx_lib_elf.m4 $(top_srcdir)/m4/lx_lib_papi.m4 \
 	$(top_srcdir)/m4/lx_lib_subst.m4 \
-	$(top_srcdir)/m4/lx_lib_xml2.m4 \
+	$(top_srcdir)/m4/lx_lib_xml2.m4 $(top_srcdir)/m4/lx_mpi.m4 \
 	$(top_srcdir)/m4/lx_paradyn_tools.m4 \
 	$(top_srcdir)/m4/lx_pnmpi.m4 \
 	$(top_srcdir)/m4/lx_python_devel.m4 \
@@ -112,20 +112,9 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pnmpidir)" \
-	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(includedir)"
-LTLIBRARIES = $(lib_LTLIBRARIES) $(pnmpi_LTLIBRARIES)
-@PNMPI_EFFORT_TRUE@effort_la_DEPENDENCIES =  \
-@PNMPI_EFFORT_TRUE@	../callpath/libcallpath.la \
-@PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la
-am__effort_la_SOURCES_DIST = effort_wrapper.C
-@PNMPI_EFFORT_TRUE@am_effort_la_OBJECTS = effort_wrapper.lo
-effort_la_OBJECTS = $(am_effort_la_OBJECTS)
-effort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(effort_la_LDFLAGS) $(LDFLAGS) -o $@
-@PNMPI_EFFORT_TRUE@am_effort_la_rpath = -rpath $(pnmpidir)
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(includedir)"
+LTLIBRARIES = $(lib_LTLIBRARIES)
 @PMPI_EFFORT_TRUE@libcomm_effort_la_DEPENDENCIES =  \
 @PMPI_EFFORT_TRUE@	libeffort-runtime.la
 am__libcomm_effort_la_SOURCES_DIST = comm_wrapper.C base_wrapper.C
@@ -197,15 +186,6 @@ libtiming_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libtiming_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libtiming_la_rpath = -rpath $(libdir)
-@PNMPI_EFFORT_TRUE@timing_la_DEPENDENCIES =  \
-@PNMPI_EFFORT_TRUE@	../libwavelet/libwavelet.la
-am__timing_la_SOURCES_DIST = timing_module.C
-@PNMPI_EFFORT_TRUE@am_timing_la_OBJECTS = timing_module.lo
-timing_la_OBJECTS = $(am_timing_la_OBJECTS)
-timing_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(timing_la_LDFLAGS) $(LDFLAGS) -o $@
-@PNMPI_EFFORT_TRUE@am_timing_la_rpath = -rpath $(pnmpidir)
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@am__EXEEXT_1 = sample-test$(EXEEXT) \
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@	approx-timer$(EXEEXT)
 @HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
@@ -286,28 +266,24 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(effort_la_SOURCES) $(libcomm_effort_la_SOURCES) \
-	$(libeffort_runtime_la_SOURCES) $(libeffort_la_SOURCES) \
-	$(libmanual_effort_la_SOURCES) \
+SOURCES = $(libcomm_effort_la_SOURCES) $(libeffort_runtime_la_SOURCES) \
+	$(libeffort_la_SOURCES) $(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
-	$(libtiming_la_SOURCES) $(timing_la_SOURCES) \
-	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
-	$(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(libtiming_la_SOURCES) $(approx_timer_SOURCES) \
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
 	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
 	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
 	$(tuner_SOURCES)
-DIST_SOURCES = $(am__effort_la_SOURCES_DIST) \
-	$(am__libcomm_effort_la_SOURCES_DIST) \
+DIST_SOURCES = $(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libeffort_runtime_la_SOURCES_DIST) \
 	$(am__libeffort_la_SOURCES_DIST) \
 	$(am__libmanual_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
-	$(am__libtiming_la_SOURCES_DIST) $(am__timing_la_SOURCES_DIST) \
-	$(approx_timer_SOURCES) $(bin_test_SOURCES) \
-	$(dataset_test_SOURCES) $(ef_SOURCES) \
+	$(am__libtiming_la_SOURCES_DIST) $(approx_timer_SOURCES) \
+	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
 	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
 	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
@@ -565,6 +541,26 @@ s3d_topo_test_SOURCES = s3d_topo_test.C
 CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
+
+#
+# Build PnMPI modules if PnMPI is available.  This handles building module libraries,
+# patching them, and installing them to PnMPI's module install directory.
+#
+#pnmpi_LTLIBRARIES = effort.la timing.la
+
+#timing_la_SOURCES = timing_module.C
+#timing_la_LDFLAGS = -avoid-version -module
+#timing_la_LIBADD = ../libwavelet/libwavelet.la
+
+#effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
+#effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
+#effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
+
+# Installs library using PnMPI patcher
+#install-exec-hook:
+#	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
+#	chmod u+x .libs/effort-patched.so
+#	mv -f .libs/effort-patched.so .libs/effort.so
 LDADD = libeffort.la ../cluster/libcluster.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
@@ -577,18 +573,6 @@ INCLUDES = -I$(top_srcdir)/libwavelet \
            $(SW_CPPFLAGS) \
            $(AMPL_CPPFLAGS)
 
-
-#
-# Build a PnMPI module and install in PnMPI's module directory.
-# NOTE: below is currently unmaintained and unsupported.
-#
-@PNMPI_EFFORT_TRUE@pnmpi_LTLIBRARIES = effort.la timing.la
-@PNMPI_EFFORT_TRUE@timing_la_SOURCES = timing_module.C
-@PNMPI_EFFORT_TRUE@timing_la_LDFLAGS = -avoid-version -module
-@PNMPI_EFFORT_TRUE@timing_la_LIBADD = ../libwavelet/libwavelet.la
-@PNMPI_EFFORT_TRUE@effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-@PNMPI_EFFORT_TRUE@effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
-@PNMPI_EFFORT_TRUE@effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -602,9 +586,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu effort/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign effort/Makefile
+	  $(AUTOMAKE) --gnu effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -654,39 +638,6 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-install-pnmpiLTLIBRARIES: $(pnmpi_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(pnmpidir)" || $(MKDIR_P) "$(DESTDIR)$(pnmpidir)"
-	@list='$(pnmpi_LTLIBRARIES)'; test -n "$(pnmpidir)" || list=; \
-	list2=; for p in $$list; do \
-	  if test -f $$p; then \
-	    list2="$$list2 $$p"; \
-	  else :; fi; \
-	done; \
-	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(pnmpidir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(pnmpidir)"; \
-	}
-
-uninstall-pnmpiLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(pnmpi_LTLIBRARIES)'; test -n "$(pnmpidir)" || list=; \
-	for p in $$list; do \
-	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(pnmpidir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(pnmpidir)/$$f"; \
-	done
-
-clean-pnmpiLTLIBRARIES:
-	-test -z "$(pnmpi_LTLIBRARIES)" || rm -f $(pnmpi_LTLIBRARIES)
-	@list='$(pnmpi_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-effort.la: $(effort_la_OBJECTS) $(effort_la_DEPENDENCIES) 
-	$(effort_la_LINK) $(am_effort_la_rpath) $(effort_la_OBJECTS) $(effort_la_LIBADD) $(LIBS)
 libcomm-effort.la: $(libcomm_effort_la_OBJECTS) $(libcomm_effort_la_DEPENDENCIES) 
 	$(libcomm_effort_la_LINK) $(am_libcomm_effort_la_rpath) $(libcomm_effort_la_OBJECTS) $(libcomm_effort_la_LIBADD) $(LIBS)
 libeffort-runtime.la: $(libeffort_runtime_la_OBJECTS) $(libeffort_runtime_la_DEPENDENCIES) 
@@ -701,8 +652,6 @@ libpmpi-effort.la: $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_DEPENDENCIES
 	$(libpmpi_effort_la_LINK) $(am_libpmpi_effort_la_rpath) $(libpmpi_effort_la_OBJECTS) $(libpmpi_effort_la_LIBADD) $(LIBS)
 libtiming.la: $(libtiming_la_OBJECTS) $(libtiming_la_DEPENDENCIES) 
 	$(libtiming_la_LINK) $(am_libtiming_la_rpath) $(libtiming_la_OBJECTS) $(libtiming_la_LIBADD) $(LIBS)
-timing.la: $(timing_la_OBJECTS) $(timing_la_DEPENDENCIES) 
-	$(timing_la_LINK) $(am_timing_la_rpath) $(timing_la_OBJECTS) $(timing_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
@@ -992,7 +941,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(HEADERS)
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pnmpidir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1021,11 +970,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@PNMPI_EFFORT_FALSE@install-exec-hook:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-pnmpiLTLIBRARIES mostlyclean-am
+	clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1045,7 +993,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS install-pnmpiLTLIBRARIES
+install-data-am: install-includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -1053,8 +1001,7 @@ install-dvi-am:
 
 install-exec-am: install-binPROGRAMS install-dist_binSCRIPTS \
 	install-libLTLIBRARIES
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
+
 install-html: install-html-am
 
 install-html-am:
@@ -1094,29 +1041,26 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pnmpiLTLIBRARIES
+	uninstall-includeHEADERS uninstall-libLTLIBRARIES
 
-.MAKE: install-am install-exec-am install-strip
+.MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-pnmpiLTLIBRARIES ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am \
-	install-dist_binSCRIPTS install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-hook install-html \
-	install-html-am install-includeHEADERS install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-pnmpiLTLIBRARIES install-ps \
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dist_binSCRIPTS \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-includeHEADERS \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-man install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-dist_binSCRIPTS \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-pnmpiLTLIBRARIES
+	uninstall-includeHEADERS uninstall-libLTLIBRARIES
 
 
 $(srcdir)/base_wrapper.C: base_wrapper.w
@@ -1130,12 +1074,6 @@ $(srcdir)/comm_wrapper.C: comm_wrapper.w
 
 $(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
-
-# Installs library using PnMPI patcher
-@PNMPI_EFFORT_TRUE@install-exec-hook:
-@PNMPI_EFFORT_TRUE@	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
-@PNMPI_EFFORT_TRUE@	chmod u+x .libs/effort-patched.so
-@PNMPI_EFFORT_TRUE@	mv -f .libs/effort-patched.so .libs/effort.so
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

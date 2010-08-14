@@ -77,8 +77,8 @@ AC_ARG_WITH([python],
 
      # Need this so that we can check for frameworks properly.
      echo $ECHO_N "checking if Python is a Mac OS X Framework... $ECHO_C"
-     SYS_TYPE=`uname -s`
-     if test "x$SYS_TYPE" = "xDarwin" && (echo $pyhome | grep -q '\.framework$'); then
+     py_devel_sys_type=`uname -s`
+     if test "x$py_devel_sys_type" = "xDarwin" && (echo $pyhome | grep -q '\.framework$'); then
          echo yes
          py_is_framework=yes
      else
@@ -136,7 +136,7 @@ AC_ARG_WITH([python],
           # Infer python home directory from the executable's location, as it was autodetected
           pyhome=`echo ${PYTHON} | sed 's_/bin/[[^/]]*\$__'`
           AC_MSG_NOTICE([Assuming python home directory is "$pyhome".])
-          if [[ "x$SYS_TYPE" = "xDarwin" ]]; then
+          if [[ "x$py_devel_sys_type" = "xDarwin" ]]; then
               echo "  NOTE: On Mac OS X, you may need to explicitly supply"
               echo "        the path to Python.framework on your system."
           fi

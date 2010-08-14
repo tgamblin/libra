@@ -19,6 +19,9 @@
 /* Define to 1 if you have the `clock_gettime' function. */
 #undef HAVE_CLOCK_GETTIME
 
+/* Define to 1 if you have dyninst common library. */
+#undef HAVE_COMMON
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -37,8 +40,11 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Define to 1 if you have <mpi.h>. */
+/* Define to 1 if you have MPI libs and headers. */
 #undef HAVE_MPI
+
+/* Define to 1 if we have support for PnMPI tool framework */
+#undef HAVE_PNMPI
 
 /* Defined if we have the SPRNG library. */
 #undef HAVE_SPRNG
@@ -55,10 +61,10 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Defined if we have DynStackwalker API. */
+/* Define to 1 if you have StackwalkerAPI library. */
 #undef HAVE_SW
 
-/* Defined if we have SymtabAPI. */
+/* Define to 1 if you have dyninst SymtabAPI library. */
 #undef HAVE_SYMTAB
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
@@ -97,9 +103,6 @@
 
 /* Define to 1 to build PMPI-only effort tool. */
 #undef PMPI_EFFORT
-
-/* Define to 1 to build PMPI-only effort tool. */
-#undef PNMPI_EFFORT
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

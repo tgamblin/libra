@@ -138,6 +138,28 @@ $(srcdir)/waitall_wrapper.C: waitall_wrapper.w
 	$(PYTHON) $(srcdir)/wrap.py -fg -i $(PMPI_INIT) $< -o $@
 
 
+#
+# Build PnMPI modules if PnMPI is available.  This handles building module libraries,
+# patching them, and installing them to PnMPI's module install directory.
+#
+if HAVE_PNMPI
+#pnmpi_LTLIBRARIES = effort.la timing.la
+
+#timing_la_SOURCES = timing_module.C
+#timing_la_LDFLAGS = -avoid-version -module
+#timing_la_LIBADD = ../libwavelet/libwavelet.la
+
+#effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
+#effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
+#effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
+
+# Installs library using PnMPI patcher
+#install-exec-hook:
+#	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
+#	chmod u+x .libs/effort-patched.so
+#	mv -f .libs/effort-patched.so .libs/effort.so
+endif
+
 LDADD   =  libeffort.la ../cluster/libcluster.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
@@ -149,32 +171,4 @@ INCLUDES = -I$(top_srcdir)/libwavelet \
            $(PAPI_CPPFLAGS) \
            $(SW_CPPFLAGS) \
            $(AMPL_CPPFLAGS)
-
-
-
-
-
-
-
-#
-# Build a PnMPI module and install in PnMPI's module directory.
-# NOTE: below is currently unmaintained and unsupported.
-#
-if PNMPI_EFFORT
-pnmpi_LTLIBRARIES = effort.la timing.la
-
-timing_la_SOURCES = timing_module.C
-timing_la_LDFLAGS = -avoid-version -module
-timing_la_LIBADD = ../libwavelet/libwavelet.la
-
-effort_la_SOURCES = $(PMPI_EFFORT_SRCS) effort_wrapper.C
-effort_la_LIBADD = ../callpath/libcallpath.la ../libwavelet/libwavelet.la 
-effort_la_LDFLAGS = -avoid-version -module $(PAPI_LDFLAGS) $(SPRNG_LDFLAGS)
-
-# Installs library using PnMPI patcher
-install-exec-hook:
-	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
-	chmod u+x .libs/effort-patched.so
-	mv -f .libs/effort-patched.so .libs/effort.so
-endif
 

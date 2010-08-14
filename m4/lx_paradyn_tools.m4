@@ -35,9 +35,19 @@
 #  ------------------------------------------------------------------------
 # Tests for everything needed for paradyn tools API: dwarf, xml2, symtabAPI,
 # and DynStackwalkerAPI.  Sets have_symtabAPI, have_stackwalk if either is found.
-# Will also set the following variables for different pieces of the SW API 
-# infrastucture:
-# have_stackwalk, have_symtabAPI, have_common
+#
+# Output shell variables:
+#   have_stackwalk    Set to 'yes' or 'no'
+#   have_symtabAPI    Set to 'yes' or 'no'
+#   have_common       Set to 'yes' or 'no'
+#
+# AC_SUBST variables:
+#   COMMON_CPPFLAGS    SYMTAB_CPPFLAGS      SW_CPPFLAGS 
+#   COMMON_LDFLAGS     SYBTAB_LDFLAGS       SW_LDFLAGS  
+#   COMMON_RPATH       SYMTAB_RPATH         SW_RPATH    
+#
+# AC_DEFINES:
+#   HAVE_COMMON        HAVE_SYMTAB          HAVE_SW
 #
 AC_DEFUN([LX_PARADYN_TOOLS],
 [
@@ -111,9 +121,18 @@ AC_DEFUN([LX_PARADYN_TOOLS],
      have_stackwalk=no
    fi     
 
-   if test "x$have_common" != xno;    then have_common=yes;    fi
-   if test "x$have_symtabAPI" != xno; then have_symtabAPI=yes; fi
-   if test "x$have_stackwalk" != xno; then have_stackwalk=yes; fi
+   if test "x$have_common" != xno; then 
+     AC_DEFINE([HAVE_COMMON], [1], [Define to 1 if you have dyninst common library.])
+     have_common=yes;
+   fi
+   if test "x$have_symtabAPI" != xno; then
+     AC_DEFINE([HAVE_SYMTAB], [1], [Define to 1 if you have dyninst SymtabAPI library.])
+     have_symtabAPI=yes;
+   fi
+   if test "x$have_stackwalk" != xno; then
+     AC_DEFINE([HAVE_SW], [1], [Define to 1 if you have StackwalkerAPI library.])
+     have_stackwalk=yes;
+   fi
   ],
   [echo "path to ParaDyn tools not provided."
    have_common=no

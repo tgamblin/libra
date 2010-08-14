@@ -52,12 +52,9 @@ AX_BOOST_BASE
 # This will NOT add MPI libraries to the build.
 CC=${CXX}          # Use CXX instead of CC for tests
 CPP="${CXX} -E"    # Use CXX instead of defaupt CPP for tests
-AC_CHECK_HEADER([mpi.h],
-    [AC_DEFINE([HAVE_MPI], [1], [Define to 1 if you have <mpi.h>.])
-     have_mpi=yes],
-    [AC_MSG_NOTICE([Couldn't find mpi.h. Building without MPI.])
-     have_mpi=no])
+LX_MPI
 AM_CONDITIONAL([HAVE_MPI], [test "x$have_mpi" == xyes])
+#AC_LANG_POP
 
 # Check for Linux timers.
 AC_CHECK_LIB(rt, clock_gettime)
@@ -99,44 +96,26 @@ AM_CONDITIONAL([BUILD_VIEWER], [ test "x$build_viewer" = xyes ])
 # Check for Wisconsin ParaDyn Tools (this includes checking for dependencies)
 LX_PARADYN_TOOLS
 AM_CONDITIONAL([HAVE_SW], [test "x$have_stackwalk" = xyes])
-if [[ "x$have_stackwalk" = xyes ]]; then
-   AC_DEFINE([HAVE_SW], [1], [Defined if we have DynStackwalker API.])
-fi
 AM_CONDITIONAL([HAVE_SYMTAB], [test "x$have_symtabAPI" = xyes])
-if [[ "x$have_symtabAPI" = xyes ]]; then
-   AC_DEFINE([HAVE_SYMTAB], [1], [Defined if we have SymtabAPI.])
-fi
-
 
 # Check for PAPI for HW counters
 LX_LIB_PAPI
 AM_CONDITIONAL([HAVE_PAPI],  [test "x$have_papi" = xyes])
-if [[ "x$have_papi" = xyes ]]; then
-   AC_DEFINE([HAVE_LIBPAPI], [1], [Defined if we have PAPI.])
-fi
-
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
 if [[ "x$have_mpi" = xyes -a "x$have_stackwalk" = xyes ]]; then
-    LX_PNMPI([AC_MSG_NOTICE([Building PnMPI tool modules.])
-              AC_DEFINE([PNMPI_EFFORT], [1], [Define to 1 to build PMPI-only effort tool.])
-              have_pnmpi=yes],
-             [have_pnmpi=no])
-
-    if [[ "x$have_pnmpi" = xno ]]; then
-        AC_MSG_NOTICE([Building PMPI tool module.])
-        AC_DEFINE([PMPI_EFFORT], [1], [Define to 1 to build PMPI-only effort tool.])
-        pmpi_effort=yes
-    else
-        pmpi_effort=no
-    fi
+    AC_MSG_NOTICE([Building PMPI tool module.])
+    AC_DEFINE([PMPI_EFFORT], [1], [Define to 1 to build PMPI-only effort tool.])
+    pmpi_effort=yes
 else
     pmpi_effort=no
-    have_pnmpi=no
 fi
 AM_CONDITIONAL([PMPI_EFFORT],  [test "x$pmpi_effort" = xyes])
-AM_CONDITIONAL([PNMPI_EFFORT], [test "x$have_pnmpi" = xyes])
 
+# Check for PnMPI tool framework.
+LX_PNMPI([AC_MSG_NOTICE([Building PnMPI tool modules.])],
+         [AC_MSG_NOTICE([Building without PnMPI tool modules.])])
+AM_CONDITIONAL([HAVE_PNMPI], [test "x$have_pnmpi" = xyes])
 
 # If this is provided, use PMPI bindings instead of MPI bindings.  
 AC_ARG_WITH([mpi-wavelet], 
@@ -178,7 +157,7 @@ echo
 echo "Build Options:"
 echo "  Libra Viewer ................................... $build_viewer"
 echo "  PMPI Effort Library ............................ $pmpi_effort"
-echo "  PnMPI Effort Library ........................... $have_pnmpi"
+echo "  PnMPI Modules .................................. $have_pnmpi"
 echo "  PMPI Wavelet Bindings .......................... $pmpi_wavelet"
 echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"

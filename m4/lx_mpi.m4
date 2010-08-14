@@ -31,40 +31,15 @@
 #################################################################################################
 
 #
-# LX_LIB_PAPI ([default-location])
+# LX_MPI ([default-location])
 #  ------------------------------------------------------------------------
-# Tests for presence of PAPI library and headers.
-# 
-# Output shell variables:
-#   have_papi      Set to 'yes' or 'no'
-# 
-# AC_SUBST variables:
-#   PAPI_CPPFLAGS  PAPI includes
-#   PAPI_LDFLAGS   PAPI linker args and libraries.
-#   PAPI_RPATH     PAPI rpath args
-# 
-# AC_DEFINES:
-#   HAVE_LIBPAPI   Defined to 1 if PAPI was found, not defined otherwise.
-# 
-AC_DEFUN([LX_LIB_PAPI],
-[
-  AC_ARG_WITH([papi],
-              AS_HELP_STRING([--with-papi=<dir>],
-                             [Path to the installation directory of PAPI.]),
-              [papidir=$withval
-               LX_HEADER_SUBST(papi, [papi.h], PAPI, [-I$papidir/include])           
-               if test -d "$papidir/lib64"; then
-                 papilibdir="$papidir/lib64"
-               elif test -d "$papidir/lib"; then
-                 papilibdir="$papidir/lib"
-               fi
-               LX_LIB_SUBST(papi, PAPI_library_init, PAPI, [$papilibdir], [-lpapi])
-              ],
-              [LX_HEADER_SUBST(papi, [papi.h], PAPI, [])
-               LX_LIB_SUBST(papi, PAPI_library_init, PAPI, [$1], [-lpapi])])
-
-  if test "x$have_papi" != xno; then
-    have_papi=yes
-    AC_DEFINE([HAVE_LIBPAPI], [1], [Defined if we have PAPI.])
-  fi
+# Tests for presence of MPI. Doesn't support a custom MPI location; 
+# assumes you're compiling with an MPI compiler wrapper.
+#
+AC_DEFUN([LX_MPI], [
+    AC_TRY_LINK([#include <mpi.h>],
+                [int foo; MPI_Initialized(&foo);],
+                [have_mpi=yes
+                 AC_DEFINE([HAVE_MPI], [1], [Define to 1 if you have MPI libs and headers.])],
+                [have_mpi=no])
 ])
