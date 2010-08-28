@@ -567,6 +567,7 @@ dist_noinst_SCRIPTS = wrap.py
 #	mv -f .libs/effort-patched.so .libs/effort.so
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
+					 $(MPI_CXXFLAGS) \
 					 $(SPRNG_CPPFLAGS) \
            $(PNMPI_CPPFLAGS) \
            $(BOOST_CPPFLAGS) \
@@ -588,9 +589,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu effort/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign effort/Makefile
+	  $(AUTOMAKE) --gnu effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

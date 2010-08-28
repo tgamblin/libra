@@ -40,6 +40,8 @@ if HAVE_MPI
 libwavelet_la_SOURCES += \
 	wt_parallel.C \
 	par_ezw_encoder.C
+
+libwavelet_la_LIBADD = $(MPI_CXXLDFLAGS)
 endif
 
 #
@@ -99,4 +101,4 @@ devel_headers = \
 	huffman.h
 
 
-INCLUDES=$(BOOST_CPPFLAGS)
+INCLUDES=$(BOOST_CPPFLAGS) $(MPI_CXXFLAGS)

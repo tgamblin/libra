@@ -442,8 +442,14 @@ dist_icon_DATA = \
 
 simtest_SOURCES = simtest.C
 simtest_LDADD = libvtkeffort.la ../libwavelet/libwavelet.la 
-INCLUDES = $(BOOST_CPPFLAGS) $(VTK_CPPFLAGS) -I$(top_srcdir)/libwavelet \
--I$(top_srcdir)/callpath -I$(top_srcdir)/effort $(PYTHON_CPPFLAGS)
+INCLUDES = \
+	$(MPI_CXXFLAGS) \
+	$(BOOST_CPPFLAGS) \
+	$(VTK_CPPFLAGS) \
+	-I$(top_srcdir)/libwavelet \
+	-I$(top_srcdir)/callpath \
+	-I$(top_srcdir)/effort \
+	$(PYTHON_CPPFLAGS)
 
 CLEANFILES = $(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc
 all: all-am
@@ -459,9 +465,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign viewer/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu viewer/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign viewer/Makefile
+	  $(AUTOMAKE) --gnu viewer/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

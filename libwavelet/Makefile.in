@@ -102,7 +102,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libwavelet_la_LIBADD =
+am__DEPENDENCIES_1 =
+@HAVE_MPI_TRUE@libwavelet_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libwavelet_la_SOURCES_DIST = cdf97.C wt_1d.C wt_2d.C wt_lift.C \
 	wt_direct.C wt_1d_lift.C wt_1d_direct.C wt_utils.C io_utils.C \
 	matrix_utils.C filter_bank.C ezw.C ezw_encoder.C ezw_decoder.C \
@@ -342,6 +343,7 @@ libwavelet_la_SOURCES = cdf97.C wt_1d.C wt_2d.C wt_lift.C wt_direct.C \
 	byte_budget_exception.C timing.C Timer.C rle.C huffman.C \
 	$(am__append_1)
 libwavelet_la_LDFLAGS = -avoid-version
+@HAVE_MPI_TRUE@libwavelet_la_LIBADD = $(MPI_CXXLDFLAGS)
 
 #
 # Headers for all the library classes
@@ -372,7 +374,7 @@ devel_headers = \
 	rle.h \
 	huffman.h
 
-INCLUDES = $(BOOST_CPPFLAGS)
+INCLUDES = $(BOOST_CPPFLAGS) $(MPI_CXXFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -386,9 +388,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign libwavelet/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu libwavelet/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign libwavelet/Makefile
+	  $(AUTOMAKE) --gnu libwavelet/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

@@ -175,6 +175,7 @@ endif
 
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
+					 $(MPI_CXXFLAGS) \
 					 $(SPRNG_CPPFLAGS) \
            $(PNMPI_CPPFLAGS) \
            $(BOOST_CPPFLAGS) \

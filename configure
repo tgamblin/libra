@@ -18346,13 +18346,34 @@ test -n "$MPICXX" || MPICXX="not-found"
      # Figure out what the compiler responds to to get it to show us the compile
      # and link lines.  After this part of the macro, we'll have a valid
      # lx_mpi_command_line
-     lx_mpi_compile_line=`MPICXX -showme:compile 2>/dev/null`
+     echo -n "Checking whether $MPICXX responds to '-showme:compile'... "
+     lx_mpi_compile_line=`$MPICXX -showme:compile 2>/dev/null`
      if [ "$?" -eq 0 ]; then
-         lx_mpi_link_line=`MPICXX -showme:link 2>/dev/null`
+         echo yes
+         lx_mpi_link_line=`$MPICXX -showme:link 2>/dev/null`
      else
-         lx_mpi_command_line=`MPICXX -showme 2>/dev/null`
+         echo no
+         echo -n "Checking whether $MPICXX responds to '-showme'... "
+         lx_mpi_command_line=`$MPICXX -showme 2>/dev/null`
          if [ "$?" -ne 0 ]; then
-             lx_mpi_command_line=`MPICXX -show 2>/dev/null`
+             echo no
+             echo -n "Checking whether $MPICXX responds to '-compile-info'... "
+             lx_mpi_compile_line=`$MPICXX -compile-info 2>/dev/null`
+             if [ "$?" -eq 0 ]; then
+                 echo yes
+                 lx_mpi_link_line=`$MPICXX -link-info 2>/dev/null`
+             else
+                 echo no
+                 echo -n "Checking whether $MPICXX responds to '-show'... "
+                 lx_mpi_command_line=`$MPICXX -show 2>/dev/null`
+                 if [ "$?" -eq 0 ]; then
+                     echo yes
+                 else
+                     echo no
+                 fi
+             fi
+         else
+             echo yes
          fi
      fi
 
@@ -18375,9 +18396,6 @@ test -n "$MPICXX" || MPICXX="not-found"
          MPI_CXXFLAGS=`  echo "$MPI_CXXFLAGS"   | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
          MPI_CXXLDFLAGS=`echo "$MPI_CXXLDFLAGS" | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
 
-         echo MPI_CXXFLAGS="$MPI_CXXFLAGS"
-         echo MPI_CXXLDFLAGS="$MPI_CXXLDFLAGS"
-
          # Add a define for testing at compile time.
 
 $as_echo "#define HAVE_MPI 1" >>confdefs.h
@@ -18391,6 +18409,7 @@ $as_echo "#define HAVE_MPI 1" >>confdefs.h
          # set a shell variable that the caller can test outside this macro
          have_CXX_mpi='yes'
      else
+         Echo Unable to find suitable MPI Compiler. Try setting MPICXX.
          have_CXX_mpi='no'
      fi
 
@@ -18447,13 +18466,34 @@ test -n "$MPICXX" || MPICXX="not-found"
      # Figure out what the compiler responds to to get it to show us the compile
      # and link lines.  After this part of the macro, we'll have a valid
      # lx_mpi_command_line
-     lx_mpi_compile_line=`MPICXX -showme:compile 2>/dev/null`
+     echo -n "Checking whether $MPICXX responds to '-showme:compile'... "
+     lx_mpi_compile_line=`$MPICXX -showme:compile 2>/dev/null`
      if [ "$?" -eq 0 ]; then
-         lx_mpi_link_line=`MPICXX -showme:link 2>/dev/null`
+         echo yes
+         lx_mpi_link_line=`$MPICXX -showme:link 2>/dev/null`
      else
-         lx_mpi_command_line=`MPICXX -showme 2>/dev/null`
+         echo no
+         echo -n "Checking whether $MPICXX responds to '-showme'... "
+         lx_mpi_command_line=`$MPICXX -showme 2>/dev/null`
          if [ "$?" -ne 0 ]; then
-             lx_mpi_command_line=`MPICXX -show 2>/dev/null`
+             echo no
+             echo -n "Checking whether $MPICXX responds to '-compile-info'... "
+             lx_mpi_compile_line=`$MPICXX -compile-info 2>/dev/null`
+             if [ "$?" -eq 0 ]; then
+                 echo yes
+                 lx_mpi_link_line=`$MPICXX -link-info 2>/dev/null`
+             else
+                 echo no
+                 echo -n "Checking whether $MPICXX responds to '-show'... "
+                 lx_mpi_command_line=`$MPICXX -show 2>/dev/null`
+                 if [ "$?" -eq 0 ]; then
+                     echo yes
+                 else
+                     echo no
+                 fi
+             fi
+         else
+             echo yes
          fi
      fi
 
@@ -18476,9 +18516,6 @@ test -n "$MPICXX" || MPICXX="not-found"
          MPI_CXXFLAGS=`  echo "$MPI_CXXFLAGS"   | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
          MPI_CXXLDFLAGS=`echo "$MPI_CXXLDFLAGS" | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
 
-         echo MPI_CXXFLAGS="$MPI_CXXFLAGS"
-         echo MPI_CXXLDFLAGS="$MPI_CXXLDFLAGS"
-
          # Add a define for testing at compile time.
 
 $as_echo "#define HAVE_MPI 1" >>confdefs.h
@@ -18492,6 +18529,7 @@ $as_echo "#define HAVE_MPI 1" >>confdefs.h
          # set a shell variable that the caller can test outside this macro
          have_CXX_mpi='yes'
      else
+         Echo Unable to find suitable MPI Compiler. Try setting MPICXX.
          have_CXX_mpi='no'
      fi
 
@@ -21219,7 +21257,7 @@ fi
 
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
-if [ "x$have_mpi" = xyes -a "x$have_stackwalk" = xyes ]; then
+if [ "x$have_CXX_mpi" = xyes -a "x$have_stackwalk" = xyes ]; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: Building PMPI tool module." >&5
 $as_echo "$as_me: Building PMPI tool module." >&6;}
 

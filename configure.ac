@@ -107,7 +107,7 @@ LX_LIB_PAPI
 AM_CONDITIONAL([HAVE_PAPI],  [test "x$have_papi" = xyes])
 
 # Use PnMPI if the user provided it explicitly, otherwise use PMPI.
-if [[ "x$have_mpi" = xyes -a "x$have_stackwalk" = xyes ]]; then
+if [[ "x$have_CXX_mpi" = xyes -a "x$have_stackwalk" = xyes ]]; then
     AC_MSG_NOTICE([Building PMPI tool module.])
     AC_DEFINE([PMPI_EFFORT], [1], [Define to 1 to build PMPI-only effort tool.])
     pmpi_effort=yes

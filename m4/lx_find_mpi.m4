@@ -123,13 +123,34 @@ AC_DEFUN([LX_QUERY_MPI_COMPILER],
      # Figure out what the compiler responds to to get it to show us the compile
      # and link lines.  After this part of the macro, we'll have a valid 
      # lx_mpi_command_line
-     lx_mpi_compile_line=`$1 -showme:compile 2>/dev/null`
+     echo -n "Checking whether $$1 responds to '-showme:compile'... "
+     lx_mpi_compile_line=`$$1 -showme:compile 2>/dev/null`
      if [[ "$?" -eq 0 ]]; then
-         lx_mpi_link_line=`$1 -showme:link 2>/dev/null`
+         echo yes
+         lx_mpi_link_line=`$$1 -showme:link 2>/dev/null`
      else
-         lx_mpi_command_line=`$1 -showme 2>/dev/null`
+         echo no
+         echo -n "Checking whether $$1 responds to '-showme'... "
+         lx_mpi_command_line=`$$1 -showme 2>/dev/null`
          if [[ "$?" -ne 0 ]]; then
-             lx_mpi_command_line=`$1 -show 2>/dev/null`
+             echo no
+             echo -n "Checking whether $$1 responds to '-compile-info'... "
+             lx_mpi_compile_line=`$$1 -compile-info 2>/dev/null`
+             if [[ "$?" -eq 0 ]]; then
+                 echo yes
+                 lx_mpi_link_line=`$$1 -link-info 2>/dev/null`
+             else
+                 echo no
+                 echo -n "Checking whether $$1 responds to '-show'... "
+                 lx_mpi_command_line=`$$1 -show 2>/dev/null`
+                 if [[ "$?" -eq 0 ]]; then
+                     echo yes
+                 else
+                     echo no
+                 fi
+             fi
+         else
+             echo yes
          fi
      fi
           
@@ -152,9 +173,6 @@ AC_DEFUN([LX_QUERY_MPI_COMPILER],
          MPI_$3FLAGS=`  echo "$MPI_$3FLAGS"   | tr '\n' ' ' | sed 's/^[[ \t]]*//;s/[[ \t]]*$//' | sed 's/  */ /g'`
          MPI_$3LDFLAGS=`echo "$MPI_$3LDFLAGS" | tr '\n' ' ' | sed 's/^[[ \t]]*//;s/[[ \t]]*$//' | sed 's/  */ /g'`
 
-         echo MPI_$3FLAGS="$MPI_$3FLAGS"
-         echo MPI_$3LDFLAGS="$MPI_$3LDFLAGS"
-
          # Add a define for testing at compile time.
          AC_DEFINE([HAVE_MPI], [1], [Define to 1 if you have MPI libs and headers.])
 
@@ -166,6 +184,7 @@ AC_DEFUN([LX_QUERY_MPI_COMPILER],
          # set a shell variable that the caller can test outside this macro
          have_$3_mpi='yes'
      else
+         Echo Unable to find suitable MPI Compiler. Try setting $1.
          have_$3_mpi='no'         
      fi
 ])

@@ -69,6 +69,7 @@ clean-local: delitter
 
 LDADD = ../libwavelet/libwavelet.la
 INCLUDES = \
+	$(MPI_CXXFLAGS) \
 	$(BOOST_CPPFLAGS) \
 	-I$(top_srcdir)/libwavelet \
 	-I$(top_srcdir)/effort \
