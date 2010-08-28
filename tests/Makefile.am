@@ -41,8 +41,13 @@ swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
 swcheck_LDADD =  ../callpath/libcallpath.la  ../libwavelet/libwavelet.la
 
 partest_SOURCES = partest.C
+partest_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
+
 parezwtest_SOURCES = parezwtest.C
+parezwtest_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
+
 parspeedbench_SOURCES = parspeedbench.C
+parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""

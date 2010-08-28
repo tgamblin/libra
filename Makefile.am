@@ -29,5 +29,5 @@ EXTRA_DIST = \
 	config/powerpc-bgl-linux-gnu \
 	config/powerpc-bgp-linux-gnu
 
-SUBDIRS=libwavelet callpath cluster effort $(VIEWER_DIRS) tests
+SUBDIRS=libwavelet callpath effort $(VIEWER_DIRS) tests
 

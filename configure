@@ -759,6 +759,30 @@ HAVE_PAPI_TRUE
 PAPI_RPATH
 PAPI_LDFLAGS
 PAPI_CPPFLAGS
+BUILD_VIEWER_FALSE
+BUILD_VIEWER_TRUE
+AX_SWIG_PYTHON_CPPFLAGS
+AX_SWIG_PYTHON_OPT
+SWIG_LIB
+SWIG
+PYTHON_RPATH
+PYTHON_LDFLAGS
+PYTHON_CPPFLAGS
+pkgpyexecdir
+pyexecdir
+pkgpythondir
+pythondir
+PYTHON_PLATFORM
+PYTHON_EXEC_PREFIX
+PYTHON_PREFIX
+PYTHON_VERSION
+PYTHON
+HAVE_MUSTER_FALSE
+HAVE_MUSTER_TRUE
+HAVE_SPRNG_FALSE
+HAVE_SPRNG_TRUE
+SPRNG_LDFLAGS
+SPRNG_CPPFLAGS
 HAVE_SYMTAB_FALSE
 HAVE_SYMTAB_TRUE
 HAVE_SW_FALSE
@@ -781,37 +805,18 @@ DWARF_RPATH
 DWARF_LDFLAGS
 ELF_RPATH
 ELF_LDFLAGS
-BUILD_VIEWER_FALSE
-BUILD_VIEWER_TRUE
-AX_SWIG_PYTHON_CPPFLAGS
-AX_SWIG_PYTHON_OPT
-SWIG_LIB
-SWIG
-PYTHON_RPATH
-PYTHON_LDFLAGS
-PYTHON_CPPFLAGS
-pkgpyexecdir
-pyexecdir
-pkgpythondir
-pythondir
-PYTHON_PLATFORM
-PYTHON_EXEC_PREFIX
-PYTHON_PREFIX
-PYTHON_VERSION
-PYTHON
 VTK_WRAP_PYTHON_INIT
 VTK_WRAP_PYTHON
 VTK_RPATH
 VTK_LIBS
 VTK_CPPFLAGS
-HAVE_MPI_FALSE
-HAVE_MPI_TRUE
 BOOST_LDFLAGS
 BOOST_CPPFLAGS
-HAVE_SPRNG_FALSE
-HAVE_SPRNG_TRUE
-SPRNG_LDFLAGS
-SPRNG_CPPFLAGS
+HAVE_MPI_FALSE
+HAVE_MPI_TRUE
+MPI_CXXLDFLAGS
+MPI_CXXFLAGS
+MPICXX
 PMPI_INIT
 FCLIBS
 LIBTOOL_DEPS
@@ -941,18 +946,18 @@ enable_fast_install
 with_gnu_ld
 enable_libtool_lock
 with_pmpi_init
-with_sprng
 with_boost
 with_boost_libdir
 with_vtk
 with_vtk_version
 with_vtk_lib_suffix
-with_python_version
-with_python
 with_paradyn
 with_elf
 with_dwarf
 with_xml2
+with_sprng
+with_python_version
+with_python
 with_papi
 with_pnmpi
 with_mpi_wavelet
@@ -1606,8 +1611,6 @@ Optional Packages:
   --with-pmpi-init        Manually specify binding for pmpi_init function.
                           Must be one of PMPI_INIT, pmpi_init, pmpi_init_, or
                           pmpi_init__
-  --with-sprng=<dir>      Path to the installation directory of Scalable
-                          Parallel Random Number Generator Library.
   --with-boost[=DIR]      use boost (default is yes) - it is possible to
                           specify the root directory for boost (optional)
   --with-boost-libdir=LIB_DIR
@@ -1624,16 +1627,18 @@ Optional Packages:
   --with-vtk-libsuffix    VTK's lib directory name is usually something like
                           lib/vtk-suffix. This defaults to the same string
                           supplied to vtk-version, but can be different.
-  --with-python-version   Specify the version of python to use. If not
-                          supplied, defaults to the highest found.
-  --with-python           Specify the location of your python installation.
-                          This can either be a GNU standard install directory
-                          or a path to a Mac OS X .framework directory.
   --with-paradyn=<dir>    Path to the platform-specific installation directory
                           of ParaDyn tools. Includes, etc. are inferred.
   --with-elf=<dir>        Path to the installation directory of libelf.
   --with-dwarf=<dir>      Path to the installation directory of libdwarf.
   --with-xml2=<dir>       Path to the installation directory of libxml2.
+  --with-sprng=<dir>      Path to the installation directory of Scalable
+                          Parallel Random Number Generator Library.
+  --with-python-version   Specify the version of python to use. If not
+                          supplied, defaults to the highest found.
+  --with-python           Specify the location of your python installation.
+                          This can either be a GNU standard install directory
+                          or a path to a Mac OS X .framework directory.
   --with-papi=<dir>       Path to the installation directory of PAPI.
   --with-pnmpi=<dir>      Path to the location of PnMPI tools. If provided,
                           builds PnMPI modules.
@@ -5489,13 +5494,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5492: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5497: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5495: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5500: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5498: output\"" >&5)
+  (eval echo "\"\$as_me:5503: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6701,7 +6706,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6704 "configure"' > conftest.$ac_ext
+  echo '#line 6709 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8972,11 +8977,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8975: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8980: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8979: \$? = $ac_status" >&5
+   echo "$as_me:8984: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9311,11 +9316,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9314: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9319: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9318: \$? = $ac_status" >&5
+   echo "$as_me:9323: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9416,11 +9421,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9419: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9424: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9423: \$? = $ac_status" >&5
+   echo "$as_me:9428: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9471,11 +9476,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9474: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9479: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9478: \$? = $ac_status" >&5
+   echo "$as_me:9483: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11838,7 +11843,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11841 "configure"
+#line 11846 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11934,7 +11939,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11937 "configure"
+#line 11942 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13890,11 +13895,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13893: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13898: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13897: \$? = $ac_status" >&5
+   echo "$as_me:13902: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13989,11 +13994,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13992: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13997: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13996: \$? = $ac_status" >&5
+   echo "$as_me:14001: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14041,11 +14046,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14044: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14049: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14048: \$? = $ac_status" >&5
+   echo "$as_me:14053: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15550,11 +15555,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15553: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15558: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15557: \$? = $ac_status" >&5
+   echo "$as_me:15562: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -15649,11 +15654,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15652: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15657: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15656: \$? = $ac_status" >&5
+   echo "$as_me:15661: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15701,11 +15706,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15704: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15709: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15708: \$? = $ac_status" >&5
+   echo "$as_me:15713: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17585,7 +17590,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Fortran binding for MPI_Init
+# Find a fortran binding for MPI_Init
 ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
@@ -18206,13 +18211,17 @@ fi
 
 
 
-# Test whether we're on BlueGene/L and define things in config.h accordingly
+
+#
+# Test for various C++ libraries
+#
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-   # Force using the user-supplied C++ compiler.
+
+    # Test whether we're on BlueGene/L and define things in config.h accordingly
 
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -18279,103 +18288,226 @@ $as_echo "#define BLUEGENE_P 1" >>confdefs.h
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    # Make sure we can compile MPI programs in C++
 
 
-# Distributed Sampling Support
 
+         if [ ! -z "$MPICXX" ]; then
 
-  ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-# Check whether --with-sprng was given.
-if test "${with_sprng+set}" = set; then :
-  withval=$with_sprng; #LX_LIB_SUBST(sprng, [init_rng_simple_mpi], SPRNG, [$withval/lib])
-               if [ "x$have_sprng" != xno ]; then
-
-  SPRNG_CPPFLAGS="-I $withval/include"
-  OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
-
-  ac_fn_cxx_check_header_mongrel "$LINENO" "sprng_cpp.h" "ac_cv_header_sprng_cpp_h" "$ac_includes_default"
-if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then :
-  have_sprng=yes
+     # Try to find a working MPI compiler from the supplied names
+     for ac_prog in $MPICXX
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_MPICXX+set}" = set; then :
+  $as_echo_n "(cached) " >&6
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find sprng_cpp.h." >&5
-$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
-                   have_sprng=no
-fi
-
-
-
-  CPPFLAGS="$OLD_CPPFLAGS"
-
-               fi
-  if [ "x$have_sprng" = xyes ]; then
-    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
-
+  case $MPICXX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MPICXX="$MPICXX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_MPICXX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
   fi
+done
+  done
+IFS=$as_save_IFS
 
+  ;;
+esac
+fi
+MPICXX=$ac_cv_path_MPICXX
+if test -n "$MPICXX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPICXX" >&5
+$as_echo "$MPICXX" >&6; }
 else
-  #LX_LIB_SUBST(sprng, finit_rng, SPRNG, [/lib])
-               if [ "x$have_sprng" != xno ]; then
-
-  SPRNG_CPPFLAGS="-I /include"
-  OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
-
-  ac_fn_cxx_check_header_mongrel "$LINENO" "sprng_cpp.h" "ac_cv_header_sprng_cpp_h" "$ac_includes_default"
-if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then :
-  have_sprng=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find sprng_cpp.h." >&5
-$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
-                   have_sprng=no
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 fi
 
 
+  test -n "$MPICXX" && break
+done
+test -n "$MPICXX" || MPICXX="not-found"
 
-  CPPFLAGS="$OLD_CPPFLAGS"
 
-               fi
-  if [ "x$have_sprng" = xyes ]; then
-    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+     # Figure out what the compiler responds to to get it to show us the compile
+     # and link lines.  After this part of the macro, we'll have a valid
+     # lx_mpi_command_line
+     lx_mpi_compile_line=`MPICXX -showme:compile 2>/dev/null`
+     if [ "$?" -eq 0 ]; then
+         lx_mpi_link_line=`MPICXX -showme:link 2>/dev/null`
+     else
+         lx_mpi_command_line=`MPICXX -showme 2>/dev/null`
+         if [ "$?" -ne 0 ]; then
+             lx_mpi_command_line=`MPICXX -show 2>/dev/null`
+         fi
+     fi
 
+     if [ ! -z "$lx_mpi_compile_line" -a ! -z "$lx_mpi_link_line" ]; then
+         lx_mpi_command_line="$lx_mpi_compile_line $lx_mpi_link_line"
+     fi
+
+     if [ ! -z "$lx_mpi_command_line" ]; then
+         # Now extract the different parts of the MPI command line.  Do these separately in case we need to
+         # parse them all out in future versions of this macro.
+         lx_mpi_defines=`    echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-D\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_includes=`   echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-I\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_link_paths=` echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-L\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_libs=`       echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-l\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_link_args=`  echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-Wl,\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+
+         # Create variables and clean up newlines and multiple spaces
+         MPI_CXXFLAGS="$lx_mpi_defines $lx_mpi_includes"
+         MPI_CXXLDFLAGS="$lx_mpi_link_paths $lx_mpi_libs $lx_mpi_link_args"
+         MPI_CXXFLAGS=`  echo "$MPI_CXXFLAGS"   | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
+         MPI_CXXLDFLAGS=`echo "$MPI_CXXLDFLAGS" | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
+
+         echo MPI_CXXFLAGS="$MPI_CXXFLAGS"
+         echo MPI_CXXLDFLAGS="$MPI_CXXLDFLAGS"
+
+         # Add a define for testing at compile time.
+
+$as_echo "#define HAVE_MPI 1" >>confdefs.h
+
+
+         # AC_SUBST everything.
+
+
+
+
+         # set a shell variable that the caller can test outside this macro
+         have_CXX_mpi='yes'
+     else
+         have_CXX_mpi='no'
+     fi
+
+         else
+
+     # Try to find a working MPI compiler from the supplied names
+     for ac_prog in mpicxx mpiCC mpic++ mpig++ mpiicpc mpipgCC mpixlC
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_MPICXX+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $MPICXX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MPICXX="$MPICXX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_MPICXX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
   fi
+done
+  done
+IFS=$as_save_IFS
 
-
+  ;;
+esac
 fi
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-if [ "x$have_sprng" = xyes ]; then
-
-$as_echo "#define HAVE_SPRNG 1" >>confdefs.h
-
-fi
- if test "x$have_sprng" == xyes; then
-  HAVE_SPRNG_TRUE=
-  HAVE_SPRNG_FALSE='#'
+MPICXX=$ac_cv_path_MPICXX
+if test -n "$MPICXX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPICXX" >&5
+$as_echo "$MPICXX" >&6; }
 else
-  HAVE_SPRNG_TRUE='#'
-  HAVE_SPRNG_FALSE=
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 fi
 
 
-# We need the boost matrix class to build this library.
+  test -n "$MPICXX" && break
+done
+test -n "$MPICXX" || MPICXX="not-found"
+
+
+     # Figure out what the compiler responds to to get it to show us the compile
+     # and link lines.  After this part of the macro, we'll have a valid
+     # lx_mpi_command_line
+     lx_mpi_compile_line=`MPICXX -showme:compile 2>/dev/null`
+     if [ "$?" -eq 0 ]; then
+         lx_mpi_link_line=`MPICXX -showme:link 2>/dev/null`
+     else
+         lx_mpi_command_line=`MPICXX -showme 2>/dev/null`
+         if [ "$?" -ne 0 ]; then
+             lx_mpi_command_line=`MPICXX -show 2>/dev/null`
+         fi
+     fi
+
+     if [ ! -z "$lx_mpi_compile_line" -a ! -z "$lx_mpi_link_line" ]; then
+         lx_mpi_command_line="$lx_mpi_compile_line $lx_mpi_link_line"
+     fi
+
+     if [ ! -z "$lx_mpi_command_line" ]; then
+         # Now extract the different parts of the MPI command line.  Do these separately in case we need to
+         # parse them all out in future versions of this macro.
+         lx_mpi_defines=`    echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-D\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_includes=`   echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-I\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_link_paths=` echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-L\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_libs=`       echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-l\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+         lx_mpi_link_args=`  echo "$lx_mpi_command_line" | grep -o -- '\(^\| \)-Wl,\([^\"[:space:]]\+\|\"[^\"[:space:]]\+\"\)'`
+
+         # Create variables and clean up newlines and multiple spaces
+         MPI_CXXFLAGS="$lx_mpi_defines $lx_mpi_includes"
+         MPI_CXXLDFLAGS="$lx_mpi_link_paths $lx_mpi_libs $lx_mpi_link_args"
+         MPI_CXXFLAGS=`  echo "$MPI_CXXFLAGS"   | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
+         MPI_CXXLDFLAGS=`echo "$MPI_CXXLDFLAGS" | tr '\n' ' ' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed 's/  */ /g'`
+
+         echo MPI_CXXFLAGS="$MPI_CXXFLAGS"
+         echo MPI_CXXLDFLAGS="$MPI_CXXLDFLAGS"
+
+         # Add a define for testing at compile time.
+
+$as_echo "#define HAVE_MPI 1" >>confdefs.h
+
+
+         # AC_SUBST everything.
+
+
+
+
+         # set a shell variable that the caller can test outside this macro
+         have_CXX_mpi='yes'
+     else
+         have_CXX_mpi='no'
+     fi
+
+         fi
+
+
+     if test "x$have_CXX_mpi" == xyes; then
+  HAVE_MPI_TRUE=
+  HAVE_MPI_FALSE='#'
+else
+  HAVE_MPI_TRUE='#'
+  HAVE_MPI_FALSE=
+fi
+
+
+    # We need the boost matrix class to build this library.
 
 
 # Check whether --with-boost was given.
@@ -18495,11 +18627,11 @@ $as_echo "yes" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-	ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+	ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
@@ -18602,11 +18734,11 @@ $as_echo "yes" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-		ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+		ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 	fi
 
@@ -18631,120 +18763,7 @@ fi
 
 
 
-# Check for MPI.  If we don't have it, don't build parallel
-# Assumes that you're using an MPI compiler (mpicxx, etc) that handles libs.
-# This will NOT add MPI libraries to the build.
-CC=${CXX}          # Use CXX instead of CC for tests
-CPP="${CXX} -E"    # Use CXX instead of defaupt CPP for tests
-
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <mpi.h>
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-int foo; MPI_Initialized(&foo);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_mpi=yes
-
-$as_echo "#define HAVE_MPI 1" >>confdefs.h
-
-else
-  have_mpi=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
- if test "x$have_mpi" == xyes; then
-  HAVE_MPI_TRUE=
-  HAVE_MPI_FALSE='#'
-else
-  HAVE_MPI_TRUE='#'
-  HAVE_MPI_FALSE=
-fi
-
-#AC_LANG_POP
-
-# Check for Linux timers.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for clock_gettime in -lrt" >&5
-$as_echo_n "checking for clock_gettime in -lrt... " >&6; }
-if test "${ac_cv_lib_rt_clock_gettime+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lrt  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char clock_gettime ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return clock_gettime ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_rt_clock_gettime=yes
-else
-  ac_cv_lib_rt_clock_gettime=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_clock_gettime" >&5
-$as_echo "$ac_cv_lib_rt_clock_gettime" >&6; }
-if test "x$ac_cv_lib_rt_clock_gettime" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBRT 1
-_ACEOF
-
-  LIBS="-lrt $LIBS"
-
-fi
-
-for ac_func in clock_gettime gettimeofday
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-eval as_val=\$$as_ac_var
-   if test "x$as_val" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-
+    # Need VTK to build the GUI.
 
 # Check whether --with-vtk was given.
 if test "${with_vtk+set}" = set; then :
@@ -18816,9 +18835,7 @@ $as_echo_n "checking if VTK is installed in $VTK_PREFIX... " >&6; }
                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
                 { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find VTK library." >&5
-$as_echo "$as_me: Couldn't find VTK library." >&6;}
-	 have_vtk=no
-
+$as_echo "$as_me: Couldn't find VTK library." >&6;}; have_vtk=no
             else
                 # found !
                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
@@ -18886,7 +18903,7 @@ main ()
 }
 
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
+if ac_fn_cxx_try_compile "$LINENO"; then :
   vtkVersion="OK"
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
@@ -18898,15 +18915,12 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
                         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
                         { $as_echo "$as_me:${as_lineno-$LINENO}: Found VTK Library." >&5
-$as_echo "$as_me: Found VTK Library." >&6;}
-	 have_vtk=yes
+$as_echo "$as_me: Found VTK Library." >&6;};         have_vtk=yes
                     else
                         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
                   			{ $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find VTK library." >&5
-$as_echo "$as_me: Couldn't find VTK library." >&6;}
-	 have_vtk=no
-
+$as_echo "$as_me: Couldn't find VTK library." >&6;}; have_vtk=no
                    fi
 
                    #Reset CPPFLAGS, etc. to their original state after we are done with the test.
@@ -18919,8 +18933,7 @@ $as_echo "$as_me: Couldn't find VTK library." >&6;}
 
 
                     { $as_echo "$as_me:${as_lineno-$LINENO}: Found VTK Library." >&5
-$as_echo "$as_me: Found VTK Library." >&6;}
-	 have_vtk=yes
+$as_echo "$as_me: Found VTK Library." >&6;};         have_vtk=yes
                fi
 
                VTK_WRAP_PYTHON="$VTK_PREFIX/bin/vtkWrapPython"
@@ -18978,10 +18991,1412 @@ fi
            fi
        else
            { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find VTK library." >&5
-$as_echo "$as_me: Couldn't find VTK library." >&6;}
-	 have_vtk=no
+$as_echo "$as_me: Couldn't find VTK library." >&6;}; have_vtk=no
+       fi
+
+
+    # Check for Wisconsin ParaDyn Tools (this includes checking for dependencies)
+
+
+
+# Check whether --with-paradyn was given.
+if test "${with_paradyn+set}" = set; then :
+  withval=$with_paradyn; echo "checking for ParaDyn tools..."
+   if [ -d "$withval" ]; then
+     if [ -d "$withval/include" ]; then
+         paradyn_home="$withval"
+         paradyn_include="$paradyn_home/include"
+         paradyn_lib="$paradyn_home/lib"
+     else
+         paradyn_home=`echo ${withval} | ${SED} 's_/[^/]*\$__'`
+         paradyn_platform=`echo ${withval} | ${SED} 's_.*\/\([^/]*\)$_\1_'`
+         paradyn_include="$paradyn_home/include"
+         paradyn_lib="$paradyn_home/$paradyn_platform/lib"
+     fi
+
+     if [ -d "$paradyn_include" ]; then
+       if [ "x$paradyn_platform" != "xppc32_bgcompute" ]; then
+
+
+# Check whether --with-elf was given.
+if test "${with_elf+set}" = set; then :
+  withval=$with_elf;
+  # If dir param is there, add it to the link line.
+  if test "x$withval/lib" != x; then
+    ELF_LDFLAGS="-L$withval/lib"
+  else
+    ELF_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x-lelf" != "x"; then
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  else
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  ELF_RPATH=""
+  for elt in $ELF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$ELF_RPATH" ]; then
+            ELF_RPATH="$rpath"
+        else
+            ELF_RPATH="$ELF_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for elf_end in -lelf" >&5
+$as_echo_n "checking for elf_end in -lelf... " >&6; }
+if test "${ac_cv_lib_elf_elf_end+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lelf  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char elf_end ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return elf_end ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_elf_elf_end=yes
+else
+  ac_cv_lib_elf_elf_end=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_elf_elf_end" >&5
+$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
+if test "x$ac_cv_lib_elf_elf_end" = x""yes; then :
+  have_elf=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libelf." >&5
+$as_echo "$as_me: Couldn't find libelf." >&6;}
+                     ELF_LDFLAGS=""
+                     have_elf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+else
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib/lib" != x; then
+    ELF_LDFLAGS="-L$paradyn_lib/lib"
+  else
+    ELF_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x-lelf" != "x"; then
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  else
+    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  ELF_RPATH=""
+  for elt in $ELF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$ELF_RPATH" ]; then
+            ELF_RPATH="$rpath"
+        else
+            ELF_RPATH="$ELF_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for elf_end in -lelf" >&5
+$as_echo_n "checking for elf_end in -lelf... " >&6; }
+if test "${ac_cv_lib_elf_elf_end+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lelf  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char elf_end ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return elf_end ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_elf_elf_end=yes
+else
+  ac_cv_lib_elf_elf_end=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_elf_elf_end" >&5
+$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
+if test "x$ac_cv_lib_elf_elf_end" = x""yes; then :
+  have_elf=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libelf." >&5
+$as_echo "$as_me: Couldn't find libelf." >&6;}
+                     ELF_LDFLAGS=""
+                     have_elf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+fi
+
+
+
+
+# Check whether --with-dwarf was given.
+if test "${with_dwarf+set}" = set; then :
+  withval=$with_dwarf;
+  # If dir param is there, add it to the link line.
+  if test "x$withval/lib" != x; then
+    DWARF_LDFLAGS="-L$withval/lib"
+  else
+    DWARF_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
+  else
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  DWARF_RPATH=""
+  for elt in $DWARF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$DWARF_RPATH" ]; then
+            DWARF_RPATH="$rpath"
+        else
+            DWARF_RPATH="$DWARF_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dwarf_attr in -ldwarf" >&5
+$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
+if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldwarf  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char dwarf_attr ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return dwarf_attr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_dwarf_dwarf_attr=yes
+else
+  ac_cv_lib_dwarf_dwarf_attr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
+$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
+if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then :
+  have_dwarf=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libdwarf." >&5
+$as_echo "$as_me: Couldn't find libdwarf." >&6;}
+                     DWARF_LDFLAGS=""
+                     have_dwarf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+else
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    DWARF_LDFLAGS="-L$paradyn_lib"
+  else
+    DWARF_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
+  else
+    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  DWARF_RPATH=""
+  for elt in $DWARF_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$DWARF_RPATH" ]; then
+            DWARF_RPATH="$rpath"
+        else
+            DWARF_RPATH="$DWARF_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dwarf_attr in -ldwarf" >&5
+$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
+if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldwarf  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char dwarf_attr ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return dwarf_attr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_dwarf_dwarf_attr=yes
+else
+  ac_cv_lib_dwarf_dwarf_attr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
+$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
+if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then :
+  have_dwarf=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libdwarf." >&5
+$as_echo "$as_me: Couldn't find libdwarf." >&6;}
+                     DWARF_LDFLAGS=""
+                     have_dwarf=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+
+fi
+
+
+
+
+# Check whether --with-xml2 was given.
+if test "${with_xml2+set}" = set; then :
+  withval=$with_xml2;
+  # If dir param is there, add it to the link line.
+  if test "x$withval/lib" != x; then
+    XML2_LDFLAGS="-L$withval/lib"
+  else
+    XML2_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x" != "x"; then
+    XML2_LDFLAGS="$XML2_LDFLAGS "
+  else
+    XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  XML2_RPATH=""
+  for elt in $XML2_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$XML2_RPATH" ]; then
+            XML2_RPATH="$rpath"
+        else
+            XML2_RPATH="$XML2_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for attribute in -lxml2" >&5
+$as_echo_n "checking for attribute in -lxml2... " >&6; }
+if test "${ac_cv_lib_xml2_attribute+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lxml2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char attribute ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return attribute ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_xml2_attribute=yes
+else
+  ac_cv_lib_xml2_attribute=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_attribute" >&5
+$as_echo "$ac_cv_lib_xml2_attribute" >&6; }
+if test "x$ac_cv_lib_xml2_attribute" = x""yes; then :
+  have_xml2=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libxml2." >&5
+$as_echo "$as_me: Couldn't find libxml2." >&6;}
+                     XML2_LDFLAGS=""
+                     have_xml2=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+else
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    XML2_LDFLAGS="-L$paradyn_lib"
+  else
+    XML2_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x" != "x"; then
+    XML2_LDFLAGS="$XML2_LDFLAGS "
+  else
+    XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  XML2_RPATH=""
+  for elt in $XML2_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$XML2_RPATH" ]; then
+            XML2_RPATH="$rpath"
+        else
+            XML2_RPATH="$XML2_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for attribute in -lxml2" >&5
+$as_echo_n "checking for attribute in -lxml2... " >&6; }
+if test "${ac_cv_lib_xml2_attribute+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lxml2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char attribute ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return attribute ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_xml2_attribute=yes
+else
+  ac_cv_lib_xml2_attribute=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_attribute" >&5
+$as_echo "$ac_cv_lib_xml2_attribute" >&6; }
+if test "x$ac_cv_lib_xml2_attribute" = x""yes; then :
+  have_xml2=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libxml2." >&5
+$as_echo "$as_me: Couldn't find libxml2." >&6;}
+                     XML2_LDFLAGS=""
+                     have_xml2=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+fi
+
 
        fi
+
+       # Adding boost headers here, just in case we need them (current version of
+       # Stackwalker wants them, but Matt tells me it's not a permanent dependence)
+       paradyn_headers="-I$paradyn_include ${BOOST_CPPFLAGS}"
+
+  SW_CPPFLAGS="$paradyn_headers"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$SW_CPPFLAGS $CPPFLAGS"
+
+  ac_fn_cxx_check_header_mongrel "$LINENO" "walker.h" "ac_cv_header_walker_h" "$ac_includes_default"
+if test "x$ac_cv_header_walker_h" = x""yes; then :
+  have_stackwalk=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find walker.h." >&5
+$as_echo "$as_me: Couldn't find walker.h." >&6;}
+                   have_stackwalk=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+
+  SYMTAB_CPPFLAGS="$paradyn_headers"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$SYMTAB_CPPFLAGS $CPPFLAGS"
+
+  ac_fn_cxx_check_header_mongrel "$LINENO" "Symtab.h" "ac_cv_header_Symtab_h" "$ac_includes_default"
+if test "x$ac_cv_header_Symtab_h" = x""yes; then :
+  have_symtabAPI=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find Symtab.h." >&5
+$as_echo "$as_me: Couldn't find Symtab.h." >&6;}
+                   have_symtabAPI=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+
+  COMMON_CPPFLAGS="$paradyn_headers"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$COMMON_CPPFLAGS $CPPFLAGS"
+
+  ac_fn_cxx_check_header_mongrel "$LINENO" "dyntypes.h" "ac_cv_header_dyntypes_h" "$ac_includes_default"
+if test "x$ac_cv_header_dyntypes_h" = x""yes; then :
+  have_common=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find dyntypes.h." >&5
+$as_echo "$as_me: Couldn't find dyntypes.h." >&6;}
+                   have_common=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+
+       if [ "x${SW}${SYMTAB}${COMMON}" != x ]; then
+         PARADYN_CPPFLAGS="$paradyn_headers"
+
+       fi
+
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    IBERTY_LDFLAGS="-L$paradyn_lib"
+  else
+    IBERTY_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x" != "x"; then
+    IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
+  else
+    IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty_pic"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  IBERTY_RPATH=""
+  for elt in $IBERTY_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$IBERTY_RPATH" ]; then
+            IBERTY_RPATH="$rpath"
+        else
+            IBERTY_RPATH="$IBERTY_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty_pic" >&5
+$as_echo_n "checking for cplus_demangle in -liberty_pic... " >&6; }
+if test "${ac_cv_lib_iberty_pic_cplus_demangle+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-liberty_pic  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char cplus_demangle ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return cplus_demangle ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_iberty_pic_cplus_demangle=yes
+else
+  ac_cv_lib_iberty_pic_cplus_demangle=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_pic_cplus_demangle" >&5
+$as_echo "$ac_cv_lib_iberty_pic_cplus_demangle" >&6; }
+if test "x$ac_cv_lib_iberty_pic_cplus_demangle" = x""yes; then :
+  have_iberty_pic=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty_pic." >&5
+$as_echo "$as_me: Couldn't find libiberty_pic." >&6;}
+                     IBERTY_LDFLAGS=""
+                     have_iberty_pic=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+       if [ "x$have_iberty_pic" = "xno" ]; then
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    IBERTY_LDFLAGS="-L$paradyn_lib"
+  else
+    IBERTY_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x" != "x"; then
+    IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
+  else
+    IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  IBERTY_RPATH=""
+  for elt in $IBERTY_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$IBERTY_RPATH" ]; then
+            IBERTY_RPATH="$rpath"
+        else
+            IBERTY_RPATH="$IBERTY_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty" >&5
+$as_echo_n "checking for cplus_demangle in -liberty... " >&6; }
+if test "${ac_cv_lib_iberty_cplus_demangle+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-liberty  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char cplus_demangle ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return cplus_demangle ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_iberty_cplus_demangle=yes
+else
+  ac_cv_lib_iberty_cplus_demangle=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_cplus_demangle" >&5
+$as_echo "$ac_cv_lib_iberty_cplus_demangle" >&6; }
+if test "x$ac_cv_lib_iberty_cplus_demangle" = x""yes; then :
+  have_iberty=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty." >&5
+$as_echo "$as_me: Couldn't find libiberty." >&6;}
+                     IBERTY_LDFLAGS=""
+                     have_iberty=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+       fi
+
+       common_libs="-lcommon $XML2_LDFLAGS $DWARF_LDFLAGS $IBERTY_LDFLAGS"
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    COMMON_LDFLAGS="-L$paradyn_lib"
+  else
+    COMMON_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x$common_libs" != "x"; then
+    COMMON_LDFLAGS="$COMMON_LDFLAGS $common_libs"
+  else
+    COMMON_LDFLAGS="$COMMON_LDFLAGS -lcommon"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  COMMON_RPATH=""
+  for elt in $COMMON_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$COMMON_RPATH" ]; then
+            COMMON_RPATH="$rpath"
+        else
+            COMMON_RPATH="$COMMON_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$COMMON_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lcommon" >&5
+$as_echo_n "checking for _init in -lcommon... " >&6; }
+if test "${ac_cv_lib_common__init+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcommon  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _init ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return _init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_common__init=yes
+else
+  ac_cv_lib_common__init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_common__init" >&5
+$as_echo "$ac_cv_lib_common__init" >&6; }
+if test "x$ac_cv_lib_common__init" = x""yes; then :
+  have_common=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libcommon." >&5
+$as_echo "$as_me: Couldn't find libcommon." >&6;}
+                     COMMON_LDFLAGS=""
+                     have_common=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+
+       symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    SYMTAB_LDFLAGS="-L$paradyn_lib"
+  else
+    SYMTAB_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x$symtab_libs" != "x"; then
+    SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS $symtab_libs"
+  else
+    SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS -lsymtabAPI"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  SYMTAB_RPATH=""
+  for elt in $SYMTAB_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$SYMTAB_RPATH" ]; then
+            SYMTAB_RPATH="$rpath"
+        else
+            SYMTAB_RPATH="$SYMTAB_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$SYMTAB_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lsymtabAPI" >&5
+$as_echo_n "checking for _init in -lsymtabAPI... " >&6; }
+if test "${ac_cv_lib_symtabAPI__init+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsymtabAPI  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _init ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return _init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_symtabAPI__init=yes
+else
+  ac_cv_lib_symtabAPI__init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_symtabAPI__init" >&5
+$as_echo "$ac_cv_lib_symtabAPI__init" >&6; }
+if test "x$ac_cv_lib_symtabAPI__init" = x""yes; then :
+  have_symtabAPI=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libsymtabAPI." >&5
+$as_echo "$as_me: Couldn't find libsymtabAPI." >&6;}
+                     SYMTAB_LDFLAGS=""
+                     have_symtabAPI=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+
+       # By the third lib in the chain of dependencies here, this is kind of nasty.
+       # Need this if statement for the case where we have common but not symtab.
+       # Consider restructuring this if we get more stackwalk libs.
+       if [ "x$have_symtabAPI" = xyes ]; then
+           stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
+       else
+           stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
+       fi
+
+  # If dir param is there, add it to the link line.
+  if test "x$paradyn_lib" != x; then
+    SW_LDFLAGS="-L$paradyn_lib"
+  else
+    SW_LDFLAGS=""
+  fi
+
+  # If extra libraries are supplied, add those too.
+  if test "x$stackwalk_libs" != "x"; then
+    SW_LDFLAGS="$SW_LDFLAGS $stackwalk_libs"
+  else
+    SW_LDFLAGS="$SW_LDFLAGS -lstackwalk"
+  fi
+
+  # search the link line for -Lwhatever and add rpath args for each one.
+  SW_RPATH=""
+  for elt in $SW_LDFLAGS; do
+     if echo $elt | grep -q '^-L'; then
+        rpath=`echo $elt | sed 's/^-L/-R /'`
+        if [ -z "$SW_RPATH" ]; then
+            SW_RPATH="$rpath"
+        else
+            SW_RPATH="$SW_RPATH $rpath"
+        fi
+     fi
+  done
+
+  # Do the actual check to determine if we can link against this library.
+  OLD_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$SW_LDFLAGS $LDFLAGS"
+
+
+    OLD_LIBS="$LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lstackwalk" >&5
+$as_echo_n "checking for _init in -lstackwalk... " >&6; }
+if test "${ac_cv_lib_stackwalk__init+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lstackwalk  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _init ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return _init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_stackwalk__init=yes
+else
+  ac_cv_lib_stackwalk__init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_stackwalk__init" >&5
+$as_echo "$ac_cv_lib_stackwalk__init" >&6; }
+if test "x$ac_cv_lib_stackwalk__init" = x""yes; then :
+  have_stackwalk=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libstackwalk." >&5
+$as_echo "$as_me: Couldn't find libstackwalk." >&6;}
+                     SW_LDFLAGS=""
+                     have_stackwalk=no
+fi
+
+    LIBS="$OLD_LIBS"
+
+
+  LDFLAGS="$OLD_LDFLAGS"
+
+
+
+
+
+     else
+       echo "couldn't find ParaDyn headers in $paradyn_include."
+       have_common=no
+       have_symtabAPI=no
+       have_stackwalk=no
+     fi
+   else
+     echo "couldn't find ParaDyn tools in $withval."
+     have_common=no
+     have_symtabAPI=no
+     have_stackwalk=no
+   fi
+
+   if test "x$have_common" != xno; then
+
+$as_echo "#define HAVE_COMMON 1" >>confdefs.h
+
+     have_common=yes;
+   fi
+   if test "x$have_symtabAPI" != xno; then
+
+$as_echo "#define HAVE_SYMTAB 1" >>confdefs.h
+
+     have_symtabAPI=yes;
+   fi
+   if test "x$have_stackwalk" != xno; then
+
+$as_echo "#define HAVE_SW 1" >>confdefs.h
+
+     have_stackwalk=yes;
+   fi
+
+else
+  echo "path to ParaDyn tools not provided."
+   have_common=no
+   have_symtabAPI=no
+   have_stackwalk=no
+
+fi
+
+
+     if test "x$have_stackwalk" = xyes; then
+  HAVE_SW_TRUE=
+  HAVE_SW_FALSE='#'
+else
+  HAVE_SW_TRUE='#'
+  HAVE_SW_FALSE=
+fi
+
+     if test "x$have_symtabAPI" = xyes; then
+  HAVE_SYMTAB_TRUE=
+  HAVE_SYMTAB_FALSE='#'
+else
+  HAVE_SYMTAB_TRUE='#'
+  HAVE_SYMTAB_FALSE=
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+# Distributed Sampling Support -- SPRNG library
+
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+# Check whether --with-sprng was given.
+if test "${with_sprng+set}" = set; then :
+  withval=$with_sprng; #LX_LIB_SUBST(sprng, [init_rng_simple_mpi], SPRNG, [$withval/lib])
+               if [ "x$have_sprng" != xno ]; then
+
+  SPRNG_CPPFLAGS="-I $withval/include"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
+
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sprng_cpp.h" "ac_cv_header_sprng_cpp_h" "$ac_includes_default"
+if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then :
+  have_sprng=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find sprng_cpp.h." >&5
+$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
+                   have_sprng=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+               fi
+  if [ "x$have_sprng" = xyes ]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+
+  fi
+
+else
+  #LX_LIB_SUBST(sprng, finit_rng, SPRNG, [/lib])
+               if [ "x$have_sprng" != xno ]; then
+
+  SPRNG_CPPFLAGS="-I /include"
+  OLD_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$SPRNG_CPPFLAGS $CPPFLAGS"
+
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sprng_cpp.h" "ac_cv_header_sprng_cpp_h" "$ac_includes_default"
+if test "x$ac_cv_header_sprng_cpp_h" = x""yes; then :
+  have_sprng=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find sprng_cpp.h." >&5
+$as_echo "$as_me: Couldn't find sprng_cpp.h." >&6;}
+                   have_sprng=no
+fi
+
+
+
+  CPPFLAGS="$OLD_CPPFLAGS"
+
+               fi
+  if [ "x$have_sprng" = xyes ]; then
+    SPRNG_LDFLAGS="-L$withval/lib -lsprng"
+
+  fi
+
+
+fi
+
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+if [ "x$have_sprng" = xyes ]; then
+
+$as_echo "#define HAVE_SPRNG 1" >>confdefs.h
+
+fi
+ if test "x$have_sprng" == xyes; then
+  HAVE_SPRNG_TRUE=
+  HAVE_SPRNG_FALSE='#'
+else
+  HAVE_SPRNG_TRUE='#'
+  HAVE_SPRNG_FALSE=
+fi
+
+
+# Currently unsupported -- need to add detection of Muster library.
+ if test "x$have_muster" == xyes; then
+  HAVE_MUSTER_TRUE=
+  HAVE_MUSTER_FALSE='#'
+else
+  HAVE_MUSTER_TRUE='#'
+  HAVE_MUSTER_FALSE=
+fi
+
+
+
+# Check for Linux timers.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for clock_gettime in -lrt" >&5
+$as_echo_n "checking for clock_gettime in -lrt... " >&6; }
+if test "${ac_cv_lib_rt_clock_gettime+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lrt  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char clock_gettime ();
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+return clock_gettime ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_rt_clock_gettime=yes
+else
+  ac_cv_lib_rt_clock_gettime=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_clock_gettime" >&5
+$as_echo "$ac_cv_lib_rt_clock_gettime" >&6; }
+if test "x$ac_cv_lib_rt_clock_gettime" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBRT 1
+_ACEOF
+
+  LIBS="-lrt $LIBS"
+
+fi
+
+for ac_func in clock_gettime gettimeofday
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+eval as_val=\$$as_ac_var
+   if test "x$as_val" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
 
 
 # This tests for a python installation and finds the python binary, the latest python version,
@@ -19400,6 +20815,7 @@ $as_echo "no" >&6; }
 
 
 
+
         # Extract the first word of "swig", so it can be a program name with args.
 set dummy swig; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -19542,1234 +20958,6 @@ else
   BUILD_VIEWER_FALSE=
 fi
 
-
-# Check for Wisconsin ParaDyn Tools (this includes checking for dependencies)
-
-
-# Check whether --with-paradyn was given.
-if test "${with_paradyn+set}" = set; then :
-  withval=$with_paradyn; echo "checking for ParaDyn tools..."
-   if [ -d "$withval" ]; then
-     if [ -d "$withval/include" ]; then
-         paradyn_home="$withval"
-         paradyn_include="$paradyn_home/include"
-         paradyn_lib="$paradyn_home/lib"
-     else
-         paradyn_home=`echo ${withval} | ${SED} 's_/[^/]*\$__'`
-         paradyn_platform=`echo ${withval} | ${SED} 's_.*\/\([^/]*\)$_\1_'`
-         paradyn_include="$paradyn_home/include"
-         paradyn_lib="$paradyn_home/$paradyn_platform/lib"
-     fi
-
-     if [ -d "$paradyn_include" ]; then
-       if [ "x$paradyn_platform" != "xppc32_bgcompute" ]; then
-
-
-# Check whether --with-elf was given.
-if test "${with_elf+set}" = set; then :
-  withval=$with_elf;
-  # If dir param is there, add it to the link line.
-  if test "x$withval/lib" != x; then
-    ELF_LDFLAGS="-L$withval/lib"
-  else
-    ELF_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x-lelf" != "x"; then
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  else
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  ELF_RPATH=""
-  for elt in $ELF_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$ELF_RPATH" ]; then
-            ELF_RPATH="$rpath"
-        else
-            ELF_RPATH="$ELF_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for elf_end in -lelf" >&5
-$as_echo_n "checking for elf_end in -lelf... " >&6; }
-if test "${ac_cv_lib_elf_elf_end+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lelf  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char elf_end ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return elf_end ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_elf_elf_end=yes
-else
-  ac_cv_lib_elf_elf_end=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_elf_elf_end" >&5
-$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
-if test "x$ac_cv_lib_elf_elf_end" = x""yes; then :
-  have_elf=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libelf." >&5
-$as_echo "$as_me: Couldn't find libelf." >&6;}
-                     ELF_LDFLAGS=""
-                     have_elf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-else
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib/lib" != x; then
-    ELF_LDFLAGS="-L$paradyn_lib/lib"
-  else
-    ELF_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x-lelf" != "x"; then
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  else
-    ELF_LDFLAGS="$ELF_LDFLAGS -lelf"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  ELF_RPATH=""
-  for elt in $ELF_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$ELF_RPATH" ]; then
-            ELF_RPATH="$rpath"
-        else
-            ELF_RPATH="$ELF_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$ELF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for elf_end in -lelf" >&5
-$as_echo_n "checking for elf_end in -lelf... " >&6; }
-if test "${ac_cv_lib_elf_elf_end+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lelf  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char elf_end ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return elf_end ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_elf_elf_end=yes
-else
-  ac_cv_lib_elf_elf_end=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_elf_elf_end" >&5
-$as_echo "$ac_cv_lib_elf_elf_end" >&6; }
-if test "x$ac_cv_lib_elf_elf_end" = x""yes; then :
-  have_elf=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libelf." >&5
-$as_echo "$as_me: Couldn't find libelf." >&6;}
-                     ELF_LDFLAGS=""
-                     have_elf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-fi
-
-
-
-
-# Check whether --with-dwarf was given.
-if test "${with_dwarf+set}" = set; then :
-  withval=$with_dwarf;
-  # If dir param is there, add it to the link line.
-  if test "x$withval/lib" != x; then
-    DWARF_LDFLAGS="-L$withval/lib"
-  else
-    DWARF_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
-  else
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  DWARF_RPATH=""
-  for elt in $DWARF_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$DWARF_RPATH" ]; then
-            DWARF_RPATH="$rpath"
-        else
-            DWARF_RPATH="$DWARF_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dwarf_attr in -ldwarf" >&5
-$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
-if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldwarf  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char dwarf_attr ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return dwarf_attr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_dwarf_dwarf_attr=yes
-else
-  ac_cv_lib_dwarf_dwarf_attr=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
-$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
-if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then :
-  have_dwarf=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libdwarf." >&5
-$as_echo "$as_me: Couldn't find libdwarf." >&6;}
-                     DWARF_LDFLAGS=""
-                     have_dwarf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-else
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    DWARF_LDFLAGS="-L$paradyn_lib"
-  else
-    DWARF_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x-ldwarf $ELF_LDFLAGS" != "x"; then
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf $ELF_LDFLAGS"
-  else
-    DWARF_LDFLAGS="$DWARF_LDFLAGS -ldwarf"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  DWARF_RPATH=""
-  for elt in $DWARF_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$DWARF_RPATH" ]; then
-            DWARF_RPATH="$rpath"
-        else
-            DWARF_RPATH="$DWARF_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$DWARF_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dwarf_attr in -ldwarf" >&5
-$as_echo_n "checking for dwarf_attr in -ldwarf... " >&6; }
-if test "${ac_cv_lib_dwarf_dwarf_attr+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldwarf  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char dwarf_attr ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return dwarf_attr ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_dwarf_dwarf_attr=yes
-else
-  ac_cv_lib_dwarf_dwarf_attr=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dwarf_dwarf_attr" >&5
-$as_echo "$ac_cv_lib_dwarf_dwarf_attr" >&6; }
-if test "x$ac_cv_lib_dwarf_dwarf_attr" = x""yes; then :
-  have_dwarf=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libdwarf." >&5
-$as_echo "$as_me: Couldn't find libdwarf." >&6;}
-                     DWARF_LDFLAGS=""
-                     have_dwarf=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-
-fi
-
-
-
-
-# Check whether --with-xml2 was given.
-if test "${with_xml2+set}" = set; then :
-  withval=$with_xml2;
-  # If dir param is there, add it to the link line.
-  if test "x$withval/lib" != x; then
-    XML2_LDFLAGS="-L$withval/lib"
-  else
-    XML2_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x" != "x"; then
-    XML2_LDFLAGS="$XML2_LDFLAGS "
-  else
-    XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  XML2_RPATH=""
-  for elt in $XML2_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$XML2_RPATH" ]; then
-            XML2_RPATH="$rpath"
-        else
-            XML2_RPATH="$XML2_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for attribute in -lxml2" >&5
-$as_echo_n "checking for attribute in -lxml2... " >&6; }
-if test "${ac_cv_lib_xml2_attribute+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char attribute ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return attribute ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_attribute=yes
-else
-  ac_cv_lib_xml2_attribute=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_attribute" >&5
-$as_echo "$ac_cv_lib_xml2_attribute" >&6; }
-if test "x$ac_cv_lib_xml2_attribute" = x""yes; then :
-  have_xml2=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libxml2." >&5
-$as_echo "$as_me: Couldn't find libxml2." >&6;}
-                     XML2_LDFLAGS=""
-                     have_xml2=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-else
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    XML2_LDFLAGS="-L$paradyn_lib"
-  else
-    XML2_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x" != "x"; then
-    XML2_LDFLAGS="$XML2_LDFLAGS "
-  else
-    XML2_LDFLAGS="$XML2_LDFLAGS -lxml2"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  XML2_RPATH=""
-  for elt in $XML2_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$XML2_RPATH" ]; then
-            XML2_RPATH="$rpath"
-        else
-            XML2_RPATH="$XML2_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$XML2_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for attribute in -lxml2" >&5
-$as_echo_n "checking for attribute in -lxml2... " >&6; }
-if test "${ac_cv_lib_xml2_attribute+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char attribute ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return attribute ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_attribute=yes
-else
-  ac_cv_lib_xml2_attribute=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_attribute" >&5
-$as_echo "$ac_cv_lib_xml2_attribute" >&6; }
-if test "x$ac_cv_lib_xml2_attribute" = x""yes; then :
-  have_xml2=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libxml2." >&5
-$as_echo "$as_me: Couldn't find libxml2." >&6;}
-                     XML2_LDFLAGS=""
-                     have_xml2=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-fi
-
-
-       fi
-
-       # Adding boost headers here, just in case we need them (current version of
-       # Stackwalker wants them, but Matt tells me it's not a permanent dependence)
-       paradyn_headers="-I$paradyn_include ${BOOST_CPPFLAGS}"
-
-  SW_CPPFLAGS="$paradyn_headers"
-  OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$SW_CPPFLAGS $CPPFLAGS"
-
-  ac_fn_c_check_header_mongrel "$LINENO" "walker.h" "ac_cv_header_walker_h" "$ac_includes_default"
-if test "x$ac_cv_header_walker_h" = x""yes; then :
-  have_stackwalk=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find walker.h." >&5
-$as_echo "$as_me: Couldn't find walker.h." >&6;}
-                   have_stackwalk=no
-fi
-
-
-
-  CPPFLAGS="$OLD_CPPFLAGS"
-
-
-  SYMTAB_CPPFLAGS="$paradyn_headers"
-  OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$SYMTAB_CPPFLAGS $CPPFLAGS"
-
-  ac_fn_c_check_header_mongrel "$LINENO" "Symtab.h" "ac_cv_header_Symtab_h" "$ac_includes_default"
-if test "x$ac_cv_header_Symtab_h" = x""yes; then :
-  have_symtabAPI=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find Symtab.h." >&5
-$as_echo "$as_me: Couldn't find Symtab.h." >&6;}
-                   have_symtabAPI=no
-fi
-
-
-
-  CPPFLAGS="$OLD_CPPFLAGS"
-
-
-  COMMON_CPPFLAGS="$paradyn_headers"
-  OLD_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$COMMON_CPPFLAGS $CPPFLAGS"
-
-  ac_fn_c_check_header_mongrel "$LINENO" "dyntypes.h" "ac_cv_header_dyntypes_h" "$ac_includes_default"
-if test "x$ac_cv_header_dyntypes_h" = x""yes; then :
-  have_common=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find dyntypes.h." >&5
-$as_echo "$as_me: Couldn't find dyntypes.h." >&6;}
-                   have_common=no
-fi
-
-
-
-  CPPFLAGS="$OLD_CPPFLAGS"
-
-
-       if [ "x${SW}${SYMTAB}${COMMON}" != x ]; then
-         PARADYN_CPPFLAGS="$paradyn_headers"
-
-       fi
-
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    IBERTY_LDFLAGS="-L$paradyn_lib"
-  else
-    IBERTY_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x" != "x"; then
-    IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
-  else
-    IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty_pic"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  IBERTY_RPATH=""
-  for elt in $IBERTY_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$IBERTY_RPATH" ]; then
-            IBERTY_RPATH="$rpath"
-        else
-            IBERTY_RPATH="$IBERTY_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty_pic" >&5
-$as_echo_n "checking for cplus_demangle in -liberty_pic... " >&6; }
-if test "${ac_cv_lib_iberty_pic_cplus_demangle+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-liberty_pic  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char cplus_demangle ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return cplus_demangle ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_iberty_pic_cplus_demangle=yes
-else
-  ac_cv_lib_iberty_pic_cplus_demangle=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_pic_cplus_demangle" >&5
-$as_echo "$ac_cv_lib_iberty_pic_cplus_demangle" >&6; }
-if test "x$ac_cv_lib_iberty_pic_cplus_demangle" = x""yes; then :
-  have_iberty_pic=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty_pic." >&5
-$as_echo "$as_me: Couldn't find libiberty_pic." >&6;}
-                     IBERTY_LDFLAGS=""
-                     have_iberty_pic=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-       if [ "x$have_iberty_pic" = "xno" ]; then
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    IBERTY_LDFLAGS="-L$paradyn_lib"
-  else
-    IBERTY_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x" != "x"; then
-    IBERTY_LDFLAGS="$IBERTY_LDFLAGS "
-  else
-    IBERTY_LDFLAGS="$IBERTY_LDFLAGS -liberty"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  IBERTY_RPATH=""
-  for elt in $IBERTY_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$IBERTY_RPATH" ]; then
-            IBERTY_RPATH="$rpath"
-        else
-            IBERTY_RPATH="$IBERTY_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$IBERTY_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cplus_demangle in -liberty" >&5
-$as_echo_n "checking for cplus_demangle in -liberty... " >&6; }
-if test "${ac_cv_lib_iberty_cplus_demangle+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-liberty  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char cplus_demangle ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return cplus_demangle ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_iberty_cplus_demangle=yes
-else
-  ac_cv_lib_iberty_cplus_demangle=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iberty_cplus_demangle" >&5
-$as_echo "$ac_cv_lib_iberty_cplus_demangle" >&6; }
-if test "x$ac_cv_lib_iberty_cplus_demangle" = x""yes; then :
-  have_iberty=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libiberty." >&5
-$as_echo "$as_me: Couldn't find libiberty." >&6;}
-                     IBERTY_LDFLAGS=""
-                     have_iberty=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-       fi
-
-       common_libs="-lcommon $XML2_LDFLAGS $DWARF_LDFLAGS $IBERTY_LDFLAGS"
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    COMMON_LDFLAGS="-L$paradyn_lib"
-  else
-    COMMON_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x$common_libs" != "x"; then
-    COMMON_LDFLAGS="$COMMON_LDFLAGS $common_libs"
-  else
-    COMMON_LDFLAGS="$COMMON_LDFLAGS -lcommon"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  COMMON_RPATH=""
-  for elt in $COMMON_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$COMMON_RPATH" ]; then
-            COMMON_RPATH="$rpath"
-        else
-            COMMON_RPATH="$COMMON_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$COMMON_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lcommon" >&5
-$as_echo_n "checking for _init in -lcommon... " >&6; }
-if test "${ac_cv_lib_common__init+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcommon  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char _init ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return _init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_common__init=yes
-else
-  ac_cv_lib_common__init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_common__init" >&5
-$as_echo "$ac_cv_lib_common__init" >&6; }
-if test "x$ac_cv_lib_common__init" = x""yes; then :
-  have_common=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libcommon." >&5
-$as_echo "$as_me: Couldn't find libcommon." >&6;}
-                     COMMON_LDFLAGS=""
-                     have_common=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-
-       symtab_libs="-lsymtabAPI $COMMON_LDFLAGS"
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    SYMTAB_LDFLAGS="-L$paradyn_lib"
-  else
-    SYMTAB_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x$symtab_libs" != "x"; then
-    SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS $symtab_libs"
-  else
-    SYMTAB_LDFLAGS="$SYMTAB_LDFLAGS -lsymtabAPI"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  SYMTAB_RPATH=""
-  for elt in $SYMTAB_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$SYMTAB_RPATH" ]; then
-            SYMTAB_RPATH="$rpath"
-        else
-            SYMTAB_RPATH="$SYMTAB_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SYMTAB_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lsymtabAPI" >&5
-$as_echo_n "checking for _init in -lsymtabAPI... " >&6; }
-if test "${ac_cv_lib_symtabAPI__init+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsymtabAPI  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char _init ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return _init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_symtabAPI__init=yes
-else
-  ac_cv_lib_symtabAPI__init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_symtabAPI__init" >&5
-$as_echo "$ac_cv_lib_symtabAPI__init" >&6; }
-if test "x$ac_cv_lib_symtabAPI__init" = x""yes; then :
-  have_symtabAPI=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libsymtabAPI." >&5
-$as_echo "$as_me: Couldn't find libsymtabAPI." >&6;}
-                     SYMTAB_LDFLAGS=""
-                     have_symtabAPI=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-
-       # By the third lib in the chain of dependencies here, this is kind of nasty.
-       # Need this if statement for the case where we have common but not symtab.
-       # Consider restructuring this if we get more stackwalk libs.
-       if [ "x$have_symtabAPI" = xyes ]; then
-           stackwalk_libs="-lstackwalk $SYMTAB_LDFLAGS"
-       else
-           stackwalk_libs="-lstackwalk $COMMON_LDFLAGS"
-       fi
-
-  # If dir param is there, add it to the link line.
-  if test "x$paradyn_lib" != x; then
-    SW_LDFLAGS="-L$paradyn_lib"
-  else
-    SW_LDFLAGS=""
-  fi
-
-  # If extra libraries are supplied, add those too.
-  if test "x$stackwalk_libs" != "x"; then
-    SW_LDFLAGS="$SW_LDFLAGS $stackwalk_libs"
-  else
-    SW_LDFLAGS="$SW_LDFLAGS -lstackwalk"
-  fi
-
-  # search the link line for -Lwhatever and add rpath args for each one.
-  SW_RPATH=""
-  for elt in $SW_LDFLAGS; do
-     if echo $elt | grep -q '^-L'; then
-        rpath=`echo $elt | sed 's/^-L/-R /'`
-        if [ -z "$SW_RPATH" ]; then
-            SW_RPATH="$rpath"
-        else
-            SW_RPATH="$SW_RPATH $rpath"
-        fi
-     fi
-  done
-
-  # Do the actual check to determine if we can link against this library.
-  OLD_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$SW_LDFLAGS $LDFLAGS"
-
-
-    OLD_LIBS="$LIBS"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _init in -lstackwalk" >&5
-$as_echo_n "checking for _init in -lstackwalk... " >&6; }
-if test "${ac_cv_lib_stackwalk__init+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lstackwalk  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char _init ();
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-return _init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_stackwalk__init=yes
-else
-  ac_cv_lib_stackwalk__init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_stackwalk__init" >&5
-$as_echo "$ac_cv_lib_stackwalk__init" >&6; }
-if test "x$ac_cv_lib_stackwalk__init" = x""yes; then :
-  have_stackwalk=yes
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find libstackwalk." >&5
-$as_echo "$as_me: Couldn't find libstackwalk." >&6;}
-                     SW_LDFLAGS=""
-                     have_stackwalk=no
-fi
-
-    LIBS="$OLD_LIBS"
-
-
-  LDFLAGS="$OLD_LDFLAGS"
-
-
-
-
-
-     else
-       echo "couldn't find ParaDyn headers in $paradyn_include."
-       have_common=no
-       have_symtabAPI=no
-       have_stackwalk=no
-     fi
-   else
-     echo "couldn't find ParaDyn tools in $withval."
-     have_common=no
-     have_symtabAPI=no
-     have_stackwalk=no
-   fi
-
-   if test "x$have_common" != xno; then
-
-$as_echo "#define HAVE_COMMON 1" >>confdefs.h
-
-     have_common=yes;
-   fi
-   if test "x$have_symtabAPI" != xno; then
-
-$as_echo "#define HAVE_SYMTAB 1" >>confdefs.h
-
-     have_symtabAPI=yes;
-   fi
-   if test "x$have_stackwalk" != xno; then
-
-$as_echo "#define HAVE_SW 1" >>confdefs.h
-
-     have_stackwalk=yes;
-   fi
-
-else
-  echo "path to ParaDyn tools not provided."
-   have_common=no
-   have_symtabAPI=no
-   have_stackwalk=no
-
-fi
-
-
- if test "x$have_stackwalk" = xyes; then
-  HAVE_SW_TRUE=
-  HAVE_SW_FALSE='#'
-else
-  HAVE_SW_TRUE='#'
-  HAVE_SW_FALSE=
-fi
-
- if test "x$have_symtabAPI" = xyes; then
-  HAVE_SYMTAB_TRUE=
-  HAVE_SYMTAB_FALSE='#'
-else
-  HAVE_SYMTAB_TRUE='#'
-  HAVE_SYMTAB_FALSE=
-fi
 
 
 # Check for PAPI for HW counters
@@ -21272,7 +21460,7 @@ echo "========================================================"
 echo "==         Libra: final build configuration           =="
 echo "========================================================"
 echo "External Library Support:"
-echo "  MPI ............................................ $have_mpi"
+echo "  MPI ............................................ $have_CXX_mpi"
 echo "  VTK ............................................ $have_vtk"
 echo "  PAPI ........................................... $have_papi"
 echo "  ParaDyn - Common ............................... $have_common"
@@ -21295,7 +21483,7 @@ echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"
 echo
 
-ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile cluster/Makefile hcluster/Makefile viewer/Makefile tests/Makefile"
+ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile hcluster/Makefile viewer/Makefile tests/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -21418,16 +21606,8 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error "conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_SPRNG_TRUE}" && test -z "${HAVE_SPRNG_FALSE}"; then
-  as_fn_error "conditional \"HAVE_SPRNG\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${HAVE_MPI_TRUE}" && test -z "${HAVE_MPI_FALSE}"; then
   as_fn_error "conditional \"HAVE_MPI\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_VIEWER_TRUE}" && test -z "${BUILD_VIEWER_FALSE}"; then
-  as_fn_error "conditional \"BUILD_VIEWER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_SW_TRUE}" && test -z "${HAVE_SW_FALSE}"; then
@@ -21436,6 +21616,18 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_SYMTAB_TRUE}" && test -z "${HAVE_SYMTAB_FALSE}"; then
   as_fn_error "conditional \"HAVE_SYMTAB\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_SPRNG_TRUE}" && test -z "${HAVE_SPRNG_FALSE}"; then
+  as_fn_error "conditional \"HAVE_SPRNG\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_MUSTER_TRUE}" && test -z "${HAVE_MUSTER_FALSE}"; then
+  as_fn_error "conditional \"HAVE_MUSTER\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_VIEWER_TRUE}" && test -z "${BUILD_VIEWER_FALSE}"; then
+  as_fn_error "conditional \"BUILD_VIEWER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_PAPI_TRUE}" && test -z "${HAVE_PAPI_FALSE}"; then
@@ -22491,7 +22683,6 @@ do
     "libwavelet/Makefile") CONFIG_FILES="$CONFIG_FILES libwavelet/Makefile" ;;
     "callpath/Makefile") CONFIG_FILES="$CONFIG_FILES callpath/Makefile" ;;
     "effort/Makefile") CONFIG_FILES="$CONFIG_FILES effort/Makefile" ;;
-    "cluster/Makefile") CONFIG_FILES="$CONFIG_FILES cluster/Makefile" ;;
     "hcluster/Makefile") CONFIG_FILES="$CONFIG_FILES hcluster/Makefile" ;;
     "viewer/Makefile") CONFIG_FILES="$CONFIG_FILES viewer/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;

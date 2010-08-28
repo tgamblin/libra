@@ -50,15 +50,17 @@ host_triplet = @host@
 #
 @PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
 bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
-	$(am__EXEEXT_1) $(am__EXEEXT_2)
+	$(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
 @HAVE_MPI_TRUE@am__append_4 = \
 @HAVE_MPI_TRUE@	tuner \
 @HAVE_MPI_TRUE@  bin_test \
 @HAVE_MPI_TRUE@  dataset_test \
 @HAVE_MPI_TRUE@	effort-signature-test \
-@HAVE_MPI_TRUE@	signature-cluster-test \
-@HAVE_MPI_TRUE@	par-signature-cluster-test \
 @HAVE_MPI_TRUE@	parse-callpath-test
+
+@HAVE_MPI_TRUE@@HAVE_MUSTER_TRUE@am__append_5 = \
+@HAVE_MPI_TRUE@@HAVE_MUSTER_TRUE@	signature-cluster-test \
+@HAVE_MPI_TRUE@@HAVE_MUSTER_TRUE@	par-signature-cluster-test
 
 subdir = effort
 DIST_COMMON = $(dist_bin_SCRIPTS) $(dist_noinst_HEADERS) \
@@ -74,11 +76,12 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/lx_detect_bluegene.m4 \
+	$(top_srcdir)/m4/lx_find_mpi.m4 \
 	$(top_srcdir)/m4/lx_header_subst.m4 \
 	$(top_srcdir)/m4/lx_lib_dwarf.m4 \
 	$(top_srcdir)/m4/lx_lib_elf.m4 $(top_srcdir)/m4/lx_lib_papi.m4 \
 	$(top_srcdir)/m4/lx_lib_subst.m4 \
-	$(top_srcdir)/m4/lx_lib_xml2.m4 $(top_srcdir)/m4/lx_mpi.m4 \
+	$(top_srcdir)/m4/lx_lib_xml2.m4 \
 	$(top_srcdir)/m4/lx_paradyn_tools.m4 \
 	$(top_srcdir)/m4/lx_pnmpi.m4 \
 	$(top_srcdir)/m4/lx_python_devel.m4 \
@@ -134,8 +137,8 @@ libeffort_runtime_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libeffort_runtime_la_LDFLAGS) $(LDFLAGS) -o $@
 @PMPI_EFFORT_TRUE@am_libeffort_runtime_la_rpath = -rpath $(libdir)
-libeffort_la_DEPENDENCIES = ../cluster/libcluster.la \
-	../callpath/libcallpath.la ../libwavelet/libwavelet.la
+libeffort_la_DEPENDENCIES = ../callpath/libcallpath.la \
+	../libwavelet/libwavelet.la
 am__libeffort_la_SOURCES_DIST = effort_key.C effort_record.C \
 	effort_signature.C effort_data.C effort_params.C Metric.C \
 	FrameDB.C effort_dataset.C s3d_topology.C \
@@ -191,67 +194,59 @@ libtiming_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 @HAVE_MPI_TRUE@am__EXEEXT_2 = tuner$(EXEEXT) bin_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	dataset_test$(EXEEXT) \
 @HAVE_MPI_TRUE@	effort-signature-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	signature-cluster-test$(EXEEXT) \
-@HAVE_MPI_TRUE@	par-signature-cluster-test$(EXEEXT) \
 @HAVE_MPI_TRUE@	parse-callpath-test$(EXEEXT)
+@HAVE_MPI_TRUE@@HAVE_MUSTER_TRUE@am__EXEEXT_3 = signature-cluster-test$(EXEEXT) \
+@HAVE_MPI_TRUE@@HAVE_MUSTER_TRUE@	par-signature-cluster-test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_approx_timer_OBJECTS = approx_timer.$(OBJEXT)
 approx_timer_OBJECTS = $(am_approx_timer_OBJECTS)
 approx_timer_LDADD = $(LDADD)
-approx_timer_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+approx_timer_DEPENDENCIES = libeffort.la
 am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
-bin_test_LDADD = $(LDADD)
-bin_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+am__DEPENDENCIES_1 =
+bin_test_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1)
 am_dataset_test_OBJECTS = dataset_test.$(OBJEXT)
 dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
 dataset_test_LDADD = $(LDADD)
-dataset_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+dataset_test_DEPENDENCIES = libeffort.la
 am_ef_OBJECTS = ef.$(OBJEXT)
 ef_OBJECTS = $(am_ef_OBJECTS)
-ef_LDADD = $(LDADD)
-ef_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
-ef_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(ef_LDFLAGS) \
-	$(LDFLAGS) -o $@
+ef_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_effort_signature_test_OBJECTS = effort_signature_test.$(OBJEXT)
 effort_signature_test_OBJECTS = $(am_effort_signature_test_OBJECTS)
 effort_signature_test_LDADD = $(LDADD)
-effort_signature_test_DEPENDENCIES = libeffort.la \
-	../cluster/libcluster.la
+effort_signature_test_DEPENDENCIES = libeffort.la
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
-nrmse_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+nrmse_DEPENDENCIES = libeffort.la
 am_par_signature_cluster_test_OBJECTS =  \
 	par_signature_cluster_test.$(OBJEXT)
 par_signature_cluster_test_OBJECTS =  \
 	$(am_par_signature_cluster_test_OBJECTS)
 par_signature_cluster_test_LDADD = $(LDADD)
-par_signature_cluster_test_DEPENDENCIES = libeffort.la \
-	../cluster/libcluster.la
+par_signature_cluster_test_DEPENDENCIES = libeffort.la
 am_parse_callpath_test_OBJECTS = parse_callpath_test.$(OBJEXT)
 parse_callpath_test_OBJECTS = $(am_parse_callpath_test_OBJECTS)
 parse_callpath_test_LDADD = $(LDADD)
-parse_callpath_test_DEPENDENCIES = libeffort.la \
-	../cluster/libcluster.la
+parse_callpath_test_DEPENDENCIES = libeffort.la
 am_s3d_topo_test_OBJECTS = s3d_topo_test.$(OBJEXT)
 s3d_topo_test_OBJECTS = $(am_s3d_topo_test_OBJECTS)
 s3d_topo_test_LDADD = $(LDADD)
-s3d_topo_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+s3d_topo_test_DEPENDENCIES = libeffort.la
 am_sample_test_OBJECTS = sample_test.$(OBJEXT)
 sample_test_OBJECTS = $(am_sample_test_OBJECTS)
 sample_test_LDADD = $(LDADD)
-sample_test_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+sample_test_DEPENDENCIES = libeffort.la
 am_signature_cluster_test_OBJECTS = signature_cluster_test.$(OBJEXT)
 signature_cluster_test_OBJECTS = $(am_signature_cluster_test_OBJECTS)
 signature_cluster_test_LDADD = $(LDADD)
-signature_cluster_test_DEPENDENCIES = libeffort.la \
-	../cluster/libcluster.la
+signature_cluster_test_DEPENDENCIES = libeffort.la
 am_tuner_OBJECTS = tuner.$(OBJEXT)
 tuner_OBJECTS = $(am_tuner_OBJECTS)
-tuner_LDADD = $(LDADD)
-tuner_DEPENDENCIES = libeffort.la ../cluster/libcluster.la
+tuner_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1)
 SCRIPTS = $(dist_bin_SCRIPTS) $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -353,6 +348,9 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+MPICXX = @MPICXX@
+MPI_CXXFLAGS = @MPI_CXXFLAGS@
+MPI_CXXLDFLAGS = @MPI_CXXLDFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -497,7 +495,6 @@ libeffort_la_SOURCES = effort_key.C effort_record.C effort_signature.C \
 	$(am__append_2)
 @HAVE_MPI_TRUE@@HAVE_SPRNG_TRUE@SAMPLE_PROGS = sample-test approx-timer 
 libeffort_la_LIBADD = \
-	../cluster/libcluster.la \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
@@ -532,12 +529,19 @@ effort_signature_test_SOURCES = effort_signature_test.C
 signature_cluster_test_SOURCES = signature_cluster_test.C
 par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
-ef_SOURCES = ef.C
-ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
-nrmse_SOURCES = nrmse.C 
-tuner_SOURCES = tuner.C
-bin_test_SOURCES = bin_test.C
 s3d_topo_test_SOURCES = s3d_topo_test.C
+nrmse_SOURCES = nrmse.C 
+ef_SOURCES = ef.C
+ef_LDADD = libeffort.la $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
+tuner_SOURCES = tuner.C
+tuner_LDADD = libeffort.la $(MPI_CXXLDFLAGS)
+bin_test_SOURCES = bin_test.C
+bin_test_LDADD = libeffort.la $(MPI_CXXLDFLAGS)
+LDADD = libeffort.la
+
+#
+# This stuff is for generating PMPI wrapper libraries.
+#
 CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
@@ -561,10 +565,8 @@ dist_noinst_SCRIPTS = wrap.py
 #	$(PNMPI_PATCH) .libs/effort.so .libs/effort-patched.so
 #	chmod u+x .libs/effort-patched.so
 #	mv -f .libs/effort-patched.so .libs/effort.so
-LDADD = libeffort.la ../cluster/libcluster.la
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
-           -I$(top_srcdir)/cluster \
 					 $(SPRNG_CPPFLAGS) \
            $(PNMPI_CPPFLAGS) \
            $(BOOST_CPPFLAGS) \
@@ -586,9 +588,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu effort/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign effort/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu effort/Makefile
+	  $(AUTOMAKE) --foreign effort/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -706,7 +708,7 @@ dataset_test$(EXEEXT): $(dataset_test_OBJECTS) $(dataset_test_DEPENDENCIES)
 	$(CXXLINK) $(dataset_test_OBJECTS) $(dataset_test_LDADD) $(LIBS)
 ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES) 
 	@rm -f ef$(EXEEXT)
-	$(ef_LINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
+	$(CXXLINK) $(ef_OBJECTS) $(ef_LDADD) $(LIBS)
 effort-signature-test$(EXEEXT): $(effort_signature_test_OBJECTS) $(effort_signature_test_DEPENDENCIES) 
 	@rm -f effort-signature-test$(EXEEXT)
 	$(CXXLINK) $(effort_signature_test_OBJECTS) $(effort_signature_test_LDADD) $(LIBS)

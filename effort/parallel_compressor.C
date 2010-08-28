@@ -46,7 +46,6 @@ using namespace wavelet;
 #include "synchronize_keys.h"
 #include "timing.h"
 #include "ltqnorm.h"
-#include "random.h"
 
 namespace effort {
 

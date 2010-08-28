@@ -19,7 +19,7 @@ AC_PROG_INSTALL
 LT_INIT
 AC_SUBST(LIBTOOL_DEPS)
 
-# Fortran binding for MPI_Init
+# Find a fortran binding for MPI_Init
 AC_FC_FUNC(PMPI_Init, PMPI_INIT)
 AC_ARG_WITH([pmpi-init], 
   AS_HELP_STRING([--with-pmpi-init], 
@@ -32,47 +32,55 @@ AC_ARG_WITH([pmpi-init],
 )
 AC_SUBST(PMPI_INIT)
 
-# Test whether we're on BlueGene/L and define things in config.h accordingly
-AC_LANG_PUSH([C++])   # Force using the user-supplied C++ compiler.
-LX_DETECT_BLUEGENE
+
+#
+# Test for various C++ libraries
+#
+AC_LANG_PUSH([C++])
+    # Test whether we're on BlueGene/L and define things in config.h accordingly
+    LX_DETECT_BLUEGENE
+
+    # Make sure we can compile MPI programs in C++
+    LX_FIND_MPI
+    AM_CONDITIONAL([HAVE_MPI], [test "x$have_CXX_mpi" == xyes])
+
+    # We need the boost matrix class to build this library.
+    AX_BOOST_BASE
+
+    # Need VTK to build the GUI.
+    AC_OPTIONS_VTK
+    AC_PATH_VTK([5.0.0],
+                [AC_MSG_NOTICE([Found VTK Library.]);         have_vtk=yes],
+                [AC_MSG_NOTICE([Couldn't find VTK library.]); have_vtk=no])
+
+    # Check for Wisconsin ParaDyn Tools (this includes checking for dependencies)
+    LX_PARADYN_TOOLS
+    AM_CONDITIONAL([HAVE_SW], [test "x$have_stackwalk" = xyes])
+    AM_CONDITIONAL([HAVE_SYMTAB], [test "x$have_symtabAPI" = xyes])
 AC_LANG_POP
 
-# Distributed Sampling Support
+# Distributed Sampling Support -- SPRNG library
 LX_SPRNG
 if [[ "x$have_sprng" = xyes ]]; then
    AC_DEFINE([HAVE_SPRNG], [1], [Defined if we have the SPRNG library.])
 fi
 AM_CONDITIONAL([HAVE_SPRNG], [test "x$have_sprng" == xyes])
 
-# We need the boost matrix class to build this library.
-AX_BOOST_BASE
+# Currently unsupported -- need to add detection of Muster library.
+AM_CONDITIONAL([HAVE_MUSTER], [test "x$have_muster" == xyes])
 
-# Check for MPI.  If we don't have it, don't build parallel
-# Assumes that you're using an MPI compiler (mpicxx, etc) that handles libs.
-# This will NOT add MPI libraries to the build.
-CC=${CXX}          # Use CXX instead of CC for tests
-CPP="${CXX} -E"    # Use CXX instead of defaupt CPP for tests
-LX_MPI
-AM_CONDITIONAL([HAVE_MPI], [test "x$have_mpi" == xyes])
-#AC_LANG_POP
 
 # Check for Linux timers.
 AC_CHECK_LIB(rt, clock_gettime)
 AC_CHECK_FUNCS(clock_gettime gettimeofday)
 
-AC_OPTIONS_VTK
-AC_PATH_VTK([5.0.0],
-	[AC_MSG_NOTICE([Found VTK Library.])
-	 have_vtk=yes],
-	[AC_MSG_NOTICE([Couldn't find VTK library.])
-	 have_vtk=no]
-)
 
 # This tests for a python installation and finds the python binary, the latest python version,
 # the Python.h header, and the python library.
 LX_PYTHON_DEVEL
 AX_PYTHON_MODULE(PyQt4)
 AX_PYTHON_MODULE(numpy)
+
 
 AC_PROG_SWIG(1.3.30)
 if (${SWIG} -version &> /dev/null); then
@@ -93,10 +101,6 @@ else
 fi
 AM_CONDITIONAL([BUILD_VIEWER], [ test "x$build_viewer" = xyes ])
 
-# Check for Wisconsin ParaDyn Tools (this includes checking for dependencies)
-LX_PARADYN_TOOLS
-AM_CONDITIONAL([HAVE_SW], [test "x$have_stackwalk" = xyes])
-AM_CONDITIONAL([HAVE_SYMTAB], [test "x$have_symtabAPI" = xyes])
 
 # Check for PAPI for HW counters
 LX_LIB_PAPI
@@ -140,7 +144,7 @@ echo "========================================================"
 echo "==         Libra: final build configuration           =="
 echo "========================================================"
 echo "External Library Support:"
-echo "  MPI ............................................ $have_mpi"
+echo "  MPI ............................................ $have_CXX_mpi"
 echo "  VTK ............................................ $have_vtk"
 echo "  PAPI ........................................... $have_papi"
 echo "  ParaDyn - Common ............................... $have_common"
@@ -167,7 +171,6 @@ AC_CONFIG_FILES([Makefile \
                  libwavelet/Makefile \
                  callpath/Makefile \
                  effort/Makefile \
-                 cluster/Makefile \
                  hcluster/Makefile \
                  viewer/Makefile \
                  tests/Makefile])

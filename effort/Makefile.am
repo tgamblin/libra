@@ -46,7 +46,6 @@ endif
 endif
 
 libeffort_la_LIBADD = \
-	../cluster/libcluster.la \
 	../callpath/libcallpath.la \
 	../libwavelet/libwavelet.la
 
@@ -97,10 +96,14 @@ bin_PROGRAMS += \
   bin_test \
   dataset_test \
 	effort-signature-test \
-	signature-cluster-test \
-	par-signature-cluster-test \
 	parse-callpath-test
+
+if HAVE_MUSTER
+bin_PROGRAMS += \
+	signature-cluster-test \
+	par-signature-cluster-test
 endif
+endif 
 
 dist_bin_SCRIPTS= libra-build-viewer-data libra-reconstruct-exact
 
@@ -111,16 +114,25 @@ effort_signature_test_SOURCES = effort_signature_test.C
 signature_cluster_test_SOURCES = signature_cluster_test.C
 par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
+s3d_topo_test_SOURCES=s3d_topo_test.C
+nrmse_SOURCES=nrmse.C 
 
 ef_SOURCES=ef.C
-ef_LDFLAGS = $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
+ef_LDADD = libeffort.la $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 
-
-nrmse_SOURCES=nrmse.C 
 tuner_SOURCES=tuner.C
-bin_test_SOURCES=bin_test.C
-s3d_topo_test_SOURCES=s3d_topo_test.C
+tuner_LDADD = libeffort.la $(MPI_CXXLDFLAGS)
 
+bin_test_SOURCES=bin_test.C
+bin_test_LDADD = libeffort.la $(MPI_CXXLDFLAGS)
+
+LDADD = libeffort.la
+
+
+
+#
+# This stuff is for generating PMPI wrapper libraries.
+#
 CLEANFILES = effort_wrapper.C comm_wrapper.C base_wrapper.C
 EXTRA_DIST = effort_wrapper.w comm_wrapper.w base_wrapper.w
 dist_noinst_SCRIPTS = wrap.py
@@ -160,10 +172,9 @@ if HAVE_PNMPI
 #	mv -f .libs/effort-patched.so .libs/effort.so
 endif
 
-LDADD   =  libeffort.la ../cluster/libcluster.la
+
 INCLUDES = -I$(top_srcdir)/libwavelet \
            -I$(top_srcdir)/callpath \
-           -I$(top_srcdir)/cluster \
 					 $(SPRNG_CPPFLAGS) \
            $(PNMPI_CPPFLAGS) \
            $(BOOST_CPPFLAGS) \

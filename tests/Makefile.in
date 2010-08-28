@@ -57,11 +57,12 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/lx_detect_bluegene.m4 \
+	$(top_srcdir)/m4/lx_find_mpi.m4 \
 	$(top_srcdir)/m4/lx_header_subst.m4 \
 	$(top_srcdir)/m4/lx_lib_dwarf.m4 \
 	$(top_srcdir)/m4/lx_lib_elf.m4 $(top_srcdir)/m4/lx_lib_papi.m4 \
 	$(top_srcdir)/m4/lx_lib_subst.m4 \
-	$(top_srcdir)/m4/lx_lib_xml2.m4 $(top_srcdir)/m4/lx_mpi.m4 \
+	$(top_srcdir)/m4/lx_lib_xml2.m4 \
 	$(top_srcdir)/m4/lx_paradyn_tools.m4 \
 	$(top_srcdir)/m4/lx_pnmpi.m4 \
 	$(top_srcdir)/m4/lx_python_devel.m4 \
@@ -101,16 +102,16 @@ am__DEPENDENCIES_1 =
 papicheck_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_parezwtest_OBJECTS = parezwtest.$(OBJEXT)
 parezwtest_OBJECTS = $(am_parezwtest_OBJECTS)
-parezwtest_LDADD = $(LDADD)
-parezwtest_DEPENDENCIES = ../libwavelet/libwavelet.la
+parezwtest_DEPENDENCIES = ../libwavelet/libwavelet.la \
+	$(am__DEPENDENCIES_1)
 am_parspeedbench_OBJECTS = parspeedbench.$(OBJEXT)
 parspeedbench_OBJECTS = $(am_parspeedbench_OBJECTS)
-parspeedbench_LDADD = $(LDADD)
-parspeedbench_DEPENDENCIES = ../libwavelet/libwavelet.la
+parspeedbench_DEPENDENCIES = ../libwavelet/libwavelet.la \
+	$(am__DEPENDENCIES_1)
 am_partest_OBJECTS = partest.$(OBJEXT)
 partest_OBJECTS = $(am_partest_OBJECTS)
-partest_LDADD = $(LDADD)
-partest_DEPENDENCIES = ../libwavelet/libwavelet.la
+partest_DEPENDENCIES = ../libwavelet/libwavelet.la \
+	$(am__DEPENDENCIES_1)
 am_seqtest_OBJECTS = seqtest.$(OBJEXT)
 seqtest_OBJECTS = $(am_seqtest_OBJECTS)
 seqtest_LDADD = $(LDADD)
@@ -216,6 +217,9 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+MPICXX = @MPICXX@
+MPI_CXXFLAGS = @MPI_CXXFLAGS@
+MPI_CXXLDFLAGS = @MPI_CXXLDFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -344,8 +348,11 @@ swcheck_SOURCES = swcheck.C
 swcheck_CPPFLAGS = -I../callpath $(SW_CPPFLAGS)
 swcheck_LDADD = ../callpath/libcallpath.la  ../libwavelet/libwavelet.la
 partest_SOURCES = partest.C
+partest_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 parezwtest_SOURCES = parezwtest.C
+parezwtest_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 parspeedbench_SOURCES = parspeedbench.C
+parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
 bunny_LDADD = ../effort/libpmpi-effort.la
@@ -369,9 +376,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign tests/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu tests/Makefile
+	  $(AUTOMAKE) --foreign tests/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
