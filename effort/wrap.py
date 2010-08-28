@@ -38,7 +38,7 @@ usage_string = \
    -f             Generate fortran wrappers in addition to C wrappers.
    -g             Generate reentry guards around wrapper functions.
    -c exe         Provide name of MPI compiler (for parsing mpi.h).  Default is \'mpicc\'.
-   -i pmpi_init   Specify properly mangled binding for the fortran pmpi_init function.
+   -i pmpi_init   Specify proper binding for the fortran pmpi_init function.
                   Default is \'pmpi_init_\'.  Wrappers compiled for PIC will guess the
                   right binding automatically (use -DPIC when you compile dynamic libs).
    -o file        Send output to a file instead of stdout.
@@ -85,14 +85,49 @@ formal_re = re.compile(
 # Fortran wrapper suffix
 f_wrap_suffix = "_fortran_wrapper"
 
+# Initial includes and defines for wrapper files.
+wrapper_includes = '''
+#include <mpi.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifndef _EXTERN_C_
+#ifdef __cplusplus
+#define _EXTERN_C_ extern "C"
+#else /* __cplusplus */
+#define _EXTERN_C_ 
+#endif /* __cplusplus */
+#endif /* _EXTERN_C_ */
+
+#ifdef MPICH_HAS_C2F
+_EXTERN_C_ void *MPIR_ToPointer(int);
+#endif // MPICH_HAS_C2F
+
+#ifdef PIC
+/* For shared libraries, declare these weak and figure out which one was linked
+   based on which init wrapper was called.  See mpi_init wrappers.  */
+#pragma weak pmpi_init
+#pragma weak PMPI_INIT
+#pragma weak pmpi_init_
+#pragma weak pmpi_init__
+#endif /* PIC */
+
+_EXTERN_C_ void pmpi_init(MPI_Fint *ierr);
+_EXTERN_C_ void PMPI_INIT(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init_(MPI_Fint *ierr);
+_EXTERN_C_ void pmpi_init__(MPI_Fint *ierr);
+
+'''
+
 # Default modifiers for generated bindings
-default_modifiers = ["_EXTERN_C_"]  # _EXTERN_C_ is defined at the start of generated file (see below)
+default_modifiers = ["_EXTERN_C_"]  # _EXTERN_C_ is #defined (or not) in wrapper_includes. See above.
 
 # Set of MPI Handle types
 mpi_handle_types = set(["MPI_Comm", "MPI_Errhandler", "MPI_File", "MPI_Group", "MPI_Info", 
                         "MPI_Op", "MPI_Request", "MPI_Status", "MPI_Datatype", "MPI_Win" ])
 
-# MPI Calls that have array parameters, and mappings from the array positions to the position of its size
+# MPI Calls that have array parameters, and mappings from the array parameter positions to the position
+# of the 'count' paramters that determine their size
 mpi_array_calls = {
     "MPI_Startall"           : { 1:0 },
     "MPI_Testall"            : { 1:0, 3:0 },
@@ -184,7 +219,6 @@ class Lexer:
         last = self.text.getvalue()
         if last:
             yield Token(TEXT, last)
-
 
 # Lexer for wrapper files used by parse() routine below.
 lexer = Lexer("{{","}}")
@@ -339,7 +373,7 @@ class Declaration:
 types = set()
 all_pointers = set()
 
-def enumerate_mpi_declarations(mpicc = "mpicc"):
+def enumerate_mpi_declarations(mpicc):
     """ Invokes mpicc's C preprocessor on a C file that includes mpi.h.
         Parses the output for declarations, and yields each declaration to
         the caller.
@@ -879,38 +913,7 @@ for decl in enumerate_mpi_declarations(mpicc):
 
 
 # Start with some headers and definitions.
-output.write('''
-#include <mpi.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifndef _EXTERN_C_
-#ifdef __cplusplus
-#define _EXTERN_C_ extern "C"
-#else /* __cplusplus */
-#define _EXTERN_C_ 
-#endif /* __cplusplus */
-#endif /* _EXTERN_C_ */
-
-#ifdef MPICH_HAS_C2F
-_EXTERN_C_ void *MPIR_ToPointer(int);
-#endif // MPICH_HAS_C2F
-
-#ifdef PIC
-/* For shared libraries, declare these weak and figure out which one was linked
-   based on which init wrapper was called.  See mpi_init wrappers.  */
-#pragma weak pmpi_init
-#pragma weak PMPI_INIT
-#pragma weak pmpi_init_
-#pragma weak pmpi_init__
-#endif /* PIC */
-
-_EXTERN_C_ void pmpi_init(MPI_Fint *ierr);
-_EXTERN_C_ void PMPI_INIT(MPI_Fint *ierr);
-_EXTERN_C_ void pmpi_init_(MPI_Fint *ierr);
-_EXTERN_C_ void pmpi_init__(MPI_Fint *ierr);
-
-''')
+output.write(wrapper_includes)
 
 if output_guards:
     output.write("static int in_wrapper = 0;\n")
