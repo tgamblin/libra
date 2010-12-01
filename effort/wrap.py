@@ -31,10 +31,11 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #################################################################################################
 usage_string = \
-'''Usage: wrap.py [-fg] [-i pmpi_init] [-c mpicc_name] [-o file] wrapper.w [...]
+'''Usage: wrap.py [-fgd] [-i pmpi_init] [-c mpicc_name] [-o file] wrapper.w [...]
  Python script for creating PMPI wrappers. Roughly follows the syntax of 
    the Argonne PMPI wrapper generator, with some enhancements.
  Options:"
+   -d             Just dump function declarations parsed out of mpi.h
    -f             Generate fortran wrappers in addition to C wrappers.
    -g             Generate reentry guards around wrapper functions.
    -c exe         Provide name of MPI compiler (for parsing mpi.h).  Default is \'mpicc\'.
@@ -53,6 +54,10 @@ mpicc = 'mpicc'                    # Default name for the MPI compiler
 pmpi_init_binding = "pmpi_init_"   # Default binding for pmpi_init
 output_fortran_wrappers = False    # Don't print fortran wrappers by default
 output_guards = False              # Don't print reentry guards by default
+dump_prototypes = False            # Just exit and dump MPI protos if false.
+
+# Possible legal bindings for the fortran version of PMPI_Init()
+pmpi_init_bindings = ["PMPI_INIT", "pmpi_init", "pmpi_init_", "pmpi_init__"]
 
 # Possible function return types to consider, used for declaration parser.
 # In general, all MPI calls we care about return int.  We include double
@@ -364,6 +369,10 @@ class Declaration:
         if modifiers: modifiers = joinlines(modifiers, " ")
         return "%s%s %s%s" % (modifiers, self.retType(), self.name, self.argTypeList())
     
+    def pmpi_prototype(self, modifiers=""):
+        if modifiers: modifiers = joinlines(modifiers, " ")
+        return "%s%s P%s%s" % (modifiers, self.retType(), self.name, self.argTypeList())
+        
     def fortranPrototype(self, name=None, modifiers=""):
         if not name: name = self.name
         if modifiers: modifiers = joinlines(modifiers, " ")
@@ -464,11 +473,21 @@ def write_exit_guard(out):
 
 def write_c_wrapper(out, decl, return_val, write_body):
     """Write the C wrapper for an MPI function."""
+    # Write the PMPI prototype here in case mpi.h doesn't define it
+    # (sadly the case with some MPI implementaitons)
+    out.write(decl.pmpi_prototype(default_modifiers))
+    out.write(";\n")
+
+    # Now write the wrapper function, which will call the PMPI function we declared.
     out.write(decl.prototype(default_modifiers))
     out.write(" { \n")
     out.write("    int %s = 0;\n" % return_val)
 
-    write_enter_guard(out, decl)
+    if output_guards:
+        write_enter_guard(out, decl)
+    else:
+        out.write("    return_val = P%s%s;\n" % (decl.name, decl.argList()))
+
     write_body(out)
     write_exit_guard(out)
 
@@ -769,12 +788,12 @@ def fn(out, scope, args, children):
             for child in children:
                 child.execute(out, scope)
 
-        out.write("/* ================== C Wrappers for %s ================== */\n" % decl.name)
+        out.write("/* ================== C Wrappers for %s ================== */\n" % fn_name)
         write_c_wrapper(out, fn, return_val, write_body)
         if output_fortran_wrappers:
-            out.write("/* =============== Fortran Wrappers for %s =============== */\n" % decl.name)
+            out.write("/* =============== Fortran Wrappers for %s =============== */\n" % fn_name)
             write_fortran_wrappers(out, fn, return_val)
-            out.write("/* ================= End Wrappers for %s ================= */\n\n\n" % decl.name)
+            out.write("/* ================= End Wrappers for %s ================= */\n\n\n" % fn_name)
 
 @macro
 def forallfn(out, scope, args, children):
@@ -876,15 +895,14 @@ def usage():
 # Let the user specify another mpicc to get mpi.h from
 output = sys.stdout
 try:
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "fgc:o:i:")
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "fgdc:o:i:")
 except getopt.GetoptError, err:
     print err
     usage()
 
-if len(args) < 1:
-    usage()
-
 for opt, arg in opts:
+    if opt == "-d": 
+        dump_prototypes = True
     if opt == "-f": 
         output_fortran_wrappers = True
     if opt == "-g": 
@@ -892,8 +910,7 @@ for opt, arg in opts:
     if opt == "-c": 
         mpicc = arg
     if opt == "-i":
-        possible_bindings = ["PMPI_INIT", "pmpi_init", "pmpi_init_", "pmpi_init__"]
-        if not arg in possible_bindings:
+        if not arg in pmpi_init_bindings:
             print "ERROR: PMPI_Init binding must be one of:\n    %s\n" % " ".join(possible_bindings)
             usage()
         else:
@@ -905,12 +922,20 @@ for opt, arg in opts:
             sys.stderr.write("Error: couldn't open file " + arg + " for writing.\n")
             sys.exit(1)
 
+if len(args) < 1 and not dump_prototypes:
+    usage()
+
 #
 # Parse mpi.h and put declarations into a map.
 #
 for decl in enumerate_mpi_declarations(mpicc):
     mpi_functions[decl.name] = decl
+    if dump_prototypes:
+        print decl
 
+# If we're just dumping prototypes, we can just exit here.
+if dump_prototypes:
+    sys.exit(0)
 
 # Start with some headers and definitions.
 output.write(wrapper_includes)
