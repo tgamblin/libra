@@ -55,6 +55,7 @@ bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
 bunny_LDADD = ../effort/libmanual-effort.la
 
+matcat_test_SOURCES=matcat_test.C
 
 #
 # This will pre-relink all the lt binaries.  This is a workaround for clusters where 

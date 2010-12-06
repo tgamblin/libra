@@ -47,19 +47,49 @@ namespace wavelet {
   }
 
 
+  // test whether a file is a directory or not
+  inline bool is_directory(const char *filename) {
+    struct stat st;
+    stat(filename, &st);
+    return S_ISDIR(st.st_mode);
+  }
+
+
   // Variable-length read and write routines for unsigned numbers.
   size_t vl_write(std::ostream& out, unsigned long long size);
   unsigned long long vl_read(std::istream& in);
 
 
+  ///
+  /// Specialized template class to fetch the equivalent integral type for a 
+  /// particular primitive type. Works for floats and doubles as well as the integral types.
+  ///
+  template <typename T> struct integral_type_of { };
+  template <> struct integral_type_of<double>             { typedef uint64_t           value; };
+  template <> struct integral_type_of<float>              { typedef uint32_t           value; };
+  template <> struct integral_type_of<char>               { typedef char               value; };
+  template <> struct integral_type_of<unsigned char>      { typedef unsigned char      value; };
+  template <> struct integral_type_of<short>              { typedef short              value; };
+  template <> struct integral_type_of<unsigned short>     { typedef unsigned short     value; };
+  template <> struct integral_type_of<int>                { typedef int                value; };
+  template <> struct integral_type_of<unsigned int>       { typedef unsigned int       value; };
+  template <> struct integral_type_of<long>               { typedef long               value; };
+  template <> struct integral_type_of<unsigned long>      { typedef unsigned long      value; };
+  template <> struct integral_type_of<long long>          { typedef long long          value; };
+  template <> struct integral_type_of<unsigned long long> { typedef unsigned long long value; };
+
   /// Endian-agnostic write for integer types. This doesn't compress
   /// like vl_write, but it handles signs.
-  template<class T>
+  template <class T>
   size_t write_generic(std::ostream& out, T num) {
+    T tmp = num;
+    typedef typename integral_type_of<T>::value integral_type;
+    integral_type* val = reinterpret_cast<integral_type*>(&tmp);
+
     for (size_t i=0; i < sizeof(T); i++) {
-      unsigned char lo_bits = (num & 0xFF);
+      unsigned char lo_bits = (*val & 0xFF);
       out.write((char*)&lo_bits, 1);
-      num >>= 8;
+      *val >>= 8;
     }
     return sizeof(T);
   }
@@ -67,17 +97,48 @@ namespace wavelet {
 
   /// Endian-agnostic read for integer types. This doesn't compress
   /// like vl_write, but it handles signs.
-  template<class T>
+  template <class T>
   T read_generic(std::istream& in) {
-    T num = 0;
+    typedef typename integral_type_of<T>::value integral_type;
+    integral_type val = 0;
+
     for (size_t i=0; i < sizeof(T); i++) {
       unsigned char byte;
       in.read((char*)&byte, 1);
-      num |= ((T)byte) << (i<<3);
+      val |= ((integral_type)byte) << (i<<3);
     }
-    return num;
+    return *reinterpret_cast<T*>(&val);
   }
   
+
+  template <class Matrix>
+  void write_raw_matrix(const Matrix& mat, std::ostream& out) {
+    size_t size1 = mat.size1();
+    size_t size2 = mat.size2();
+    
+    write_generic(out, size1);
+    write_generic(out, size2);
+    for (size_t i=0; i < size1; i++) {
+      for (size_t j=0; j < size2; j++) {
+        write_generic(out, mat(i,j));
+      }
+    }
+  }
+  
+  
+  template <class Matrix>
+  void read_raw_matrix(std::istream& in, Matrix& mat) {
+    size_t size1 = read_generic<size_t>(in);
+    size_t size2 = read_generic<size_t>(in);
+    mat.resize(size1, size2, false);
+
+    for (size_t i=0; i < size1; i++) {
+      for (size_t j=0; j < size2; j++) {
+        mat(i,j) = read_generic<typename Matrix::value_type>(in);
+      }
+    }
+  }
+
 
   /// Test for integral types to make sure they're powers of two.
   template <class T>

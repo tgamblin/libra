@@ -77,7 +77,7 @@ namespace effort {
       ostringstream exact_file_name;
       exact_file_name << exact_dir << "/exact-" << effort_filename << "-" << rank;
       ofstream exact_file(exact_file_name.str().c_str());
-      output(mat, exact_file);
+      write_raw_matrix(mat, exact_file);
       exact_file.close();
       timer.record("ExactData");
     }

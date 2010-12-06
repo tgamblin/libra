@@ -89,7 +89,7 @@ endif
 #
 # Effort utility programs
 #
-bin_PROGRAMS = ef nrmse s3d-topo-test $(SAMPLE_PROGS)
+bin_PROGRAMS = ef nrmse matcat mat2dat dat2mat s3d-topo-test $(SAMPLE_PROGS)
 if HAVE_MPI
 bin_PROGRAMS += \
 	tuner \
@@ -116,6 +116,9 @@ par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
 s3d_topo_test_SOURCES=s3d_topo_test.C
 nrmse_SOURCES=nrmse.C 
+matcat_SOURCES=matcat.C 
+mat2dat_SOURCES=mat2dat.C 
+dat2mat_SOURCES=dat2mat.C 
 
 ef_SOURCES=ef.C
 ef_LDADD = libeffort.la $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)

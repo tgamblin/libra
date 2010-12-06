@@ -49,7 +49,8 @@ host_triplet = @host@
 # Effort runtime library and wrapper libraries
 #
 @PMPI_EFFORT_TRUE@am__append_3 = libpmpi-effort.la libtiming.la libpcontrol-counter.la libeffort-runtime.la libcomm-effort.la libmanual-effort.la
-bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) s3d-topo-test$(EXEEXT) \
+bin_PROGRAMS = ef$(EXEEXT) nrmse$(EXEEXT) matcat$(EXEEXT) \
+	mat2dat$(EXEEXT) dat2mat$(EXEEXT) s3d-topo-test$(EXEEXT) \
 	$(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
 @HAVE_MPI_TRUE@am__append_4 = \
 @HAVE_MPI_TRUE@	tuner \
@@ -206,6 +207,10 @@ am_bin_test_OBJECTS = bin_test.$(OBJEXT)
 bin_test_OBJECTS = $(am_bin_test_OBJECTS)
 am__DEPENDENCIES_1 =
 bin_test_DEPENDENCIES = libeffort.la $(am__DEPENDENCIES_1)
+am_dat2mat_OBJECTS = dat2mat.$(OBJEXT)
+dat2mat_OBJECTS = $(am_dat2mat_OBJECTS)
+dat2mat_LDADD = $(LDADD)
+dat2mat_DEPENDENCIES = libeffort.la
 am_dataset_test_OBJECTS = dataset_test.$(OBJEXT)
 dataset_test_OBJECTS = $(am_dataset_test_OBJECTS)
 dataset_test_LDADD = $(LDADD)
@@ -218,6 +223,14 @@ am_effort_signature_test_OBJECTS = effort_signature_test.$(OBJEXT)
 effort_signature_test_OBJECTS = $(am_effort_signature_test_OBJECTS)
 effort_signature_test_LDADD = $(LDADD)
 effort_signature_test_DEPENDENCIES = libeffort.la
+am_mat2dat_OBJECTS = mat2dat.$(OBJEXT)
+mat2dat_OBJECTS = $(am_mat2dat_OBJECTS)
+mat2dat_LDADD = $(LDADD)
+mat2dat_DEPENDENCIES = libeffort.la
+am_matcat_OBJECTS = matcat.$(OBJEXT)
+matcat_OBJECTS = $(am_matcat_OBJECTS)
+matcat_LDADD = $(LDADD)
+matcat_DEPENDENCIES = libeffort.la
 am_nrmse_OBJECTS = nrmse.$(OBJEXT)
 nrmse_OBJECTS = $(am_nrmse_OBJECTS)
 nrmse_LDADD = $(LDADD)
@@ -265,8 +278,9 @@ SOURCES = $(libcomm_effort_la_SOURCES) $(libeffort_runtime_la_SOURCES) \
 	$(libeffort_la_SOURCES) $(libmanual_effort_la_SOURCES) \
 	$(libpcontrol_counter_la_SOURCES) $(libpmpi_effort_la_SOURCES) \
 	$(libtiming_la_SOURCES) $(approx_timer_SOURCES) \
-	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
-	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
+	$(bin_test_SOURCES) $(dat2mat_SOURCES) $(dataset_test_SOURCES) \
+	$(ef_SOURCES) $(effort_signature_test_SOURCES) \
+	$(mat2dat_SOURCES) $(matcat_SOURCES) $(nrmse_SOURCES) \
 	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
 	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
@@ -278,8 +292,9 @@ DIST_SOURCES = $(am__libcomm_effort_la_SOURCES_DIST) \
 	$(am__libpcontrol_counter_la_SOURCES_DIST) \
 	$(am__libpmpi_effort_la_SOURCES_DIST) \
 	$(am__libtiming_la_SOURCES_DIST) $(approx_timer_SOURCES) \
-	$(bin_test_SOURCES) $(dataset_test_SOURCES) $(ef_SOURCES) \
-	$(effort_signature_test_SOURCES) $(nrmse_SOURCES) \
+	$(bin_test_SOURCES) $(dat2mat_SOURCES) $(dataset_test_SOURCES) \
+	$(ef_SOURCES) $(effort_signature_test_SOURCES) \
+	$(mat2dat_SOURCES) $(matcat_SOURCES) $(nrmse_SOURCES) \
 	$(par_signature_cluster_test_SOURCES) \
 	$(parse_callpath_test_SOURCES) $(s3d_topo_test_SOURCES) \
 	$(sample_test_SOURCES) $(signature_cluster_test_SOURCES) \
@@ -533,6 +548,9 @@ par_signature_cluster_test_SOURCES = par_signature_cluster_test.C
 parse_callpath_test_SOURCES = parse_callpath_test.C
 s3d_topo_test_SOURCES = s3d_topo_test.C
 nrmse_SOURCES = nrmse.C 
+matcat_SOURCES = matcat.C 
+mat2dat_SOURCES = mat2dat.C 
+dat2mat_SOURCES = dat2mat.C 
 ef_SOURCES = ef.C
 ef_LDADD = libeffort.la $(SYMTAB_LDFLAGS) $(SYMTAB_RPATH)
 tuner_SOURCES = tuner.C
@@ -706,6 +724,9 @@ approx-timer$(EXEEXT): $(approx_timer_OBJECTS) $(approx_timer_DEPENDENCIES)
 bin_test$(EXEEXT): $(bin_test_OBJECTS) $(bin_test_DEPENDENCIES) 
 	@rm -f bin_test$(EXEEXT)
 	$(CXXLINK) $(bin_test_OBJECTS) $(bin_test_LDADD) $(LIBS)
+dat2mat$(EXEEXT): $(dat2mat_OBJECTS) $(dat2mat_DEPENDENCIES) 
+	@rm -f dat2mat$(EXEEXT)
+	$(CXXLINK) $(dat2mat_OBJECTS) $(dat2mat_LDADD) $(LIBS)
 dataset_test$(EXEEXT): $(dataset_test_OBJECTS) $(dataset_test_DEPENDENCIES) 
 	@rm -f dataset_test$(EXEEXT)
 	$(CXXLINK) $(dataset_test_OBJECTS) $(dataset_test_LDADD) $(LIBS)
@@ -715,6 +736,12 @@ ef$(EXEEXT): $(ef_OBJECTS) $(ef_DEPENDENCIES)
 effort-signature-test$(EXEEXT): $(effort_signature_test_OBJECTS) $(effort_signature_test_DEPENDENCIES) 
 	@rm -f effort-signature-test$(EXEEXT)
 	$(CXXLINK) $(effort_signature_test_OBJECTS) $(effort_signature_test_LDADD) $(LIBS)
+mat2dat$(EXEEXT): $(mat2dat_OBJECTS) $(mat2dat_DEPENDENCIES) 
+	@rm -f mat2dat$(EXEEXT)
+	$(CXXLINK) $(mat2dat_OBJECTS) $(mat2dat_LDADD) $(LIBS)
+matcat$(EXEEXT): $(matcat_OBJECTS) $(matcat_DEPENDENCIES) 
+	@rm -f matcat$(EXEEXT)
+	$(CXXLINK) $(matcat_OBJECTS) $(matcat_LDADD) $(LIBS)
 nrmse$(EXEEXT): $(nrmse_OBJECTS) $(nrmse_DEPENDENCIES) 
 	@rm -f nrmse$(EXEEXT)
 	$(CXXLINK) $(nrmse_OBJECTS) $(nrmse_LDADD) $(LIBS)
@@ -783,6 +810,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base_wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bin_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/comm_wrapper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dat2mat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataset_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_data.Plo@am__quote@
@@ -796,6 +824,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effort_wrapper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/env_config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ltqnorm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mat2dat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/matcat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nrmse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/par_signature_cluster_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel_compressor.Plo@am__quote@
