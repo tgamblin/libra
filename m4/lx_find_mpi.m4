@@ -173,16 +173,27 @@ AC_DEFUN([LX_QUERY_MPI_COMPILER],
          MPI_$3FLAGS=`  echo "$MPI_$3FLAGS"   | tr '\n' ' ' | sed 's/^[[ \t]]*//;s/[[ \t]]*$//' | sed 's/  */ /g'`
          MPI_$3LDFLAGS=`echo "$MPI_$3LDFLAGS" | tr '\n' ' ' | sed 's/^[[ \t]]*//;s/[[ \t]]*$//' | sed 's/  */ /g'`
 
-         # Add a define for testing at compile time.
-         AC_DEFINE([HAVE_MPI], [1], [Define to 1 if you have MPI libs and headers.])
+         OLD_LDFLAGS=$LDFLAGS
+         LDFLAGS=$MPI_$3LDFLAGS
 
-         # AC_SUBST everything.
-         AC_SUBST($1)
-         AC_SUBST(MPI_$3FLAGS)
-         AC_SUBST(MPI_$3LDFLAGS)
+         AC_TRY_LINK([#include <mpi.h>],
+                     [int rank, size;
+                      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+                      MPI_Comm_size(MPI_COMM_WORLD, &size);],
+                     [# Add a define for testing at compile time.
+                      AC_DEFINE([HAVE_MPI], [1], [Define to 1 if you have MPI libs and headers.])
 
-         # set a shell variable that the caller can test outside this macro
-         have_$3_mpi='yes'
+                      # AC_SUBST everything.
+                      AC_SUBST($1)
+                      AC_SUBST(MPI_$3FLAGS)
+                      AC_SUBST(MPI_$3LDFLAGS)
+
+                      # set a shell variable that the caller can test outside this macro
+                      have_$3_mpi='yes'],
+                     [have_$3_mpi='no'])
+
+         LDFLAGS=$OLD_LDFLAGS
+
      else
          Echo Unable to find suitable MPI Compiler. Try setting $1.
          have_$3_mpi='no'         
