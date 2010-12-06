@@ -2,3 +2,4 @@
 .DS_Store
 *.pyc
 autom4te.cache
+effort/*_wrapper.C
