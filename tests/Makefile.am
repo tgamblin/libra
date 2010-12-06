@@ -1,6 +1,6 @@
 noinst_PROGRAMS = compress_matfile  vary_passes \
 							    insert_bits_test ezwtest seqtest vltest \
-								  generictest matcat-test
+								  generictest
 
 TESTS = seqtest ezwtest insert_bits_test vltest
 

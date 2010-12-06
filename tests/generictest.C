@@ -69,22 +69,6 @@ int main(int argc, char **argv) {
   }
 
 
-  for (double i=0; i < 1048576.0; i+=M_PI) {
-    os.str("");
-    write_generic(os, i);
-
-    is.str(os.str());
-    double j = read_generic<double>(is);
-
-    if (i != j) {
-      if (verbose) {
-        cout << "expected " << i << " but got " << j << endl;
-      }
-      pass = false;
-    }
-  }
-  
-  
   if (verbose) {
     cout << (pass ? "PASSED" : "FAILED") << endl;
   }
