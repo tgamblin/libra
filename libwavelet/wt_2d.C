@@ -32,7 +32,7 @@
 #include "wt_2d.h"
 
 #include <stdint.h>
-#include <limits.h>
+#include <climits>
 #include <iostream>
 
 #include "io_utils.h"
