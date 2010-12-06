@@ -120,7 +120,7 @@ AC_DEFUN([LX_PYTHON_DEVEL], [
             # Now make sure we can compile and link
             #
             PYTHON_CPPFLAGS=$($PYTHON_CONFIG --includes)
-            PYTHON_LDFLAGS=$($PYTHON_CONFIG --ldflags)
+            PYTHON_LDFLAGS="-L${PYTHON_PREFIX}/lib $($PYTHON_CONFIG --ldflags)"
 
             SAVED_CPPFLAGS="$CPPFLAGS"
             SAVED_LDFLAGS="$LDFLAGS"
@@ -132,7 +132,7 @@ AC_DEFUN([LX_PYTHON_DEVEL], [
                             [AC_MSG_NOTICE([Couldn't find Python.h. Building without Python.])
                              have_python_devel=no])
 
-            echo $ECHO_N "checking if we can link against the Python framework... $ECHO_C"
+            echo $ECHO_N "checking if we can link Python library... $ECHO_C"
             AC_LINK_IFELSE([int main(int argc, char **argv) { return 0; }],
                            [echo yes],
                            [echo no
