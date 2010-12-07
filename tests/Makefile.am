@@ -53,7 +53,7 @@ parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la
+bunny_LDADD = ../effort/libmanual-effort.la $(MPI_CXXLDFLAGS)
 
 
 #

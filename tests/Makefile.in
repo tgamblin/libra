@@ -83,7 +83,9 @@ CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
-bunny_DEPENDENCIES = ../effort/libmanual-effort.la
+am__DEPENDENCIES_1 =
+bunny_DEPENDENCIES = ../effort/libmanual-effort.la \
+	$(am__DEPENDENCIES_1)
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
 compress_matfile_OBJECTS = $(am_compress_matfile_OBJECTS)
 compress_matfile_LDADD = $(LDADD)
@@ -102,7 +104,6 @@ insert_bits_test_LDADD = $(LDADD)
 insert_bits_test_DEPENDENCIES = ../libwavelet/libwavelet.la
 am_papicheck_OBJECTS = papicheck-papicheck.$(OBJEXT)
 papicheck_OBJECTS = $(am_papicheck_OBJECTS)
-am__DEPENDENCIES_1 =
 papicheck_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_parezwtest_OBJECTS = parezwtest.$(OBJEXT)
 parezwtest_OBJECTS = $(am_parezwtest_OBJECTS)
@@ -364,7 +365,7 @@ parspeedbench_SOURCES = parspeedbench.C
 parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libmanual-effort.la
+bunny_LDADD = ../effort/libmanual-effort.la $(MPI_CXXLDFLAGS)
 LDADD = ../libwavelet/libwavelet.la
 INCLUDES = \
 	$(MPI_CXXFLAGS) \

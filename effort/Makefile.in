@@ -503,7 +503,8 @@ libeffort_la_LIBADD = \
 libeffort_la_LDFLAGS = \
 	-avoid-version \
 	$(PAPI_LDFLAGS) $(PAPI_RPATH) \
-	$(SPRNG_LDFLAGS) $(SPRNG_RPATH)
+	$(SPRNG_LDFLAGS) $(SPRNG_RPATH) \
+	$(MPI_CXXLDFLAGS)
 
 @PMPI_EFFORT_TRUE@libpcontrol_counter_la_SOURCES = pcontrol_counter.C
 @PMPI_EFFORT_TRUE@libeffort_runtime_la_SOURCES = effort_module.C \
