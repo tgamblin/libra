@@ -133,7 +133,7 @@ AC_DEFUN([LX_PYTHON_DEVEL], [
                              have_python_devel=no])
 
             echo $ECHO_N "checking if we can link Python library... $ECHO_C"
-            AC_LINK_IFELSE([int main(int argc, char **argv) { return 0; }],
+            AC_LINK_IFELSE([AC_LANG_SOURCE([int main(int argc, char **argv) { return 0; }])],
                            [echo yes],
                            [echo no
                             AC_MSG_NOTICE([Building without Python.])
