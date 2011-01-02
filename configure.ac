@@ -80,20 +80,20 @@ AC_CHECK_FUNCS(clock_gettime gettimeofday)
 LX_PYTHON_DEVEL
 AX_PYTHON_MODULE(PyQt4)
 AX_PYTHON_MODULE(numpy)
+AX_PYTHON_MODULE(hcluster)
 
+AX_PKG_SWIG(1.3.30, 
+            [ have_swig=yes ],
+            [ have_swig=no
+              AC_MSG_ERROR([Couldn't find SWIG >= 1.3.30.])])
+AX_SWIG_ENABLE_CXX
+AX_SWIG_PYTHON
 
-AC_PROG_SWIG(1.3.30)
-if (${SWIG} -version &> /dev/null); then
-   have_swig=yes
-   AX_SWIG_ENABLE_CXX
-   AX_SWIG_PYTHON
-else
-   have_swig=no
-   AC_MSG_NOTICE([Couldn't find SWIG.  Will not be able to regenerate pyeffort wrappings.])
-fi
-
-if [[ "x$have_python" = xyes -a "x$HAVE_PYMOD_PYQT4" = xyes -a \
-      "x$HAVE_PYMOD_NUMPY" = xyes -a "x$have_vtk" = xyes ]]; then
+if [[ "x$have_python"         = xyes \
+   -a "x$HAVE_PYMOD_PYQT4"    = xyes \
+   -a "x$HAVE_PYMOD_NUMPY"    = xyes \
+   -a "x$HAVE_PYMOD_HCLUSTER" = xyes \
+    -a "x$have_vtk" = xyes ]]; then
    build_viewer=yes
 else
    AC_MSG_NOTICE([Building without viewer.])
@@ -156,6 +156,7 @@ echo "  Python Interpreter ............................. $have_python"
 echo "  Python Development Headers/Libs ................ $have_python_devel"
 echo "  PyQt4 Module ................................... $HAVE_PYMOD_PYQT4"
 echo "  Numpy Module ................................... $HAVE_PYMOD_NUMPY"
+echo "  SciPy Hcluster ................................. $HAVE_PYMOD_HCLUSTER"
 echo "  SWIG ........................................... $have_swig"
 echo
 echo "Build Options:"
@@ -171,7 +172,6 @@ AC_CONFIG_FILES([Makefile \
                  libwavelet/Makefile \
                  callpath/Makefile \
                  effort/Makefile \
-                 hcluster/Makefile \
                  viewer/Makefile \
                  tests/Makefile])
 AC_OUTPUT

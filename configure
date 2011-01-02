@@ -21420,6 +21420,31 @@ $as_echo "no" >&6; }
 	fi
 
 
+    if test -z $PYTHON;
+    then
+        PYTHON="python"
+    fi
+    PYTHON_NAME=`basename $PYTHON`
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking $PYTHON_NAME module: hcluster" >&5
+$as_echo_n "checking $PYTHON_NAME module: hcluster... " >&6; }
+	$PYTHON -c "import hcluster" 2>/dev/null
+	if test $? -eq 0;
+	then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+		eval HAVE_PYMOD_HCLUSTER=yes
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		eval HAVE_PYMOD_HCLUSTER=no
+		#
+		if test -n ""
+		then
+			as_fn_error $? "failed to find required module hcluster" "$LINENO" 5
+			exit 1
+		fi
+	fi
+
 
 
         # Extract the first word of "swig", so it can be a program name with args.
@@ -21463,12 +21488,11 @@ fi
 
 
         if test -z "$SWIG" ; then
-                { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot find 'swig' program. You should look at http://www.swig.org" >&5
-$as_echo "$as_me: WARNING: cannot find 'swig' program. You should look at http://www.swig.org" >&2;}
-                SWIG='echo "Error: SWIG is not installed. You should look at http://www.swig.org" ; false'
+                 have_swig=no
+              as_fn_error $? "Couldn't find SWIG >= 1.3.30." "$LINENO" 5
         elif test -n "1.3.30" ; then
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SWIG version" >&5
-$as_echo_n "checking for SWIG version... " >&6; }
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking SWIG version" >&5
+$as_echo_n "checking SWIG version... " >&6; }
                 swig_version=`$SWIG -version 2>&1 | grep 'SWIG Version' | sed 's/.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/g'`
                 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $swig_version" >&5
 $as_echo "$swig_version" >&6; }
@@ -21505,29 +21529,38 @@ $as_echo "$swig_version" >&6; }
                         if test -z "$available_patch" ; then
                                 available_patch=0
                         fi
-                        if test $available_major -ne $required_major \
-                                -o $available_minor -ne $required_minor \
-                                -o $available_patch -lt $required_patch ; then
-                                { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: SWIG version >= 1.3.30 is required.  You have $swig_version.  You should look at http://www.swig.org" >&5
-$as_echo "$as_me: WARNING: SWIG version >= 1.3.30 is required.  You have $swig_version.  You should look at http://www.swig.org" >&2;}
-                                SWIG='echo "Error: SWIG version >= 1.3.30 is required.  You have '"$swig_version"'.  You should look at http://www.swig.org" ; false'
+                        # Convert the version tuple into a single number for easier comparison.
+                        # Using base 100 should be safe since SWIG internally uses BCD values
+                        # to encode its version number.
+                        required_swig_vernum=`expr $required_major \* 10000 \
+                            \+ $required_minor \* 100 \+ $required_patch`
+                        available_swig_vernum=`expr $available_major \* 10000 \
+                            \+ $available_minor \* 100 \+ $available_patch`
+
+                        if test $available_swig_vernum -lt $required_swig_vernum; then
+                                { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: SWIG version >= 1.3.30 is required.  You have $swig_version." >&5
+$as_echo "$as_me: WARNING: SWIG version >= 1.3.30 is required.  You have $swig_version." >&2;}
+                                SWIG=''
+                                 have_swig=no
+              as_fn_error $? "Couldn't find SWIG >= 1.3.30." "$LINENO" 5
                         else
-                                { $as_echo "$as_me:${as_lineno-$LINENO}: SWIG executable is '$SWIG'" >&5
-$as_echo "$as_me: SWIG executable is '$SWIG'" >&6;}
+                                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SWIG library" >&5
+$as_echo_n "checking for SWIG library... " >&6; }
                                 SWIG_LIB=`$SWIG -swiglib`
-                                { $as_echo "$as_me:${as_lineno-$LINENO}: SWIG library directory is '$SWIG_LIB'" >&5
-$as_echo "$as_me: SWIG library directory is '$SWIG_LIB'" >&6;}
+                                { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SWIG_LIB" >&5
+$as_echo "$SWIG_LIB" >&6; }
+                                 have_swig=yes
                         fi
                 else
                         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: cannot determine SWIG version" >&5
 $as_echo "$as_me: WARNING: cannot determine SWIG version" >&2;}
-                        SWIG='echo "Error: Cannot determine SWIG version.  You should look at http://www.swig.org" ; false'
+                        SWIG=''
+                         have_swig=no
+              as_fn_error $? "Couldn't find SWIG >= 1.3.30." "$LINENO" 5
                 fi
         fi
 
 
-if (${SWIG} -version &> /dev/null); then
-   have_swig=yes
 
 
 
@@ -21535,21 +21568,19 @@ if (${SWIG} -version &> /dev/null); then
 
 
 
-                # Changed to use livermore python devel extension.
+
         test "x" != "xno" || swig_shadow=" -noproxy"
         AX_SWIG_PYTHON_OPT=-python$swig_shadow
 
         AX_SWIG_PYTHON_CPPFLAGS=$PYTHON_CPPFLAGS
 
 
-else
-   have_swig=no
-   { $as_echo "$as_me:${as_lineno-$LINENO}: Couldn't find SWIG.  Will not be able to regenerate pyeffort wrappings." >&5
-$as_echo "$as_me: Couldn't find SWIG.  Will not be able to regenerate pyeffort wrappings." >&6;}
-fi
 
-if [ "x$have_python" = xyes -a "x$HAVE_PYMOD_PYQT4" = xyes -a \
-      "x$HAVE_PYMOD_NUMPY" = xyes -a "x$have_vtk" = xyes ]; then
+if [ "x$have_python"         = xyes \
+   -a "x$HAVE_PYMOD_PYQT4"    = xyes \
+   -a "x$HAVE_PYMOD_NUMPY"    = xyes \
+   -a "x$HAVE_PYMOD_HCLUSTER" = xyes \
+    -a "x$have_vtk" = xyes ]; then
    build_viewer=yes
 else
    { $as_echo "$as_me:${as_lineno-$LINENO}: Building without viewer." >&5
@@ -22078,6 +22109,7 @@ echo "  Python Interpreter ............................. $have_python"
 echo "  Python Development Headers/Libs ................ $have_python_devel"
 echo "  PyQt4 Module ................................... $HAVE_PYMOD_PYQT4"
 echo "  Numpy Module ................................... $HAVE_PYMOD_NUMPY"
+echo "  SciPy Hcluster ................................. $HAVE_PYMOD_HCLUSTER"
 echo "  SWIG ........................................... $have_swig"
 echo
 echo "Build Options:"
@@ -22089,7 +22121,7 @@ echo "  Sampling (SPRNG) ............................... $have_sprng"
 echo "========================================================"
 echo
 
-ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile hcluster/Makefile viewer/Makefile tests/Makefile"
+ac_config_files="$ac_config_files Makefile libwavelet/Makefile callpath/Makefile effort/Makefile viewer/Makefile tests/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -23334,7 +23366,6 @@ do
     "libwavelet/Makefile") CONFIG_FILES="$CONFIG_FILES libwavelet/Makefile" ;;
     "callpath/Makefile") CONFIG_FILES="$CONFIG_FILES callpath/Makefile" ;;
     "effort/Makefile") CONFIG_FILES="$CONFIG_FILES effort/Makefile" ;;
-    "hcluster/Makefile") CONFIG_FILES="$CONFIG_FILES hcluster/Makefile" ;;
     "viewer/Makefile") CONFIG_FILES="$CONFIG_FILES viewer/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
 
