@@ -29,10 +29,12 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////////////////////////
-#include "s3d_topology.h"
-
+#include <cstdlib>
 #include <iostream>
 #include <set>
+
+#include "s3d_topology.h"
+
 using namespace std;
 
 namespace s3d {

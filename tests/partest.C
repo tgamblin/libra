@@ -29,14 +29,15 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////////////////////////
-#include <mpi.h>
+#include <cstring>
 #include <iostream>
 #include <iomanip>
-using namespace std;
+#include <mpi.h>
 
 #include "wt_parallel.h"
 #include "wt_direct.h"
-using wavelet::wt_matrix;
+
+using namespace std;
 using namespace wavelet;
 
 /// This verifies that the parallel wavelet transform produces
