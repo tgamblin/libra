@@ -98,8 +98,8 @@ am__installdirs = "$(DESTDIR)$(pythondir)" "$(DESTDIR)$(bindir)" \
 LTLIBRARIES = $(python_LTLIBRARIES)
 _pyeffort_la_DEPENDENCIES = libvtkeffort.la ../effort/libeffort.la \
 	../callpath/libcallpath.la ../libwavelet/libwavelet.la
-am__pyeffort_la_OBJECTS = pyeffort_wrap.lo
-_pyeffort_la_OBJECTS = $(am__pyeffort_la_OBJECTS)
+nodist__pyeffort_la_OBJECTS = pyeffort_wrap.lo
+_pyeffort_la_OBJECTS = $(nodist__pyeffort_la_OBJECTS)
 _pyeffort_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(_pyeffort_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -135,10 +135,9 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(_pyeffort_la_SOURCES) $(libvtkeffort_la_SOURCES) \
+SOURCES = $(nodist__pyeffort_la_SOURCES) $(libvtkeffort_la_SOURCES) \
 	$(nodist_libvtkeffort_la_SOURCES) $(simtest_SOURCES)
-DIST_SOURCES = $(_pyeffort_la_SOURCES) $(libvtkeffort_la_SOURCES) \
-	$(simtest_SOURCES)
+DIST_SOURCES = $(libvtkeffort_la_SOURCES) $(simtest_SOURCES)
 py_compile = $(top_srcdir)/config/py-compile
 DATA = $(dist_icon_DATA)
 HEADERS = $(include_HEADERS)
@@ -331,8 +330,8 @@ top_srcdir = @top_srcdir@
 python_LTLIBRARIES = libvtkeffort.la _pyeffort.la
 dist_noinst_SCRIPTS = wrap_vtk.sh
 
-# SWIG-generated files
-EXTRA_DIST = pyeffort.i pyeffort.py
+# SWIG files
+EXTRA_DIST = pyeffort.i 
 
 ###########################################################################
 # vtkeffort module is wrapped using VTK's wrapper generators.
@@ -379,7 +378,7 @@ libvtkeffort_la_LDFLAGS = \
 # Can still "import pyeffort" from python due to the associated pyeffort.py
 # file that is generated and installed.
 ###########################################################################
-_pyeffort_la_SOURCES = pyeffort_wrap.C
+nodist__pyeffort_la_SOURCES = pyeffort_wrap.C
 _pyeffort_la_LIBADD = libvtkeffort.la \
 										   ../effort/libeffort.la \
 						    			 ../callpath/libcallpath.la \
@@ -453,7 +452,7 @@ INCLUDES = \
 	-I$(top_srcdir)/effort \
 	$(PYTHON_CPPFLAGS)
 
-CLEANFILES = $(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc
+CLEANFILES = $(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc pyeffort.py
 all: all-am
 
 .SUFFIXES:
@@ -907,10 +906,8 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_iconDATA \
 
 $(VTKEFFORT_PYTHON_SOURCES): $(VTKEFFORT_H_FILES)
 	$(SHELL) $(srcdir)/wrap_vtk.sh $(VTK_WRAP_PYTHON) $(VTK_WRAP_PYTHON_INIT) $(srcdir) $(VTKEFFORT_PYTHON_SOURCES)
-pyeffort_wrap.C: pyeffort.i
-	$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
-
-pyeffort.py: pyeffort_wrap.C
+pyeffort.py pyeffort_wrap.C: pyeffort.i
+	$(SWIG) $(AX_SWIG_PYTHON_OPT) -outdir . -o $@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
