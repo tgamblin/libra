@@ -45,6 +45,8 @@ class Dendrogram:
     def make_cluster_view(self, parent, trunc=0):
         self.root.make_cluster_view(parent, trunc)
 
+    def depth(self):
+        return self.root.depth()
 #
 # Simple class for node in dendrogram.  Provides instance methods
 # for building various QTreeWidget visualizations.
