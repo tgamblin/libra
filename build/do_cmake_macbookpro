@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# Sample cmake configuration file for Mac OS X
+#
+cmake \
+    -D CMAKE_INSTALL_PREFIX=${HOME}/opt/libra \
+    -D CMAKE_CXX_FLAGS="-O2 -g3" \
+    -D LIBRA_USE_PMPI=TRUE \
+    ..
+    

@@ -31,9 +31,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 #include "timing.h"
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif //HAVE_CONFIG_H
+#include "libra-config.h"
 
 #include <cmath>
 using namespace std;
@@ -103,7 +101,7 @@ timing_t get_time_ns() {
 
 
 
-#elif (defined(HAVE_CLOCK_GETTIME) || defined(HAVE_LIBRT))
+#elif defined(LIBRA_HAVE_CLOCK_GETTIME)
 // -------------------------------------------------------- //
 // Timing code using Linux hires timers.
 // -------------------------------------------------------- //
@@ -118,7 +116,7 @@ timing_t get_time_ns() {
 }
 
 
-#elif defined(HAVE_GETTIMEOFDAY)
+#elif defined(LIBRA_HAVE_GETTIMEOFDAY)
 // -------------------------------------------------------- //
 // Generic timing code using gettimeofday.
 // -------------------------------------------------------- //

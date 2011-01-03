@@ -1,0 +1,22 @@
+#ifndef LIBRA_CONFIG_H_
+#define LIBRA_CONFIG_H_
+
+// Define if the POSIX high resolution timer function, clock_gettime() is available.
+#cmakedefine LIBRA_HAVE_CLOCK_GETTIME
+
+// Define if the POSIX gettimeofday() function is available. 
+#cmakedefine LIBRA_HAVE_GETTIMEOFDAY
+
+// Define if compiling with MPI support.
+#cmakedefine LIBRA_HAVE_MPI
+
+// Define if libra uses PMPI tool bindings instead of standard MPI bindings.
+#cmakedefine LIBRA_USE_PMPI
+
+// Libra version information -- numerical and a version string.
+#define LIBRA_MAJOR_VERSION @LIBRA_MAJOR_VERSION@
+#define LIBRA_MINOR_VERSION @LIBRA_MINOR_VERSION@
+#define LIBRA_PATCH_VERSION @LIBRA_PATCH_VERSION@
+#define LIBRA_VERSION       "@LIBRA_VERSION@"
+
+#endif // LIBRA_CONFIG_H_

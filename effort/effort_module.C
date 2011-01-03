@@ -49,10 +49,6 @@ using namespace std;
 #include <papi.h>
 #endif //HAVE_LIBPAPI
 
-#ifndef PMPI_EFFORT
-#include "pnmpimod.h"
-#endif // PMPI_EFFORT
-
 #include "Timer.h"
 #include "timing.h"
 #include "io_utils.h"
