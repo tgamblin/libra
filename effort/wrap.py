@@ -70,7 +70,7 @@ exclude_strings = [ "c2f", "f2c" ]
 
 # Regular expressions for start and end of declarations in mpi.h. These are
 # used to get the declaration strings out for parsing with formal_re below.
-begin_decl_re = re.compile("(" + "|".join(rtypes) + ")\s+(MPI_\w+)\(")
+begin_decl_re = re.compile("(" + "|".join(rtypes) + ")\s+(MPI_\w+)\s*\(")
 exclude_re =    re.compile("|".join(exclude_strings))
 end_decl_re =   re.compile("\).*\;")
 
@@ -483,11 +483,7 @@ def write_c_wrapper(out, decl, return_val, write_body):
     out.write(" { \n")
     out.write("    int %s = 0;\n" % return_val)
 
-    if output_guards:
-        write_enter_guard(out, decl)
-    else:
-        out.write("    return_val = P%s%s;\n" % (decl.name, decl.argList()))
-
+    write_enter_guard(out, decl)
     write_body(out)
     write_exit_guard(out)
 
