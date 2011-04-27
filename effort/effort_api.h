@@ -77,6 +77,8 @@ namespace effort {
   /// Handler type for functions that want to listen to progress events.
   ///
   typedef void (*progress_listener_t)(effort::effort_data& data);
+	typedef void (*register_progress_listener_t)(effort::progress_listener_t listener, int frequency);
+ 
 } // namespace effort
 
 extern "C" {
