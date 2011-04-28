@@ -46,6 +46,7 @@ using namespace wavelet;
 #include "wavelet_ssim.h"
 using namespace effort;
 
+#include "vtkPythonUtil.h"
 #include "vtkEffortData.h"
 
 EffortData::EffortData(const string& fn) : filename(fn), approximation_level(-1), loaded(false) { 
@@ -68,10 +69,7 @@ EffortData::~EffortData() {  }
 string EffortData::getVTKEffortData() {
   vtkEffortData *vtkRegion = vtkEffortData::New();
   vtkRegion->setEffortData(this);
-
-  ostringstream mangled_pointer;
-  mangled_pointer << "_" << hex << (uintptr_t)vtkRegion << "_p_vtkEffortData";
-  return mangled_pointer.str();
+  return string(vtkPythonManglePointer(vtkRegion, "p_vtkEffortData"));
 }
 
 

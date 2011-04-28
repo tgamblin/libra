@@ -124,12 +124,12 @@ namespace wavelet {
   protected:
     /// Wrapper around wt_1d_direct method that knows about matrix.
     void fwt_row(wt_matrix& mat, size_t row, size_t n) {
-      fwt_1d(&mat(row, 0), n);
+      fwt_1d_single(&mat(row, 0), n);
     }
 
     /// Wrapper around wt_1d_direct method that knows about matrix.
     void iwt_row(wt_matrix& mat, size_t row, size_t n) {
-      iwt_1d(&mat(row, 0), n);
+      iwt_1d_single(&mat(row, 0), n);
     }
 
     /// Parallel column transform.  Requires that data be preconditioned by 

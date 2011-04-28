@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     }
 
     ostringstream exact_str;
-    exact_str << "exact/exact-" << metric << "-" << type << "-" << number;
+    exact_str << "exact/exact-effort-" << metric << "-" << type << "-" << number;
 
     string exact_filename = exact_str.str();
     if (!read_matrix(exact_filename.c_str(), exact)) {

@@ -52,7 +52,8 @@ libeffort_la_LIBADD = \
 libeffort_la_LDFLAGS = \
 	-avoid-version \
 	$(PAPI_LDFLAGS) $(PAPI_RPATH) \
-	$(SPRNG_LDFLAGS) $(SPRNG_RPATH)
+	$(SPRNG_LDFLAGS) $(SPRNG_RPATH) \
+	$(MPI_CXXLDFLAGS)
 
 #
 # Effort runtime library and wrapper libraries

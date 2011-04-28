@@ -29,49 +29,49 @@
 // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /////////////////////////////////////////////////////////////////////////////////////////////////
-#include "wt_1d.h"
-
-#include <climits>
-
-#include "io_utils.h"
+#include <sstream>
+#include <cstring>
+#include <iostream>
+#include <cmath>
 using namespace std;
 
-namespace wavelet {
+#include "io_utils.h"
+using namespace wavelet;
 
-  int wt_1d::fwt_1d(double * data, size_t len, int level) {
-    if (level < 0) {
-      level = (int)log2pow2(len);
-    }
-    assert(level <= log2pow2(len));
+/// This is a test of the variable-length write routines used
+/// to write compressed header files.
 
-    size_t cur_len = len;
-    for (int i=0; i < level; i++) {
-      fwt_1d_single(data, cur_len);
-      cur_len >>= 1;
-    }
 
-    return level;    
+int main(int argc, char **argv) {
+  ostringstream os;
+  istringstream is;
+
+  bool pass = true;
+  bool verbose = false;
+  for (int i=1; i < argc; i++) {
+    if (!strcmp(argv[i], "-v")) verbose = true;
   }
   
 
-  int wt_1d::iwt_1d(double *data, size_t len, int fwt_level, int iwt_level) {
-    if (fwt_level < 0) {
-      fwt_level = (int)log2pow2(len);
-    }
-    assert(fwt_level <= log2pow2(len));
+  for (size_t i=0; i < 1048576; i+=17) {
+    os.str("");
+    write_generic(os, i);
 
-    if (iwt_level < 0) {
-      iwt_level = INT_MAX;
-    }
-      
-    int levels = 0;
-    for (int i=fwt_level-1; i >= 0 && levels < iwt_level; i--) {
-      size_t cur_len = len >> i;
-      iwt_1d_single(data, cur_len);
-      levels++;
-    }
+    is.str(os.str());
+    size_t j = read_generic<size_t>(is);
 
-    return levels;    
+    if (i != j) {
+      if (verbose) {
+        cout << "expected " << i << " but got " << j << endl;
+      }
+      pass = false;
+    }
   }
 
-} // namespace wavelet
+
+  if (verbose) {
+    cout << (pass ? "PASSED" : "FAILED") << endl;
+  }
+
+  exit(pass ? 0 : 1);
+}

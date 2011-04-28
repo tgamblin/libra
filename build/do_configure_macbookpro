@@ -5,14 +5,13 @@
 # 
 
 ../configure \
-    FC=gfortran-mp-4.3 \
-    CXX=mpicxx \
-    CPPFLAGS="-g3 -O3 -Wall -DVTK_EXCLUDE_STRSTREAM_HEADERS" \
+    FC=gfortran-mp-4.4 \
+    CPPFLAGS="-DVTK_EXCLUDE_STRSTREAM_HEADERS -DOMPI_SKIP_MPICXX" \
+    CXXFLAGS="-g3 -O2 -Wall" \
     --with-boost="/opt/local" \
-    --prefix=${HOME}/opt/libra \
+    --prefix=/Users/gamblin2/opt/libra \
+    --with-python=/opt/local/bin/python2.6 \
     --with-vtk=/opt/local \
-    --with-vtk-version=5.2
+    --with-vtk-version=5.6
 
-#    --with-python=/opt/local/Library/Frameworks/Python.framework 
-#    --with-python-version=2.5
 

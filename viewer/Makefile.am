@@ -2,11 +2,10 @@
 # One is the SWIG-wrapped effort interface.  The other is special
 # vtk-wrapped library.  VTK requires its own special python wrappings.
 python_LTLIBRARIES=libvtkeffort.la _pyeffort.la
-
 dist_noinst_SCRIPTS = wrap_vtk.sh
 
-# SWIG-generated files
-EXTRA_DIST = pyeffort.i pyeffort.py
+# SWIG files
+EXTRA_DIST = pyeffort.i 
 
 ###########################################################################
 # vtkeffort module is wrapped using VTK's wrapper generators.
@@ -55,9 +54,9 @@ libvtkeffort_la_LDFLAGS = \
 # Can still "import pyeffort" from python due to the associated pyeffort.py
 # file that is generated and installed.
 ###########################################################################
-_pyeffort_la_SOURCES = pyeffort_wrap.C
-pyeffort_wrap.C: pyeffort.i
-	$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir)/src -o $@ $<
+nodist__pyeffort_la_SOURCES = pyeffort_wrap.C
+pyeffort.py pyeffort_wrap.C: pyeffort.i
+	$(SWIG) $(AX_SWIG_PYTHON_OPT) -outdir . -o $@ $<
 
 _pyeffort_la_LIBADD  = libvtkeffort.la \
 										   ../effort/libeffort.la \
@@ -69,8 +68,6 @@ _pyeffort_la_LDFLAGS = \
 	-avoid-version \
   $(VTK_LIBS) $(VTK_RPATH) -lvtkCommonPythonD -lvtkGraphicsPythonD \
 	$(PYTHON_LDFLAGS) $(PYTHON_RPATH)
-
-pyeffort.py: pyeffort_wrap.C
 
 include_HEADERS = \
 	EffortData.h \
@@ -135,6 +132,6 @@ INCLUDES= \
 	-I$(top_srcdir)/effort \
 	$(PYTHON_CPPFLAGS)
 
-CLEANFILES=$(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc
+CLEANFILES=$(VTKEFFORT_PYTHON_SOURCES) libvtkpython_init.txt *.pyc pyeffort.py
 
 

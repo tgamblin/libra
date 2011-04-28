@@ -1,5 +1,6 @@
 noinst_PROGRAMS = compress_matfile  vary_passes \
-							    insert_bits_test ezwtest seqtest vltest
+							    insert_bits_test ezwtest seqtest vltest \
+								  generictest
 
 TESTS = seqtest ezwtest insert_bits_test vltest
 
@@ -31,6 +32,7 @@ ezwtest_SOURCES = ezwtest.C
 insert_bits_test_SOURCES = insert_bits_test.C
 vary_passes_SOURCES = vary_passes.C
 vltest_SOURCES = vltest.C
+generictest_SOURCES = generictest.C
 
 papicheck_SOURCES = papicheck.C
 papicheck_CPPFLAGS = $(PAPI_CPPFLAGS)
@@ -51,7 +53,7 @@ parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libpmpi-effort.la
+bunny_LDADD = ../effort/libmanual-effort.la $(MPI_CXXLDFLAGS)
 
 
 #

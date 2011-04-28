@@ -1,25 +1,22 @@
-#!/usr/bin/env ruby
-# -*- ruby -*-
+#!/usr/bin/env python
 
-exact_filename = /^(exact-\w+-[0-9]+-[0-9]+)-([0-9]+)/
+import os, re
 
-files = Dir.new(".").entries.grep(exact_filename)
+files = os.listdir(".")
 
-tocat = Hash.new {|hash,key| hash[key] = [] }
-files.each do |file|
-  file.chomp!
-  outfile, rank = exact_filename.match(file).captures
-  tocat[outfile][rank.to_i] = file
-end
+tocat = dict()
+for file in files:
+    match = re.match(r'^((exact-effort-[^-]+-[0-9]+-[0-9]+)-[0-9]+)', file)
+    if match:
+        part, name = match.groups()
+        tocat.setdefault(name, []).append(part)
 
-tocat.each do |key, list|
-  if list.include?(nil)
-    puts "Error: Missing files for '#{key}'"
-    exit(1)
-  end
-  cat_cmd = "cat #{list.join(" ")} > #{key}"
-  rm_cmd = "rm  #{list.join(" ")}"
+for key in tocat:
+    tocat[key].sort()
+    parts = " ".join(tocat[key])
 
-  system cat_cmd
-  system rm_cmd
-end
+    cat_cmd = "cat %s > %s" % (parts, key)
+    os.system(cat_cmd)
+    
+    rm_cmd  = "rm %s" % parts
+    os.system(rm_cmd)

@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign   # Don't require NEWS, README, INSTALL, etc.emacs -
 ACLOCAL_AMFLAGS = -I m4
 
 if BUILD_VIEWER
-VIEWER_DIRS=hcluster viewer
+VIEWER_DIR=viewer
 endif
 
 # Build-time configuration of libraries.
@@ -29,5 +29,5 @@ EXTRA_DIST = \
 	config/powerpc-bgl-linux-gnu \
 	config/powerpc-bgp-linux-gnu
 
-SUBDIRS=libwavelet callpath effort $(VIEWER_DIRS) tests
+SUBDIRS=libwavelet callpath effort $(VIEWER_DIR) tests
 

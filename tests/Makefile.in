@@ -36,8 +36,8 @@ build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = compress_matfile$(EXEEXT) vary_passes$(EXEEXT) \
 	insert_bits_test$(EXEEXT) ezwtest$(EXEEXT) seqtest$(EXEEXT) \
-	vltest$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2) \
-	$(am__EXEEXT_3) $(am__EXEEXT_4)
+	vltest$(EXEEXT) generictest$(EXEEXT) $(am__EXEEXT_1) \
+	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4)
 TESTS = seqtest$(EXEEXT) ezwtest$(EXEEXT) insert_bits_test$(EXEEXT) \
 	vltest$(EXEEXT) $(am__EXEEXT_5)
 @HAVE_MPI_TRUE@am__append_1 = partest parezwtest parspeedbench
@@ -83,7 +83,9 @@ CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am_bunny_OBJECTS = bunny-bunny.$(OBJEXT)
 bunny_OBJECTS = $(am_bunny_OBJECTS)
-bunny_DEPENDENCIES = ../effort/libpmpi-effort.la
+am__DEPENDENCIES_1 =
+bunny_DEPENDENCIES = ../effort/libmanual-effort.la \
+	$(am__DEPENDENCIES_1)
 am_compress_matfile_OBJECTS = compress_matfile.$(OBJEXT)
 compress_matfile_OBJECTS = $(am_compress_matfile_OBJECTS)
 compress_matfile_LDADD = $(LDADD)
@@ -92,13 +94,16 @@ am_ezwtest_OBJECTS = ezwtest.$(OBJEXT)
 ezwtest_OBJECTS = $(am_ezwtest_OBJECTS)
 ezwtest_LDADD = $(LDADD)
 ezwtest_DEPENDENCIES = ../libwavelet/libwavelet.la
+am_generictest_OBJECTS = generictest.$(OBJEXT)
+generictest_OBJECTS = $(am_generictest_OBJECTS)
+generictest_LDADD = $(LDADD)
+generictest_DEPENDENCIES = ../libwavelet/libwavelet.la
 am_insert_bits_test_OBJECTS = insert_bits_test.$(OBJEXT)
 insert_bits_test_OBJECTS = $(am_insert_bits_test_OBJECTS)
 insert_bits_test_LDADD = $(LDADD)
 insert_bits_test_DEPENDENCIES = ../libwavelet/libwavelet.la
 am_papicheck_OBJECTS = papicheck-papicheck.$(OBJEXT)
 papicheck_OBJECTS = $(am_papicheck_OBJECTS)
-am__DEPENDENCIES_1 =
 papicheck_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_parezwtest_OBJECTS = parezwtest.$(OBJEXT)
 parezwtest_OBJECTS = $(am_parezwtest_OBJECTS)
@@ -142,15 +147,17 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(bunny_SOURCES) $(compress_matfile_SOURCES) \
-	$(ezwtest_SOURCES) $(insert_bits_test_SOURCES) \
-	$(papicheck_SOURCES) $(parezwtest_SOURCES) \
-	$(parspeedbench_SOURCES) $(partest_SOURCES) $(seqtest_SOURCES) \
-	$(swcheck_SOURCES) $(vary_passes_SOURCES) $(vltest_SOURCES)
+	$(ezwtest_SOURCES) $(generictest_SOURCES) \
+	$(insert_bits_test_SOURCES) $(papicheck_SOURCES) \
+	$(parezwtest_SOURCES) $(parspeedbench_SOURCES) \
+	$(partest_SOURCES) $(seqtest_SOURCES) $(swcheck_SOURCES) \
+	$(vary_passes_SOURCES) $(vltest_SOURCES)
 DIST_SOURCES = $(bunny_SOURCES) $(compress_matfile_SOURCES) \
-	$(ezwtest_SOURCES) $(insert_bits_test_SOURCES) \
-	$(papicheck_SOURCES) $(parezwtest_SOURCES) \
-	$(parspeedbench_SOURCES) $(partest_SOURCES) $(seqtest_SOURCES) \
-	$(swcheck_SOURCES) $(vary_passes_SOURCES) $(vltest_SOURCES)
+	$(ezwtest_SOURCES) $(generictest_SOURCES) \
+	$(insert_bits_test_SOURCES) $(papicheck_SOURCES) \
+	$(parezwtest_SOURCES) $(parspeedbench_SOURCES) \
+	$(partest_SOURCES) $(seqtest_SOURCES) $(swcheck_SOURCES) \
+	$(vary_passes_SOURCES) $(vltest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -183,6 +190,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DWARF_LDFLAGS = @DWARF_LDFLAGS@
@@ -216,6 +224,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MPICXX = @MPICXX@
 MPI_CXXFLAGS = @MPI_CXXFLAGS@
@@ -279,6 +288,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -313,7 +323,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -341,6 +350,7 @@ ezwtest_SOURCES = ezwtest.C
 insert_bits_test_SOURCES = insert_bits_test.C
 vary_passes_SOURCES = vary_passes.C
 vltest_SOURCES = vltest.C
+generictest_SOURCES = generictest.C
 papicheck_SOURCES = papicheck.C
 papicheck_CPPFLAGS = $(PAPI_CPPFLAGS)
 papicheck_LDADD = $(PAPI_LDFLAGS) $(PAPI_RPATH)
@@ -355,7 +365,7 @@ parspeedbench_SOURCES = parspeedbench.C
 parspeedbench_LDADD = ../libwavelet/libwavelet.la $(MPI_CXXLDFLAGS)
 bunny_SOURCES = bunny.C
 bunny_CPPFLAGS = -DSRC_DIR="\"$(srcdir)\""
-bunny_LDADD = ../effort/libpmpi-effort.la
+bunny_LDADD = ../effort/libmanual-effort.la $(MPI_CXXLDFLAGS)
 LDADD = ../libwavelet/libwavelet.la
 INCLUDES = \
 	$(MPI_CXXFLAGS) \
@@ -416,6 +426,9 @@ compress_matfile$(EXEEXT): $(compress_matfile_OBJECTS) $(compress_matfile_DEPEND
 ezwtest$(EXEEXT): $(ezwtest_OBJECTS) $(ezwtest_DEPENDENCIES) 
 	@rm -f ezwtest$(EXEEXT)
 	$(CXXLINK) $(ezwtest_OBJECTS) $(ezwtest_LDADD) $(LIBS)
+generictest$(EXEEXT): $(generictest_OBJECTS) $(generictest_DEPENDENCIES) 
+	@rm -f generictest$(EXEEXT)
+	$(CXXLINK) $(generictest_OBJECTS) $(generictest_LDADD) $(LIBS)
 insert_bits_test$(EXEEXT): $(insert_bits_test_OBJECTS) $(insert_bits_test_DEPENDENCIES) 
 	@rm -f insert_bits_test$(EXEEXT)
 	$(CXXLINK) $(insert_bits_test_OBJECTS) $(insert_bits_test_LDADD) $(LIBS)
@@ -453,6 +466,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bunny-bunny.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compress_matfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ezwtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generictest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/insert_bits_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/papicheck-papicheck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parezwtest.Po@am__quote@

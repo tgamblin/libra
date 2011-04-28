@@ -1,5 +1,5 @@
 # ===========================================================================
-#       http://www.nongnu.org/autoconf-archive/ax_swig_enable_cxx.html
+#    http://www.gnu.org/software/autoconf-archive/ax_swig_enable_cxx.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -43,9 +43,11 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
+#serial 6
+
 AU_ALIAS([SWIG_ENABLE_CXX], [AX_SWIG_ENABLE_CXX])
 AC_DEFUN([AX_SWIG_ENABLE_CXX],[
-        AC_REQUIRE([AC_PROG_SWIG])
+        AC_REQUIRE([AX_PKG_SWIG])
         AC_REQUIRE([AC_PROG_CXX])
         SWIG="$SWIG -c++"
 ])

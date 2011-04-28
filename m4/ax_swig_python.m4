@@ -1,5 +1,5 @@
 # ===========================================================================
-#         http://www.nongnu.org/autoconf-archive/ax_swig_python.html
+#      http://www.gnu.org/software/autoconf-archive/ax_swig_python.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -52,10 +52,12 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
+#serial 7
+
 AU_ALIAS([SWIG_PYTHON], [AX_SWIG_PYTHON])
 AC_DEFUN([AX_SWIG_PYTHON],[
-        AC_REQUIRE([AC_PROG_SWIG])
-        AC_REQUIRE([LX_PYTHON_DEVEL])        # Changed to use livermore python devel extension.
+        AC_REQUIRE([AX_PKG_SWIG])
+        AC_REQUIRE([LX_PYTHON_DEVEL])
         test "x$1" != "xno" || swig_shadow=" -noproxy"
         AC_SUBST([AX_SWIG_PYTHON_OPT],[-python$swig_shadow])
         AC_SUBST([AX_SWIG_PYTHON_CPPFLAGS],[$PYTHON_CPPFLAGS])
