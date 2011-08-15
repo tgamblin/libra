@@ -60,6 +60,10 @@ namespace effort {
     /// Gets the size so far.
     size_t size() { return values.size(); }
     
+    
+    /// Gets the values.begin()
+    std::vector<double>::iterator begin() { return values.begin(); }
+
     /// Adds to current value of this effort.
     void operator+=(double value) { current += value; }
   };
